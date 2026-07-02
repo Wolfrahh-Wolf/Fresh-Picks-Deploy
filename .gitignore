@@ -1,0 +1,12 @@
+*.exe
+*.out
+*.o
+*.obj
+*.log
+*.pyc
+*.pem
+*.env
+__pycache__/
+.DS_Store
+.vscode/
+.env
