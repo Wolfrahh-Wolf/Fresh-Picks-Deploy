@@ -1,0 +1,754 @@
+{% extends "base.html" %}
+
+{% block title %}User Directory | Fresh Picks{% endblock %}
+
+{% block extra_head %}
+<style>
+
+    /* ── Page layout ──────────────────────────────────────────── */
+    .ud-header {
+        background: linear-gradient(135deg,
+            rgba(0, 122, 204, 0.12) 0%,
+            rgba(0, 122, 204, 0.04) 100%);
+        border: 1px solid rgba(0, 122, 204, 0.2);
+        border-radius: var(--radius, 10px);
+        padding: 1.5rem 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* ── Search & Filter bar ──────────────────────────────────── */
+    .ud-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .ud-search-wrap {
+        position: relative;
+        flex: 1 1 260px;
+    }
+    .ud-search-wrap .bi-search {
+        position: absolute;
+        left: 0.85rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        pointer-events: none;
+    }
+    #ud-search {
+        padding-left: 2.3rem;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-bright);
+        border-radius: 8px;
+        width: 100%;
+        height: 40px;
+        font-size: 0.9rem;
+        transition: border-color 0.2s;
+    }
+    #ud-search:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.15);
+    }
+    #ud-search::placeholder { color: var(--text-muted); }
+
+    /* Filter tab buttons */
+    .ud-filter-group { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .ud-filter-btn {
+        padding: 0.35rem 1rem;
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+        background: var(--card-bg);
+        color: var(--text-muted);
+        font-size: 0.82rem;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        white-space: nowrap;
+    }
+    .ud-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .ud-filter-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+        font-weight: 600;
+    }
+
+    #ud-result-count {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        white-space: nowrap;
+    }
+
+    /* ── Horizontal User Card ─────────────────────────────────── */
+    .ud-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 0.85rem 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+    .ud-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 122, 204, 0.16);
+        border-color: rgba(0, 122, 204, 0.4);
+    }
+
+    /* Left: UID badge block */
+    .ud-uid-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 64px;
+        flex-shrink: 0;
+    }
+    .ud-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent) 0%, #0d5ea6 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #fff;
+        text-transform: uppercase;
+        margin-bottom: 0.3rem;
+    }
+    .ud-uid-text {
+        font-size: 0.68rem;
+        font-family: monospace;
+        color: var(--accent);
+        letter-spacing: 0.04em;
+        text-align: center;
+    }
+
+    /* Centre: user info */
+    .ud-info {
+        flex: 1;
+        min-width: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.15rem 1.2rem;
+    }
+    .ud-info-item {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+    .ud-info-label {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.05rem;
+    }
+    .ud-info-value {
+        font-size: 0.82rem;
+        color: var(--text-bright);
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Status badge */
+    .ud-status-badge {
+        display: inline-block;
+        font-size: 0.65rem;
+        padding: 0.18em 0.55em;
+        border-radius: 20px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+    .ud-status-active   { background: rgba(78,201,176,0.15); color: var(--success); }
+    .ud-status-inactive { background: rgba(244,71,71,0.12);  color: var(--danger);  }
+
+    /* Right: View Details button */
+    .ud-details-btn {
+        flex-shrink: 0;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.78rem;
+        border-radius: 8px;
+        border: 1px solid var(--accent);
+        background: transparent;
+        color: var(--accent);
+        cursor: pointer;
+        transition: all 0.18s ease;
+        white-space: nowrap;
+    }
+    .ud-details-btn:hover {
+        background: var(--accent);
+        color: #fff;
+    }
+
+    /* ── Empty State ──────────────────────────────────────────── */
+    #ud-empty {
+        display: none;
+        text-align: center;
+        padding: 4rem 1rem;
+        color: var(--text-muted);
+    }
+    #ud-empty .ud-empty-icon { font-size: 3.5rem; margin-bottom: 1rem; opacity: 0.4; }
+
+    /* ── Orders-style Modal ───────────────────────────────────── */
+    #ud-modal .modal-content {
+        background: var(--bg-surface) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 14px !important;
+    }
+    #ud-modal .modal-header {
+        border-bottom: 1px solid var(--border-color) !important;
+        padding: 1rem 1.25rem;
+    }
+    #ud-modal .modal-footer {
+        border-top: 1px solid var(--border-color) !important;
+    }
+    #ud-modal .modal-body {
+        padding: 1.2rem 1.4rem;
+    }
+
+    /* Profile rows inside modal */
+    .ud-profile-row {
+        display: flex;
+        align-items: flex-start;
+        padding: 0.55rem 0;
+        border-bottom: 1px solid var(--border-color);
+        gap: 0.5rem;
+    }
+    .ud-profile-row:last-child { border-bottom: none; }
+    .ud-profile-label {
+        min-width: 110px;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding-top: 0.05rem;
+        flex-shrink: 0;
+    }
+    .ud-profile-value {
+        font-size: 0.88rem;
+        color: var(--text-bright);
+        word-break: break-word;
+    }
+    .ud-profile-value.mono {
+        font-family: monospace;
+        color: var(--accent);
+        font-size: 0.82rem;
+    }
+
+    /* Modal header avatar */
+    .ud-modal-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent) 0%, #0d5ea6 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #fff;
+        flex-shrink: 0;
+    }
+
+    /* Loading spinner */
+    .ud-modal-spinner {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-muted);
+    }
+
+    /* Mobile: stack card vertically on very small screens */
+    @media (max-width: 480px) {
+        .ud-card { flex-wrap: wrap; }
+        .ud-info { grid-template-columns: 1fr; }
+        .ud-details-btn { width: 100%; text-align: center; }
+    }
+
+    /* ── Responsive: Tablet (769px–1024px) ── */
+    @media (max-width: 1024px) {
+        .ud-toolbar { flex-wrap: wrap; gap: 0.5rem; }
+        .ud-search-wrap { width: 100%; }
+        .ud-info { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── Responsive: Mobile (≤768px) ── */
+    @media (max-width: 768px) {
+        .ud-header { flex-direction: column; align-items: flex-start !important; }
+        .ud-toolbar { flex-direction: column; gap: 0.5rem; }
+        .ud-search-wrap { width: 100%; }
+        .ud-filter-group { flex-wrap: wrap; gap: 0.3rem; }
+        .ud-filter-btn { font-size: 0.78rem; padding: 0.3rem 0.65rem; }
+        .ud-info { grid-template-columns: 1fr; }
+        .ud-card { padding: 0.85rem 0.75rem; }
+        .ud-grid { grid-template-columns: 1fr !important; }
+        .ud-modal-avatar { width: 48px; height: 48px; font-size: 1.1rem; }
+        .ud-profile-row { flex-direction: column; gap: 0.2rem; }
+        .ud-profile-label { width: auto; min-width: 0; }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="container py-4 fade-in">
+
+    {# ── Breadcrumb ── #}
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb" style="background:transparent; padding:0; font-size:0.82rem;">
+            <li class="breadcrumb-item">
+                <a href="/admin/dashboard" style="color:var(--accent);">
+                    <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                </a>
+            </li>
+            <li class="breadcrumb-item active" style="color:var(--text-muted);">
+                User Directory
+            </li>
+        </ol>
+    </nav>
+
+    {# ── Page Header ── #}
+    <div class="ud-header d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+            <h4 class="mb-1 text-bright fw-bold">
+                <i class="bi bi-people-fill me-2" style="color:var(--accent);"></i>
+                User Directory
+            </h4>
+            <p class="mb-0 text-muted" style="font-size:0.85rem;">
+                Browse and inspect all registered customer accounts.
+                Total:
+                <strong style="color:var(--accent);" id="ud-total-count">…</strong> users.
+            </p>
+        </div>
+        <a href="/admin/dashboard" class="btn btn-sm btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+        </a>
+    </div>
+
+    {# ── Search & Filter Toolbar ── #}
+    <div class="ud-toolbar">
+        <div class="ud-search-wrap">
+            <i class="bi bi-search"></i>
+            <input type="text"
+                   id="ud-search"
+                   placeholder="Search by name or User ID…"
+                   autocomplete="off">
+        </div>
+
+        <div class="ud-filter-group">
+            <button class="ud-filter-btn active" data-filter="all">
+                <i class="bi bi-people me-1"></i>All
+            </button>
+            <button class="ud-filter-btn" data-filter="active">
+                <i class="bi bi-check-circle me-1"></i>Active
+            </button>
+            <button class="ud-filter-btn" data-filter="inactive">
+                <i class="bi bi-dash-circle me-1"></i>Inactive
+            </button>
+        </div>
+
+        <span id="ud-result-count">
+            Showing <strong id="ud-shown">0</strong>
+            of <strong id="ud-total-inline">…</strong>
+        </span>
+    </div>
+
+    {# ── User Card List ── #}
+    <div class="d-flex flex-column gap-2" id="ud-grid">
+        {# This loading spinner is removed by JS once data arrives #}
+        <div id="ud-loading" style="text-align:center; padding:3rem; color:var(--text-muted);">
+            <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+            Loading users…
+        </div>
+    </div>
+
+    {# ── Empty State (Shown via JS only when search/filter returns 0) ── #}
+    <div id="ud-empty" style="display: none; text-align: center; padding: 4rem 1rem; color: var(--text-muted);">
+        <div class="ud-empty-icon" style="font-size: 3.5rem; margin-bottom: 1rem; opacity: 0.4;">👤</div>
+        <p class="fw-bold text-bright mb-1">No users found</p>
+        <p>Try adjusting your search or filter.</p>
+    </div>
+
+</div>
+
+
+{# ══════════════════════════════════════════════
+   USER DETAILS MODAL — styled like admin_orders.html
+   ══════════════════════════════════════════════ #}
+<div class="modal fade" id="ud-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="ud-modal-avatar" id="modal-avatar">?</div>
+                    <div>
+                        <h5 class="modal-title mb-0 text-bright" id="modal-name">—</h5>
+                        <small style="color:var(--accent); font-family:monospace;"
+                               id="modal-uid-sub">—</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" id="modal-body">
+                <div class="ud-modal-spinner">
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    Loading profile…
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-action"
+                        style="background:var(--bg-elevated); border:1px solid var(--border-color);
+                               color:var(--text-bright);"
+                        data-bs-dismiss="modal">
+                    <i class="bi bi-x me-1"></i>Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script>
+/*
+ * ═══════════════════════════════════════════════════════════════
+ * ADMIN USER DIRECTORY — Client-Side Logic (Session 3 Redesign)
+ *
+ * 1. SEARCH  — Live filter on #ud-search (debounced 300ms)
+ * 2. FILTER  — Tab buttons (All / Active / Inactive)
+ * 3. MODAL   — "View Details" → fetch GET /api/admin/users/<user_id> → render
+ *              Address shown as single comma-separated line.
+ * ═══════════════════════════════════════════════════════════════
+ */
+
+(function () {
+
+    let allUsers      = [];      // master copy from API
+    let currentFilter = "all";
+    let currentSearch = "";
+
+    const grid        = document.getElementById("ud-grid");
+    const emptyState  = document.getElementById("ud-empty");
+    const shownBadge  = document.getElementById("ud-shown");
+    const searchInput = document.getElementById("ud-search");
+
+    /* ── escHtml (unchanged from original) ───────────────────── */
+    function escHtml(str) {
+        if (!str) return "";
+        return str.replace(/&/g,"&amp;").replace(/</g,"&lt;")
+                  .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+
+    function getInitials(name) {
+        if (!name) return "?";
+        const words = name.trim().split(/\s+/);
+        return words.length >= 2
+            ? (words[0][0] + words[words.length - 1][0]).toUpperCase()
+            : words[0][0].toUpperCase();
+    }
+
+    function formatAddress(raw) {
+        if (!raw) return "—";
+        return raw.split(/[\n\r|;,]+/).map(s => s.trim()).filter(Boolean).join("<br>");
+    }
+
+    /* ── Build one card's HTML ────────────────────────────────── */
+    function buildUserCard(u) {
+        const statusBadge = u.status.toLowerCase() === "active"
+            ? `<span class="ud-status-badge ud-status-active">
+                   <i class="bi bi-circle-fill me-1" style="font-size:0.45rem;"></i>Active
+               </span>`
+            : `<span class="ud-status-badge ud-status-inactive">
+                   <i class="bi bi-circle me-1" style="font-size:0.45rem;"></i>Inactive
+               </span>`;
+
+        return `
+        <div class="ud-item"
+             data-name="${escHtml(u.full_name.toLowerCase())}"
+             data-uid="${escHtml(u.user_id.toLowerCase())}"
+             data-status="${escHtml(u.status.toLowerCase())}">
+            <div class="ud-card">
+                <div class="ud-uid-block">
+                    <div class="ud-avatar">${escHtml(getInitials(u.full_name))}</div>
+                    <div class="ud-uid-text">${escHtml(u.user_id)}</div>
+                </div>
+                <div class="ud-info">
+                    <div class="ud-info-item">
+                        <span class="ud-info-label">Full Name</span>
+                        <span class="ud-info-value">${escHtml(u.full_name)}</span>
+                    </div>
+                    <div class="ud-info-item">
+                        <span class="ud-info-label">Username</span>
+                        <span class="ud-info-value">@${escHtml(u.username)}</span>
+                    </div>
+                    <div class="ud-info-item">
+                        <span class="ud-info-label">Email</span>
+                        <span class="ud-info-value">${escHtml(u.email)}</span>
+                    </div>
+                    <div class="ud-info-item">
+                        <span class="ud-info-label">Status</span>
+                        <span class="ud-info-value">${statusBadge}</span>
+                    </div>
+                </div>
+                <button class="ud-details-btn"
+                        data-uid="${escHtml(u.user_id)}"
+                        data-name="${escHtml(u.full_name)}">
+                    <i class="bi bi-person-lines-fill me-1"></i>View Details
+                </button>
+            </div>
+        </div>`;
+    }
+
+    /* ── Render filtered subset ───────────────────────────────── */
+    function applyFilters() {
+        const items = grid.querySelectorAll(".ud-item");
+        let shown = 0;
+
+        items.forEach(function (item) {
+            const name   = item.dataset.name   || "";
+            const uid    = item.dataset.uid    || "";
+            const status = item.dataset.status || "";
+
+            const filterMatch = (currentFilter === "all") || (status === currentFilter);
+            const searchMatch = !currentSearch ||
+                                name.includes(currentSearch) ||
+                                uid.includes(currentSearch);
+
+            item.style.display = (filterMatch && searchMatch) ? "" : "none";
+            if (filterMatch && searchMatch) shown++;
+        });
+
+        if (shownBadge) shownBadge.textContent = shown;
+        if (emptyState) {
+            emptyState.style.display = (shown === 0) ? "block" : "none";
+        }
+    }
+
+    /* ── Fetch users from API on load ────────────────────────── */
+    async function loadUsers() {
+        try {
+            const res  = await fetch('/api/admin/users');
+            const data = await res.json();
+
+            const loading = document.getElementById("ud-loading");
+            if (loading) loading.remove();
+
+            if (data.status !== "SUCCESS") throw new Error(data.message || "API error");
+
+            allUsers = data.users || [];
+            const total = data.total || allUsers.length;
+
+            // Update counters
+            const totalEl       = document.getElementById("ud-total-count");
+            const totalInlineEl = document.getElementById("ud-total-inline");
+            if (totalEl)       totalEl.textContent       = total;
+            if (totalInlineEl) totalInlineEl.textContent = total;
+
+            if (allUsers.length === 0) {
+                grid.innerHTML = `
+                    <div style="text-align:center; padding:4rem 1rem; color:var(--text-muted);">
+                        <div style="font-size:3.5rem; margin-bottom:1rem; opacity:0.4;">📭</div>
+                        <p class="fw-bold text-bright mb-1">No user data available</p>
+                        <p style="font-size:0.9rem;">users.dat may be missing or empty.</p>
+                    </div>`;
+                return;
+            }
+
+            grid.innerHTML = allUsers.map(buildUserCard).join('');
+            if (shownBadge) shownBadge.textContent = allUsers.length;
+            applyFilters();
+
+        } catch (err) {
+            console.error("loadUsers error:", err);
+            const loading = document.getElementById("ud-loading");
+            if (loading) loading.remove();
+            grid.innerHTML = `
+                <div style="text-align:center; padding:4rem 1rem; color:var(--danger);">
+                    <i class="bi bi-exclamation-triangle" style="font-size:2.5rem;"></i>
+                    <p class="fw-bold mt-2 mb-1">Data Load Failed</p>
+                    <p style="font-size:0.85rem;">Could not reach /api/admin/users.</p>
+                </div>`;
+        }
+    }
+
+    window.addEventListener("load", loadUsers);
+
+    /* ── Search (debounced 300ms) ─────────────────────────────── */
+    let searchTimer = null;
+    if (searchInput) {
+        searchInput.addEventListener("input", function () {
+            clearTimeout(searchTimer);
+            
+            searchTimer = setTimeout(async function () {
+                const query = searchInput.value.trim();
+
+                // 1. If search is cleared, reload the full list from C
+                if (query === "") {
+                    await loadUsers();
+                    return;
+                }
+
+                // 2. Show loading spinner while C binary runs
+                grid.innerHTML = `
+                    <div style="text-align:center; padding:3rem; color:var(--text-muted);">
+                        <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                        Searching database...
+                    </div>`;
+                // Force empty state to hide while loading
+                if (emptyState) emptyState.style.display = "none";
+
+                // 3. Call the Python API which runs users.exe search_users
+                try {
+                    const res = await fetch(`/api/admin/users/search?query=${encodeURIComponent(query)}`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const data = await res.json();
+                    
+                    if (data.status === "SUCCESS") {
+                        // Replace the master list with the search results
+                        allUsers = data.users || [];
+                        
+                        // Re-render the cards
+                        grid.innerHTML = allUsers.map(buildUserCard).join('');
+                        
+                        // Re-apply Active/Inactive tabs to trigger the empty state if 0 results
+                        applyFilters(); 
+                    } else {
+                        // Throw the EXACT message sent by the C backend
+                        throw new Error(data.message || "User not found.");
+                    }
+                } catch (err) {
+                    console.error("Backend search error:", err);
+                    
+                    // Display the backend's error message instead of a generic one
+                    grid.innerHTML = `
+                        <div style="text-align:center; padding:3rem; color:var(--danger);">
+                            <i class="bi bi-exclamation-triangle" style="font-size:2rem;"></i>
+                            <p class="mt-2 fw-bold mb-1">Search Failed</p>
+                            <p style="font-size:0.9rem; color:var(--text-muted);">${err.message}</p>
+                        </div>`;
+                }
+            }, 300); // Wait 300ms after user stops typing before hitting the backend
+        });
+    }
+
+    /* ── Filter tab buttons ───────────────────────────────────── */
+    document.querySelectorAll(".ud-filter-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            document.querySelectorAll(".ud-filter-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentFilter = btn.dataset.filter || "all";
+            applyFilters();
+        });
+    });
+
+    /* ── buildProfileHTML + modal logic (unchanged) ───────────── */
+    function buildProfileHTML(user) {
+        const rows = [
+            { label: "User ID",  value: user.user_id,              mono: true  },
+            { label: "Username", value: "@" + user.username                    },
+            { label: "Email",    value: user.email                             },
+            { label: "Phone",    value: user.phone                             },
+            { label: "Address",  value: formatAddress(user.address), html: true },
+            { label: "Status",   value: user.status,               badge: true },
+        ];
+
+        let html = "";
+        rows.forEach(function (row) {
+            let valHTML;
+            if (row.badge) {
+                const isActive = (row.value || "").toLowerCase() === "active";
+                const cls = isActive ? "ud-status-badge ud-status-active"
+                                     : "ud-status-badge ud-status-inactive";
+                valHTML = `<span class="${cls}">${escHtml(row.value)}</span>`;
+            } else if (row.mono) {
+                valHTML = `<span class="ud-profile-value mono">${escHtml(row.value)}</span>`;
+            } else if (row.html) {
+                valHTML = `<span class="ud-profile-value">${row.value || "—"}</span>`;
+            } else {
+                valHTML = `<span class="ud-profile-value">${escHtml(row.value || "—")}</span>`;
+            }
+            html += `
+                <div class="ud-profile-row">
+                    <span class="ud-profile-label">${escHtml(row.label)}</span>
+                    ${valHTML}
+                </div>`;
+        });
+        return html;
+    }
+
+    const udModal     = new bootstrap.Modal(document.getElementById("ud-modal"));
+    const modalBody   = document.getElementById("modal-body");
+    const modalName   = document.getElementById("modal-name");
+    const modalUidSub = document.getElementById("modal-uid-sub");
+    const modalAvatar = document.getElementById("modal-avatar");
+
+    if (grid) {
+        grid.addEventListener("click", async function (e) {
+            const btn = e.target.closest(".ud-details-btn");
+            if (!btn) return;
+
+            const uid  = btn.dataset.uid  || "";
+            const name = btn.dataset.name || "User";
+
+            if (modalName)   modalName.textContent  = name;
+            if (modalUidSub) modalUidSub.textContent = uid;
+            if (modalAvatar) modalAvatar.textContent = getInitials(name);
+
+            if (modalBody) {
+                modalBody.innerHTML = `
+                    <div class="ud-modal-spinner">
+                        <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                        Loading profile…
+                    </div>`;
+            }
+
+            udModal.show();
+
+            try {
+                const res  = await fetch(`/api/admin/users/${encodeURIComponent(uid)}`, {
+                    method:  "GET",
+                    headers: { "Content-Type": "application/json" }
+                });
+                const data = await res.json();
+
+                if (data.status === "SUCCESS" && data.user) {
+                    if (modalBody) modalBody.innerHTML = buildProfileHTML(data.user);
+                } else {
+                    if (modalBody) modalBody.innerHTML = `
+                        <div class="text-center py-3" style="color:var(--danger);">
+                            <i class="bi bi-exclamation-triangle me-1"></i>
+                            ${escHtml(data.message || "Could not load profile.")}
+                        </div>`;
+                }
+            } catch (err) {
+                if (modalBody) modalBody.innerHTML = `
+                    <div class="text-center py-3" style="color:var(--danger);">
+                        <i class="bi bi-wifi-off me-1"></i>
+                        Data Load Failed — network error.
+                    </div>`;
+                console.error("User detail fetch error:", err);
+            }
+        });
+    }
+
+})();
+</script>
+{% endblock %}

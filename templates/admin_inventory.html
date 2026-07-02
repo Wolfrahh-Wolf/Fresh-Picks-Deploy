@@ -1,0 +1,1294 @@
+{% extends "base.html" %}
+
+{% block title %}Inventory Manager{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ══════════════════════════════════════════════════════════════════
+   ADMIN INVENTORY — Shop-style layout
+   Two-column: sidebar (categories) + main content (cards)
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Two-column page layout ─────────────────────────────────────── */
+.inv-layout {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+}
+
+/* ── LEFT SIDEBAR ───────────────────────────────────────────────── */
+.inv-sidebar {
+    width: 210px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 80px;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 0.75rem 0.6rem;
+}
+
+/* Sidebar search */
+.inv-sidebar-search-wrap {
+    position: relative;
+    margin-bottom: 0.85rem;
+}
+.inv-sidebar-search-icon {
+    position: absolute;
+    left: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    pointer-events: none;
+}
+.inv-sidebar-search {
+    width: 100%;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    padding: 0.4rem 0.65rem 0.4rem 1.85rem;
+    outline: none;
+    transition: border-color var(--transition);
+}
+.inv-sidebar-search:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(0,122,204,0.15);
+}
+
+/* Sidebar category label */
+.inv-sidebar-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    padding: 0 0.4rem 0.45rem;
+    text-transform: uppercase;
+}
+
+/* Sidebar category pill buttons */
+.inv-sidebar-cat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.42rem 0.65rem;
+    margin-bottom: 2px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    font-size: 0.83rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: background var(--transition), color var(--transition);
+}
+.inv-sidebar-cat:hover {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+}
+.inv-sidebar-cat.active {
+    background: rgba(0,122,204,0.14);
+    color: var(--accent-hover);
+    font-weight: 600;
+}
+.inv-sidebar-cat .inv-scat-icon {
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    opacity: 0.65;
+}
+.inv-sidebar-cat.active .inv-scat-icon { opacity: 1; color: var(--accent); }
+.inv-scat-name { flex: 1; }
+.inv-scat-count {
+    font-size: 0.68rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.1em 0.5em;
+    min-width: 1.4rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+.inv-sidebar-cat.active .inv-scat-count {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+/* Sidebar divider before promo section */
+.inv-sidebar-divider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 0.5rem 0.4rem;
+}
+
+/* ── MAIN CONTENT AREA ──────────────────────────────────────────── */
+.inv-main { flex: 1; min-width: 0; }
+
+/* ── Category section headers (match shop page) ─────────────────── */
+.inv-cat-header {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    margin-top: 1rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    user-select: none;
+    transition: background var(--transition), box-shadow var(--transition);
+}
+.inv-cat-header:hover {
+    background: var(--bg-surface);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.inv-cat-title {
+    flex: 1;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-transform: capitalize;
+    letter-spacing: 0.02em;
+}
+.inv-cat-count {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.1em 0.55em;
+    border-radius: 10px;
+    min-width: 1.5rem;
+    text-align: center;
+}
+.inv-cat-chevron {
+    font-size: 0.85rem;
+    color: var(--accent);
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    flex-shrink: 0;
+}
+.inv-cat-chevron.open { transform: rotate(180deg); }
+.inv-cat-wrap {
+    overflow: hidden;
+    transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.28s ease;
+    max-height: 0;
+    opacity: 0;
+}
+.inv-cat-wrap.expanded {
+    max-height: 9999px;
+    opacity: 1;
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+}
+
+/* ── Product card: neutral border default, accent on hover ───────── */
+.inv-card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: box-shadow var(--transition), transform var(--transition),
+                border-color var(--transition);
+    animation: fadeIn 0.35s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.inv-card:hover {
+    border-color: var(--accent) !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+    transform: translateY(-2px);
+}
+.inv-card-wrap { position: relative; height: 100%; }
+
+/* ── Card image ─────────────────────────────────────────────────── */
+.inv-card-img-wrap {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--bg-elevated);
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+}
+.inv-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+}
+.inv-card:hover .inv-card-img { transform: scale(1.04); }
+.inv-img-placeholder {
+    font-size: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: var(--text-muted);
+    background: var(--bg-elevated);
+}
+
+/* Promo/category tag badge (top-right of image) */
+.promo-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(0,122,204,0.18);
+    border: 1px solid rgba(0,122,204,0.45);
+    color: #5bb8ff;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    padding: 0.2em 0.55em;
+    border-radius: 4px;
+    text-transform: uppercase;
+    z-index: 1;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+/* Category badge on veg cards */
+.inv-cat-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 0.2em 0.55em;
+    border-radius: 4px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    z-index: 1;
+}
+
+/* ── Stock bar (below image, above card body) ────────────────────── */
+.stock-bar-wrap {
+    padding: 0.45rem 0.85rem 0.3rem;
+    background: var(--bg-surface);
+}
+.stock-bar-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.2rem;
+}
+.stock-bar-track { height: 5px; background: var(--bg-elevated); border-radius: 3px; overflow: hidden; }
+.stock-bar-fill  { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease, background 0.3s ease; }
+.stock-bar-fill.low-stock { background: var(--danger); }
+
+/* ── Card body ──────────────────────────────────────────────────── */
+.inv-card-body {
+    padding: 0.8rem 0.85rem 0.85rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.inv-item-name {
+    font-weight: 600;
+    font-size: 0.93rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.1rem;
+}
+.inv-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 0.55rem;
+}
+.inv-item-category { font-size: 0.72rem; color: var(--text-muted); }
+.inv-id-badge {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+/* ── Field rows (price / stock / validity inputs) ────────────────── */
+.field-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.45rem;
+}
+.field-row label {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    width: 48px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+.field-input {
+    flex: 1;
+    background: var(--bg-elevated) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius) !important;
+    font-size: 0.83rem;
+    padding: 0.28rem 0.5rem;
+    transition: border-color var(--transition);
+    min-width: 0;
+}
+.field-input:focus {
+    border-color: var(--accent) !important;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0,122,204,0.18) !important;
+}
+.field-input[readonly] { opacity: 0.5; cursor: default; }
+.field-unit { font-size: 0.72rem; color: var(--text-muted); flex-shrink: 0; }
+
+/* ── Validity quick-select buttons ──────────────────────────────── */
+.validity-btns { display: flex; gap: 0.3rem; margin-bottom: 0.5rem; }
+.validity-btn {
+    flex: 1;
+    font-size: 0.73rem;
+    padding: 0.22rem 0;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+.validity-btn:hover { border-color: var(--accent); color: var(--accent-hover); }
+.validity-btn.active {
+    background: rgba(0,122,204,0.15);
+    border-color: var(--accent);
+    color: var(--accent-hover);
+    font-weight: 600;
+}
+
+/* ── Refill button ──────────────────────────────────────────────── */
+.btn-refill {
+    width: 100%;
+    font-size: 0.8rem;
+    padding: 0.38rem;
+    background: rgba(0,122,204,0.1);
+    border: 1px solid var(--accent);
+    color: var(--accent-hover);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all var(--transition);
+    font-weight: 600;
+    margin-top: auto;
+}
+.btn-refill:hover {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(0,122,204,0.35);
+}
+
+/* ── Saving indicator dot ───────────────────────────────────────── */
+.saving-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 0.8s infinite alternate;
+    margin-left: 0.3rem;
+    vertical-align: middle;
+}
+
+/* ── Toast notifications ─────────────────────────────────────────── */
+.fp-toast {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1rem;
+    border-radius: var(--radius);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    font-size: 0.84rem;
+    color: var(--text-primary);
+    animation: slideInRight 0.25s ease;
+    min-width: 220px;
+}
+.fp-toast.success { border-left-color: var(--success); color: var(--success); }
+.fp-toast.error   { border-left-color: var(--danger);  color: var(--danger);  }
+
+/* ── Category section hidden by sidebar filter ───────────────────── */
+.inv-cat-section.inv-hidden { display: none !important; }
+
+/* ── Responsive: Tablet ─────────────────────────────────────────── */
+@media (max-width: 1024px) {
+    .inv-sidebar { width: 175px; }
+    .inv-layout  { gap: 0.85rem; }
+}
+
+/* ── Responsive: Mobile ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .inv-layout { flex-direction: column; }
+    .inv-sidebar {
+        width: 100%;
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+    }
+    .inv-sidebar-cats { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .inv-sidebar-cat  { width: auto; padding: 0.3rem 0.6rem; font-size: 0.78rem; }
+    .container-fluid.px-4 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+    #toastContainer { position: fixed; bottom: 1rem; left: 1rem; right: 1rem; z-index: 9999; }
+    .fp-toast { min-width: 0; width: 100%; }
+    .field-row label { width: 40px; }
+    .section-header { flex-wrap: wrap; gap: 0.4rem; }
+}
+</style>
+{% endblock %}
+
+{# ══════════════════════════════════════════════════════════════
+   MAIN CONTENT BLOCK
+   base.html wraps this in <main class="fade-in">...</main>,
+   so no <main> tag is needed here.
+   ══════════════════════════════════════════════════════════════ #}
+{% block content %}
+<div class="container-fluid px-4">
+
+    {# ── Admin quick-nav strip (Dashboard / Orders / admin name / Logout) ── #}
+    <div class="d-flex align-items-center gap-2 pt-3 pb-2 border-bottom mb-3"
+         style="border-color: var(--border-color) !important;">
+
+        <a href="/admin/dashboard" class="btn btn-sm"
+           style="background:var(--bg-elevated); border:1px solid var(--border-color); color:var(--text-muted); font-size:0.8rem;">
+            <i class="bi bi-speedometer2 me-1"></i>Dashboard
+        </a>
+
+        <a href="/admin/orders" class="btn btn-sm"
+           style="background:var(--bg-elevated); border:1px solid var(--border-color); color:var(--text-muted); font-size:0.8rem;">
+            <i class="bi bi-list-check me-1"></i>Orders
+        </a>
+
+        {# Active page indicator #}
+        <span class="btn btn-sm disabled"
+              style="background:rgba(0,122,204,0.12); border:1px solid var(--accent); color:var(--accent-light); font-size:0.8rem; cursor:default;">
+            <i class="bi bi-boxes me-1"></i>Inventory
+        </span>
+
+        <span class="ms-auto text-muted pe-1" style="font-size:0.8rem;">
+            <i class="bi bi-shield-check me-1" style="color:var(--accent);"></i>
+            {{ admin_name }}
+        </span>
+
+        <a href="/logout" id="invLogoutLink"
+           style="font-size:0.8rem; color:var(--danger) !important;"
+           class="nav-link">
+            <i class="bi bi-box-arrow-right me-1"></i>Logout
+        </a>
+    </div>
+
+    {# ── Page title row ── #}
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+        <div>
+            <h4 class="mb-0">
+                <i class="bi bi-boxes me-2 text-accent"></i>Inventory Manager
+            </h4>
+            <p class="text-muted mb-0" style="font-size: 0.82rem;">
+                Edit stock, prices, and validity — changes sync instantly.
+            </p>
+        </div>
+        <span class="text-muted" style="font-size: 0.78rem;" id="pageTimestamp"></span>
+    </div>
+
+    <div class="inv-layout">
+
+        {# ── LEFT SIDEBAR ── #}
+        <aside class="inv-sidebar">
+            <div class="inv-sidebar-search-wrap">
+                <i class="bi bi-search inv-sidebar-search-icon"></i>
+                <input type="text" class="inv-sidebar-search"
+                    id="invSidebarSearch" placeholder="Search...">
+            </div>
+            <div class="inv-sidebar-label">Categories</div>
+            <div id="invSidebarCats">
+                {# Populated by JS after inventory data loads #}
+            </div>
+            <hr class="inv-sidebar-divider">
+            <button class="inv-sidebar-cat active" data-cat="__promo__"
+                    onclick="invFilterCat(this,'__promo__')">
+                <i class="bi bi-gift inv-scat-icon"></i>
+                <span class="inv-scat-name">Freebies</span>
+            </button>
+        </aside>
+
+        {# ── MAIN CONTENT ── #}
+        <div class="inv-main">
+
+            {# ── Section A: Vegetables ── #}
+            <div class="section-header">
+                <i class="bi bi-basket2 text-accent"></i>
+                <h5>Vegetables</h5>
+                <span class="count-pill" id="veg-count">…</span>
+            </div>
+
+            <div id="vegContainer">
+                <div class="empty-state mb-5" id="veg-loading">
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    Loading inventory…
+                </div>
+            </div>
+
+            {# ── Section B: Promotional Freebies ── #}
+            <div class="section-header" id="promoSectionHeader" style="margin-top: 2rem;">
+                <i class="bi bi-gift text-accent"></i>
+                <h5>Promotional Freebies</h5>
+                <span class="count-pill" id="promo-count">…</span>
+                <span class="section-note">Stock updates only — trigger &amp; qty set by business team</span>
+            </div>
+
+            <div id="promoContainer" class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 mb-5">
+                <div class="col" id="promo-loading">
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    Loading…
+                </div>
+            </div>
+
+        </div>{# END .inv-main #}
+
+    </div>{# END .inv-layout #}
+
+
+</div><!-- END container-fluid -->
+
+{# Toast container (populated dynamically by JS below) #}
+<div id="toastContainer"></div>
+{% endblock %}
+
+
+{# ══════════════════════════════════════════════════════════════
+   INVENTORY JS BLOCK
+   Placed in extra_scripts so it lands after Bootstrap's bundle
+   (already loaded by base.html) — guarantees no load-order issues.
+   ══════════════════════════════════════════════════════════════ #}
+{% block extra_scripts %}
+
+<script>
+/* ════════════════════════════════════════════════════════════════
+   FRESH PICKS — Admin Inventory JS
+   ─────────────────────────────────────────────────────────────
+   Functions:
+   1. scheduleUpdate()  — debounced save on field change (800ms)
+   2. doRefill()        — instant +5000g, fires PATCH immediately
+   3. setValidity()     — quick-select 3 / 5 / 7 days
+   4. postUpdate()      — fetch() PATCH to /api/products/<veg_id> or
+                          /api/promo-items/<vf_id>
+   5. updateStockBar()  — re-renders progress bar after save
+   6. showDot()         — shows/hides pulsing saving indicator
+   7. showToast()       — bottom-right notification
+   8. toggleInvCat()    — collapses/expands a category section
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Timestamps ── */
+document.getElementById('pageTimestamp').textContent =
+    'Loaded: ' + new Date().toLocaleTimeString();
+
+
+/* ════════════════════════════════════════════════════════════════
+   DEBOUNCE TIMER MAP
+   Each item id gets its own 800ms timer.
+   ════════════════════════════════════════════════════════════════ */
+const debounceTimers = {};
+
+/* ════════════════════════════════════════════════════════════════
+   loadInventoryData()
+   Fetches /api/admin/inventory on page load and builds both
+   the grouped vegetable grid and the promo freebies grid via
+   template literals.  All button IDs are attached to dynamic HTML
+   so doRefill(), scheduleUpdate(), setValidity() still work.
+   ════════════════════════════════════════════════════════════════ */
+window.onload = async function loadInventoryData() {
+    try {
+        const res = await fetch('/api/admin/inventory', {
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+        });
+        const data = await res.json();
+
+        if (data.status !== 'SUCCESS') throw new Error(data.message || 'API error');
+
+        // ── Vegetables: group by category ────────────────────────
+        const vegContainer = document.getElementById('vegContainer');
+        const vegs         = data.vegetables || [];
+        document.getElementById('veg-count').textContent = vegs.length;
+
+        if (vegs.length === 0) {
+            vegContainer.innerHTML = `
+                <div class="empty-state mb-5">
+                    <i class="bi bi-inbox"></i> No vegetables found in inventory.
+                </div>`;
+        } else {
+            // Build category → items map
+            const groups = {};
+            vegs.forEach(v => {
+                if (!groups[v.category]) groups[v.category] = [];
+                groups[v.category].push(v);
+            });
+
+            let html = '';
+            Object.entries(groups).forEach(([cat, items]) => {
+                const catId = cat.toLowerCase().replace(/\s+/g, '-');
+                html += `
+                <div class="inv-cat-section" data-cat="${catId}">
+                    <button class="inv-cat-header"
+                            id="inv-hdr-${catId}"
+                            type="button"
+                            aria-expanded="true"
+                            aria-controls="inv-wrap-${catId}"
+                            onclick="toggleInvCat('inv-hdr-${catId}','inv-wrap-${catId}')">
+
+                        <svg viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            style="width:15px;height:15px;color:var(--accent);flex-shrink:0;">
+                            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                            <line x1="7" y1="7" x2="7.01" y2="7"/>
+                        </svg>
+
+                        <span class="inv-cat-title">${escapeHtml(cat)}</span>
+
+                        <span class="inv-cat-count">${items.length}</span>
+
+                        <i class="bi bi-chevron-down inv-cat-chevron open"></i>
+                    </button>
+
+                    <div class="inv-cat-wrap expanded"
+                        id="inv-wrap-${catId}">
+                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
+                            ${items.map(v => buildVegCard(v)).join('')}
+                        </div>
+                    </div>
+                </div>`;
+            });
+            vegContainer.innerHTML = html;
+            buildSidebarCats(groups);
+        }
+
+        // ── Promo Freebies ────────────────────────────────────────
+        const promoContainer = document.getElementById('promoContainer');
+        const promos         = data.free_items || [];
+        document.getElementById('promo-count').textContent = promos.length;
+
+        if (promos.length === 0) {
+            promoContainer.innerHTML = `
+                <div class="col">
+                    <div class="empty-state mb-5">
+                        <i class="bi bi-inbox"></i> No promotional freebie items found.
+                    </div>
+                </div>`;
+        } else {
+            promoContainer.innerHTML = promos.map(fi => buildPromoCard(fi)).join('');
+        }
+
+    } catch (err) {
+        console.error('loadInventoryData error:', err);
+        const msg = `
+            <div class="empty-state mb-5" style="color:var(--danger);">
+                <i class="bi bi-exclamation-triangle"></i>
+                Data Load Failed — could not reach inventory API.
+            </div>`;
+        document.getElementById('vegContainer').innerHTML   = msg;
+        document.getElementById('promoContainer').innerHTML = `<div class="col">${msg}</div>`;
+        document.getElementById('veg-count').textContent    = '!';
+        document.getElementById('promo-count').textContent  = '!';
+    }
+};
+
+/* ── HTML escape helper ─────────────────────────────────────── */
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ════════════════════════════════════════════════════════════════
+   SIDEBAR — Category population + filter
+   Called after loadInventoryData() renders cards.
+   ════════════════════════════════════════════════════════════════ */
+
+/**
+ * buildSidebarCats(groups)
+ * groups = { categoryName: [items...], ... }
+ * Populates #invSidebarCats with pill buttons.
+ */
+function buildSidebarCats(groups) {
+    const wrap = document.getElementById('invSidebarCats');
+    if (!wrap) return;
+
+    const totalVeg = Object.values(groups).reduce((s, a) => s + a.length, 0);
+
+    let html = `
+    <button class="inv-sidebar-cat active" data-cat="all"
+            onclick="invFilterCat(this,'all')">
+        <i class="bi bi-grid-fill inv-scat-icon"></i>
+        <span class="inv-scat-name">All</span>
+        <span class="inv-scat-count">${totalVeg}</span>
+    </button>`;
+
+    Object.entries(groups).forEach(([cat, items]) => {
+        const catId = cat.toLowerCase().replace(/\s+/g, '-');
+        html += `
+    <button class="inv-sidebar-cat" data-cat="${escapeHtml(catId)}"
+            onclick="invFilterCat(this,'${escapeHtml(catId)}')">
+        <i class="bi bi-tag inv-scat-icon"></i>
+        <span class="inv-scat-name">${escapeHtml(cat)}</span>
+        <span class="inv-scat-count">${items.length}</span>
+    </button>`;
+    });
+
+    wrap.innerHTML = html;
+}
+
+/**
+ * invFilterCat(btn, catId)
+ * Highlights the sidebar pill and shows/hides category sections.
+ * catId === 'all'      → show everything
+ * catId === '__promo__'→ hide veg sections, show promo section
+ * catId === 'allium'   → show only that veg category section
+ */
+function invFilterCat(btn, catId) {
+    /* Update active state on all sidebar pills */
+    document.querySelectorAll('.inv-sidebar-cat').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const vegWrap    = document.getElementById('vegContainer');
+    const promoWrap  = document.getElementById('promoContainer');
+    const promoHdr   = document.getElementById('promoSectionHeader');
+
+    if (catId === '__promo__') {
+        /* Show only promo section */
+        if (vegWrap)   vegWrap.style.display  = 'none';
+        if (promoWrap) promoWrap.style.display = '';
+        if (promoHdr)  promoHdr.style.display  = '';
+        document.querySelectorAll('.inv-cat-section').forEach(s => s.style.display = 'none');
+    } else {
+        /* Show veg section, hide promo section */
+        if (vegWrap)   vegWrap.style.display  = '';
+        if (promoWrap) promoWrap.style.display = 'none';
+        if (promoHdr)  promoHdr.style.display  = 'none';
+
+        document.querySelectorAll('.inv-cat-section').forEach(s => {
+            s.style.display = (catId === 'all' || s.dataset.cat === catId) ? '' : 'none';
+        });
+    }
+}
+
+/**
+ * invSidebarSearch(query)
+ * Filters sidebar category pills by name.
+ */
+document.getElementById('invSidebarSearch')?.addEventListener('input', function () {
+    const q = this.value.toLowerCase().trim();
+    document.querySelectorAll('.inv-sidebar-cat').forEach(btn => {
+        const name = btn.querySelector('.inv-scat-name')?.textContent.toLowerCase() || '';
+        btn.style.display = (!q || name.includes(q)) ? '' : 'none';
+    });
+});
+
+/* ── buildVegCard(v) ────────────────────────────────────────── */
+function buildVegCard(v) {
+    const pct      = Math.min((v.stock_g / 100000) * 100, 100).toFixed(1);
+    const lowClass = v.stock_g < 5000 ? 'low-stock' : '';
+    const stockLbl = v.stock_g >= 1000
+        ? `${(v.stock_g / 1000).toFixed(1)} kg`
+        : `${v.stock_g} g`;
+    const days = [3, 5, 7];
+
+    return `
+    <div class="col">
+        <div class="inv-card-wrap">
+            <div class="inv-card" id="veg-card-${v.veg_id}"
+                 data-id="${v.veg_id}" data-type="vegetable">
+
+                <div class="inv-card-img-wrap">
+                    <img src="/static/product_images/${escapeHtml(v.veg_id)}.jpeg"
+                         alt="${escapeHtml(v.name)}" class="inv-card-img"
+                         onerror="this.onerror=null;this.parentNode.innerHTML='<div class=\\'inv-img-placeholder\\'>🥬</div>';">
+                </div>
+
+                <div class="stock-bar-wrap">
+                    <div class="stock-bar-label">
+                        <span>Stock</span>
+                        <span id="bar-label-${v.veg_id}">${stockLbl}</span>
+                    </div>
+                    <div class="stock-bar-track">
+                        <div class="stock-bar-fill ${lowClass}"
+                             id="bar-fill-${v.veg_id}"
+                             style="width:${pct}%"></div>
+                    </div>
+                </div>
+
+                <div class="inv-card-body">
+                    <div class="inv-item-name">${escapeHtml(v.name)}</div>
+                    <div class="inv-item-category">${escapeHtml(v.category)}</div>
+                    <div class="inv-id-badge">
+                        ${escapeHtml(v.veg_id)}
+                        <span class="saving-dot d-none" id="dot-${v.veg_id}"></span>
+                    </div>
+
+                    <div class="field-row">
+                        <label for="price-${v.veg_id}">Price</label>
+                        <input type="number" class="field-input" id="price-${v.veg_id}"
+                               value="${v.price_per_1000g}" step="0.5" min="0.5"
+                               title="Price per 1 kg (₹)"
+                               onchange="scheduleUpdate('${v.veg_id}','vegetable')">
+                        <span class="field-unit">₹/kg</span>
+                    </div>
+
+                    <div class="field-row">
+                        <label for="stock-${v.veg_id}">Stock</label>
+                        <input type="number" class="field-input" id="stock-${v.veg_id}"
+                               value="${v.stock_g}" step="100" min="0"
+                               title="Stock in grams"
+                               onchange="scheduleUpdate('${v.veg_id}','vegetable')">
+                        <span class="field-unit">g</span>
+                    </div>
+
+                    <div class="field-row">
+                        <label for="validity-${v.veg_id}">Valid.</label>
+                        <input type="number" class="field-input" id="validity-${v.veg_id}"
+                               value="${v.validity_days}" step="1" min="1"
+                               title="Validity in days"
+                               onchange="scheduleUpdate('${v.veg_id}','vegetable')">
+                        <span class="field-unit">d</span>
+                    </div>
+
+                    <div class="validity-btns" id="vbtn-group-${v.veg_id}">
+                        ${days.map(d => `
+                        <button class="validity-btn ${v.validity_days === d ? 'active' : ''}"
+                                onclick="setValidity('${v.veg_id}',${d},'vegetable',this)">
+                            ${d}d
+                        </button>`).join('')}
+                    </div>
+
+                    <button class="btn-refill" id="refill-${v.veg_id}"
+                            onclick="doRefill('${v.veg_id}','vegetable')">
+                        <i class="bi bi-plus-circle me-1"></i>+5 Kg
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+/* ── buildPromoCard(fi) ─────────────────────────────────────── */
+function buildPromoCard(fi) {
+    const pct      = Math.min((fi.stock_g / 20000) * 100, 100).toFixed(1);
+    const lowClass = fi.stock_g < 5000 ? 'low-stock' : '';
+    const stockLbl = fi.stock_g >= 1000
+        ? `${(fi.stock_g / 1000).toFixed(1)} kg`
+        : `${fi.stock_g} g`;
+
+    return `
+    <div class="col">
+        <div class="inv-card-wrap">
+            <span class="promo-badge">FREE</span>
+            <div class="inv-card" id="veg-card-${fi.vf_id}"
+                 data-id="${fi.vf_id}" data-type="promo">
+
+                <div class="inv-card-img-wrap">
+                    <img src="/product_images/${escapeHtml(fi.vf_id)}.jpeg"
+                         alt="${escapeHtml(fi.name)}" class="inv-card-img"
+                         onerror="this.onerror=null;this.parentNode.innerHTML='<div class=\\'inv-img-placeholder\\'>🥬</div>';">
+                </div>
+
+                <div class="stock-bar-wrap">
+                    <div class="stock-bar-label">
+                        <span>Stock</span>
+                        <span id="bar-label-${fi.vf_id}">${stockLbl}</span>
+                    </div>
+                    <div class="stock-bar-track">
+                        <div class="stock-bar-fill ${lowClass}"
+                             id="bar-fill-${fi.vf_id}"
+                             style="width:${pct}%"></div>
+                    </div>
+                </div>
+
+                <div class="inv-card-body">
+                    <div class="inv-item-name">${escapeHtml(fi.name)}</div>
+                    <div class="inv-id-badge">
+                        ${escapeHtml(fi.vf_id)}
+                        <span class="saving-dot d-none" id="dot-${fi.vf_id}"></span>
+                    </div>
+
+                    <div class="field-row">
+                        <label for="stock-${fi.vf_id}">Stock</label>
+                        <input type="number" class="field-input" id="stock-${fi.vf_id}"
+                               value="${fi.stock_g}" step="100" min="0"
+                               title="Promo stock in grams"
+                               onchange="scheduleUpdate('${fi.vf_id}','promo')">
+                        <span class="field-unit">g</span>
+                    </div>
+
+                    <div class="field-row">
+                        <label>Trigger</label>
+                        <input type="text" class="field-input"
+                               value="₹${fi.min_trigger_amt}" readonly
+                               title="Minimum order amount to trigger freebie">
+                    </div>
+
+                    <div class="field-row">
+                        <label>Free Qty</label>
+                        <input type="text" class="field-input"
+                               value="${fi.free_qty_g}g" readonly
+                               title="Quantity given free per qualifying order">
+                    </div>
+
+                    <button class="btn-refill" id="refill-${fi.vf_id}"
+                            onclick="doRefill('${fi.vf_id}','promo')">
+                        <i class="bi bi-plus-circle me-1"></i>+5 Kg
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+/**
+ * scheduleUpdate(itemId, type)
+ * Called by onchange on price / stock / validity inputs.
+ * Waits 800ms of silence before posting to the server.
+ *
+ * @param {string} itemId - veg_id or vf_id
+ * @param {string} type   - 'vegetable' | 'promo'
+ */
+function scheduleUpdate(itemId, type) {
+    if (debounceTimers[itemId]) clearTimeout(debounceTimers[itemId]);
+
+    showDot(itemId, true);
+
+    debounceTimers[itemId] = setTimeout(() => {
+        postUpdate(itemId, type);
+    }, 800);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   postUpdate(itemId, type)
+   Reads current field values and PATCHes to the correct endpoint.
+     - Vegetables  → PATCH /api/products/<veg_id>
+     - Promo items → PATCH /api/promo-items/<vf_id>
+   Flask returns { status: 'success' | 'error', message: '...' }
+   ════════════════════════════════════════════════════════════════ */
+async function postUpdate(itemId, type) {
+    const stockVal    = parseInt(document.getElementById(`stock-${itemId}`)?.value)    || 0;
+    const priceVal    = parseFloat(document.getElementById(`price-${itemId}`)?.value)  || 0;
+    const validityVal = parseInt(document.getElementById(`validity-${itemId}`)?.value) || 1;
+
+    let endpoint, payload;
+
+    if (type === 'vegetable') {
+        endpoint = `/api/products/${encodeURIComponent(itemId)}`;
+        payload  = {
+            stock_g  : stockVal,
+            price    : priceVal,
+            validity : validityVal
+        };
+    } else {
+        endpoint = `/api/promo-items/${encodeURIComponent(itemId)}`;
+        payload  = {
+            stock_g : stockVal
+        };
+    }
+
+    try {
+        const res  = await fetch(endpoint, {
+            method : 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body   : JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (data.status === 'SUCCESS') {
+            updateStockBar(itemId, stockVal, type);
+            showToast(`${itemId} saved ✓`, 'success');
+        } else {
+            showToast(`Error: ${data.message}`, 'error');
+        }
+    } catch (err) {
+        showToast('Save failed — check server', 'error');
+        console.error('postUpdate error:', err);
+    } finally {
+        showDot(itemId, false);
+    }
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   doRefill(itemId, type)
+   Instantly adds 5000g (+5 Kg) to current stock.
+   Bypasses debounce — fires PATCH immediately.
+   ════════════════════════════════════════════════════════════════ */
+async function doRefill(itemId, type) {
+    const stockInput = document.getElementById(`stock-${itemId}`);
+    if (!stockInput) return;
+
+    const currentStock = parseInt(stockInput.value) || 0;
+    const newStock     = currentStock + 5000;
+    stockInput.value   = newStock;
+
+    /* Brief visual highlight on the refill button */
+    const btn = document.getElementById(`refill-${itemId}`);
+    if (btn) {
+        btn.style.background = 'var(--accent)';
+        btn.style.color      = '#fff';
+        setTimeout(() => {
+            btn.style.background = '';
+            btn.style.color      = '';
+        }, 600);
+    }
+
+    showDot(itemId, true);
+
+    /* Cancel any pending debounced save */
+    if (debounceTimers[itemId]) clearTimeout(debounceTimers[itemId]);
+
+    let endpoint, payload;
+
+    if (type === 'vegetable') {
+        const priceVal    = parseFloat(document.getElementById(`price-${itemId}`)?.value)  || 0;
+        const validityVal = parseInt(document.getElementById(`validity-${itemId}`)?.value) || 1;
+        endpoint = `/api/products/${encodeURIComponent(itemId)}`;
+        payload  = { stock_g: newStock, price: priceVal, validity: validityVal };
+    } else {
+        endpoint = `/api/promo-items/${encodeURIComponent(itemId)}`;
+        payload  = { stock_g: newStock };
+    }
+
+    try {
+        const res  = await fetch(endpoint, {
+            method : 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body   : JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (data.status === 'SUCCESS') {
+            updateStockBar(itemId, newStock, type);
+            showToast(`+5 Kg added to ${itemId} ✓`, 'success');
+        } else {
+            showToast(`Refill error: ${data.message}`, 'error');
+        }
+    } catch (err) {
+        showToast('Refill failed — check server', 'error');
+        console.error('doRefill error:', err);
+    } finally {
+        showDot(itemId, false);
+    }
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   setValidity(itemId, days, type, buttonEl)
+   Called when admin clicks a 3d / 5d / 7d quick-select button.
+   ════════════════════════════════════════════════════════════════ */
+function setValidity(itemId, days, type, buttonEl) {
+    const validityInput = document.getElementById(`validity-${itemId}`);
+    if (validityInput) validityInput.value = days;
+
+    const group = buttonEl.closest('.validity-btns');
+    if (group) {
+        group.querySelectorAll('.validity-btn').forEach(b => b.classList.remove('active'));
+    }
+    buttonEl.classList.add('active');
+
+    scheduleUpdate(itemId, type);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   updateStockBar(itemId, newStockG, type)
+   Re-renders the progress bar after a successful save.
+   ════════════════════════════════════════════════════════════════ */
+function updateStockBar(itemId, newStockG, type) {
+    const fill  = document.getElementById(`bar-fill-${itemId}`);
+    const label = document.getElementById(`bar-label-${itemId}`);
+    if (!fill || !label) return;
+
+    /* Reference max: 100,000g for vegetables, 20,000g for promos */
+    const maxG = (type === 'promo') ? 20000 : 100000;
+    const pct  = Math.min((newStockG / maxG) * 100, 100).toFixed(1);
+
+    fill.style.width = `${pct}%`;
+
+    if (newStockG < 5000) {
+        fill.classList.add('low-stock');
+    } else {
+        fill.classList.remove('low-stock');
+    }
+
+    label.textContent = newStockG >= 1000
+        ? `${(newStockG / 1000).toFixed(1)} kg`
+        : `${newStockG} g`;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   showDot / showToast — UI helpers
+   ════════════════════════════════════════════════════════════════ */
+
+/** Show or hide the pulsing saving dot on a card */
+function showDot(itemId, visible) {
+    const dot = document.getElementById(`dot-${itemId}`);
+    if (dot) dot.classList.toggle('d-none', !visible);
+}
+
+/**
+ * showToast(message, type)
+ * Creates a notification at bottom-right, auto-removes after 3s.
+ *
+ * @param {string} message - text to display
+ * @param {string} type    - 'success' | 'error'
+ */
+function showToast(message, type) {
+    const container = document.getElementById('toastContainer');
+
+    const toast  = document.createElement('div');
+    toast.className = `fp-toast ${type}`;
+
+    const icon = type === 'SUCCESS' ? 'bi-check-circle' : 'bi-exclamation-circle';
+    toast.innerHTML = `<i class="bi ${icon}"></i> ${message}`;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity    = '0';
+        toast.style.transition = 'opacity 0.3s';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   toggleInvCat(headerId, wrapId)
+   Toggles a category section open/closed.
+   All sections start expanded (set via .expanded + .open in HTML).
+   ════════════════════════════════════════════════════════════════ */
+function toggleInvCat(headerId, wrapId) {
+    const header  = document.getElementById(headerId);
+    const wrap    = document.getElementById(wrapId);
+    const chevron = header.querySelector('.inv-cat-chevron');
+    const isOpen  = wrap.classList.contains('expanded');
+    wrap.classList.toggle('expanded', !isOpen);
+    chevron.classList.toggle('open', !isOpen);
+    header.setAttribute('aria-expanded', String(!isOpen));
+}
+
+
+/* ── Inventory page logout: GET /logout -> POST /api/auth/logout ── */
+document.getElementById("invLogoutLink")?.addEventListener("click", async function (e) {
+    e.preventDefault();
+    try {
+        await fetch("/api/auth/logout", { method: "POST" });
+    } catch (err) {
+        console.warn("Logout request failed:", err);
+    } finally {
+        localStorage.removeItem("user_id");
+        localStorage.removeItem("role");
+        localStorage.removeItem("username");
+        window.location.href = "/";
+    }
+});
+
+/* ── ui-helpers.js — inlined (Category Grouping + Min-Order Bar) ── */
+
+function initCategoryGroups(containerSelector) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+    const cards = Array.from(container.querySelectorAll("[data-category]"));
+    if (cards.length === 0) return;
+    const catMap = new Map();
+    cards.forEach(card => {
+        const cat = card.getAttribute("data-category") || "Other";
+        if (!catMap.has(cat)) catMap.set(cat, []);
+        catMap.get(cat).push(card);
+    });
+    cards.forEach(c => c.remove());
+    let firstGroup = true;
+    catMap.forEach((groupCards, catName) => {
+        const group = document.createElement("div");
+        group.className = "category-group" + (firstGroup ? " expanded" : "");
+        const header = document.createElement("div");
+        header.className = "category-header";
+        header.innerHTML = `
+            <span>
+                <span class="cat-title">${catName}</span>
+                <span class="cat-count">(${groupCards.length})</span>
+            </span>
+            <i class="bi bi-chevron-down cat-chevron"></i>
+        `;
+        const body = document.createElement("div");
+        body.className = "category-body";
+        groupCards.forEach(c => body.appendChild(c));
+        group.appendChild(header);
+        group.appendChild(body);
+        container.appendChild(group);
+        if (firstGroup) {
+            setTimeout(() => { body.style.maxHeight = body.scrollHeight + "px"; }, 0);
+        }
+        header.addEventListener("click", () => {
+            const isExpanded = group.classList.contains("expanded");
+            if (isExpanded) {
+                body.style.maxHeight = body.scrollHeight + "px";
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => { body.style.maxHeight = "0"; });
+                });
+                group.classList.remove("expanded");
+            } else {
+                body.style.maxHeight = body.scrollHeight + "px";
+                group.classList.add("expanded");
+                body.addEventListener("transitionend", function handler() {
+                    if (group.classList.contains("expanded")) {
+                        body.style.maxHeight = body.scrollHeight + "px";
+                    }
+                    body.removeEventListener("transitionend", handler);
+                });
+            }
+        });
+        firstGroup = false;
+    });
+}
+
+function updateMinOrderBar(currentTotal, minTotal = 100) {
+    const fillEl   = document.getElementById("barFill");
+    const msgEl    = document.getElementById("barMsg");
+    const amountEl = document.getElementById("barAmount");
+    if (!fillEl) return;
+    const pct     = Math.min((currentTotal / minTotal) * 100, 100);
+    const reached = currentTotal >= minTotal;
+    fillEl.style.width = pct + "%";
+    if (reached) {
+        fillEl.classList.add("reached");
+        if (msgEl) { msgEl.textContent = "✔ Minimum order reached! You can place your order."; msgEl.classList.add("reached"); }
+    } else {
+        fillEl.classList.remove("reached");
+        const remaining = (minTotal - currentTotal).toFixed(2);
+        if (msgEl) { msgEl.textContent = `Add ₹${remaining} more to place an order.`; msgEl.classList.remove("reached"); }
+    }
+    if (amountEl) { amountEl.textContent = `₹${parseFloat(currentTotal).toFixed(2)}`; }
+}
+
+function initMinOrderBar(fillSelector, msgSelector, amountSelector, currentTotal, minTotal = 100) {
+    updateMinOrderBar(currentTotal, minTotal);
+}
+</script>
+{% endblock %}

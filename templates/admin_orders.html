@@ -1,0 +1,1070 @@
+{% extends "base.html" %}
+
+{% block title %}Admin — Orders | Fresh Picks{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ── Page-specific CSS extracted from dark-theme.css (admin_orders.html) ── */
+.btn-dispatch {
+    background-color: var(--accent);
+    color: var(--text-primary);
+}
+.btn-dispatch:not(:disabled):hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 122, 204, 0.35);
+}
+.btn-deliver {
+    background-color: var(--success);
+    color: var(--bg-main);
+}
+.btn-deliver:not(:disabled):hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.35);
+}
+.btn-pdf {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color) !important;
+}
+.btn-pdf:hover {
+    border-color: var(--accent) !important;
+    color: var(--accent-hover);
+    transform: translateY(-1px);
+}
+.clock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.3rem 0.75rem;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+.admin-quick-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+.admin-nav-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    text-decoration: none;
+    transition: color var(--transition), background-color var(--transition),
+                border-color var(--transition);
+}
+.admin-nav-link:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-elevated);
+    border-color: var(--accent);
+    text-decoration: none;
+}
+.admin-nav-link.active {
+    color: var(--accent-hover);
+    border-color: var(--accent);
+    background-color: rgba(0, 122, 204, 0.1);
+}
+.admin-nav-logout {
+    margin-left: auto;
+}
+.admin-nav-logout:hover {
+    color: var(--danger);
+    border-color: var(--danger);
+    background-color: rgba(244, 71, 71, 0.1);
+}
+.slot-morning {
+    background: rgba(40, 167, 69, 0.15);
+    border: 1px solid rgba(40, 167, 69, 0.35);
+}
+.slot-afternoon {
+    background: rgba(0, 122, 204, 0.15);
+    border: 1px solid rgba(0, 122, 204, 0.35);
+}
+.slot-evening {
+    background: rgba(204, 167, 0, 0.15);
+    border: 1px solid rgba(204, 167, 0, 0.35);
+}
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+.status-placed       .status-dot { background: var(--accent); }
+.status-out-delivery .status-dot { background: var(--warning); }
+.status-delivered    .status-dot { background: var(--success); }
+.badge-status-placed,
+.badge-status-out-delivery,
+.badge-status-delivered {
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 0.25em 0.6em;
+    border-radius: 4px;
+}
+.badge-status-placed {
+    background: rgba(0, 122, 204, 0.2);
+    color: var(--accent-hover);
+    border: 1px solid rgba(0, 122, 204, 0.4);
+}
+.badge-status-out-delivery {
+    background: rgba(204, 167, 0, 0.2);
+    color: var(--warning);
+    border: 1px solid rgba(204, 167, 0, 0.4);
+}
+.badge-status-delivered {
+    background: rgba(40, 167, 69, 0.2);
+    color: var(--success);
+    border: 1px solid rgba(40, 167, 69, 0.4);
+}
+.order-total {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--success);
+}
+.order-timestamp {
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+}
+.action-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+.order-card {
+    transition: opacity 5s ease, transform 5s ease;
+}
+.order-card.fading-out {
+    opacity: 0 !important;
+    transform: scale(0.97) !important;
+}
+.btn-delivered:hover,
+.btn-delivered:focus,
+.btn-delivered:focus-visible {
+    background-color: var(--success) !important;
+    color:            #fff           !important;
+    box-shadow:       0 0 10px rgba(40, 167, 69, 0.6) !important;
+    border-color:     var(--success) !important;
+    opacity:          0.92;
+}
+.badge-status-cancelled {
+    background: rgba(220, 53, 69, 0.15);
+    color:      #dc3545;
+    border:     1px solid rgba(220, 53, 69, 0.35);
+}
+.status-cancelled {
+    border-bottom: 2px solid var(--danger);
+}
+.status-cancelled .status-dot {
+    background: var(--danger);
+    box-shadow: 0 0 6px rgba(220, 53, 69, 0.5);
+}
+
+/* ── Responsive: Tablet (769px–1024px) ── */
+@media (max-width: 1024px) {
+    .admin-quick-nav { gap: 0.35rem; }
+    .clock-badge { font-size: 0.75rem; padding: 0.25rem 0.5rem; }
+}
+
+/* ── Responsive: Mobile (≤768px) ── */
+@media (max-width: 768px) {
+    .admin-nav-logout { margin-left: 0; }
+    .admin-quick-nav { gap: 0.3rem; }
+    .admin-nav-link { padding: 0.3rem 0.65rem; font-size: 0.8rem; }
+    .action-row .btn { font-size: 0.78rem; padding: 0.3rem 0.6rem; }
+    .clock-badge { width: 100%; justify-content: center; }
+    .welcome-banner .d-flex { flex-direction: column; align-items: flex-start !important; }
+    .order-card { margin-bottom: 0.5rem; }
+    .col-md-6 { width: 100%; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    {# ── Quick Nav ── #}
+    <div class="admin-quick-nav mb-4 fade-in">
+        <a href="/admin/dashboard"  class="admin-nav-link">
+            <i class="bi bi-speedometer2 me-1"></i>Dashboard
+        </a>
+        <a href="/admin/inventory"  class="admin-nav-link">
+            <i class="bi bi-box-seam me-1"></i>Inventory
+        </a>
+        <a href="/admin/orders"     class="admin-nav-link active">
+            <i class="bi bi-receipt me-1"></i>Orders
+        </a>
+        <a href="/logout" id="ordersLogoutLink" class="admin-nav-link admin-nav-logout">
+            <i class="bi bi-box-arrow-right me-1"></i>Logout
+        </a>
+    </div>
+
+    {# ── Page Header ── #}
+    <div class="welcome-banner fade-in mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h2>
+                    <i class="bi bi-boxes me-2" style="color:var(--accent);"></i>
+                    All Orders
+                </h2>
+                <p class="mb-0" id="statusMsg"
+                   style="color:var(--text-muted); font-size:0.85rem;">
+                    Loading orders…
+                </p>
+            </div>
+            <span class="clock-badge" id="clockBadge">
+                <i class="bi bi-clock me-1"></i>
+                <span id="clockDisplay">--:--:--</span>
+            </span>
+        </div>
+    </div>
+
+    {# ── Filter / Sort Bar ── #}
+    <div class="d-flex align-items-center gap-2 flex-wrap mb-3 fade-in" id="filterBar" style="display:none !important;">
+        <span class="text-muted" style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em;">Filter:</span>
+
+        <button class="btn btn-sm filter-btn active" data-filter="all"
+                onclick="applyFilter('all', this)">
+            <i class="bi bi-grid me-1"></i>All
+        </button>
+        <button class="btn btn-sm filter-btn" data-filter="Order Placed"
+                onclick="applyFilter('Order Placed', this)"
+                style="border-color:#cc7800; color:#cc7800;">
+            <i class="bi bi-hourglass-split me-1"></i>Order Placed
+        </button>
+        <button class="btn btn-sm filter-btn" data-filter="Out for Delivery"
+                onclick="applyFilter('Out for Delivery', this)"
+                style="border-color:var(--accent); color:var(--accent);">
+            <i class="bi bi-truck me-1"></i>Out for Delivery
+        </button>
+        <button class="btn btn-sm filter-btn" data-filter="Delivered"
+                onclick="applyFilter('Delivered', this)"
+                style="border-color:var(--success); color:var(--success);">
+            <i class="bi bi-check-circle me-1"></i>Delivered
+        </button>
+
+        <div class="ms-auto">
+            <button class="btn btn-sm" onclick="applySort()"
+                    style="border:1px solid var(--border-color); color:var(--text-muted);
+                           background:var(--bg-elevated);">
+                <i class="bi bi-sort-down me-1" id="sortIcon"></i>
+                <span id="sortLabel">Oldest First</span>
+            </button>
+        </div>
+    </div>
+
+    {# ── Order Cards Container ── #}
+    <div id="ordersContainer" class="row g-3">
+        <div class="col-12 text-center py-5" id="loadingPlaceholder">
+            <span class="spinner-sm"></span>
+            <span class="text-muted ms-2">Fetching orders…</span>
+        </div>
+    </div>
+
+</div>
+
+{# ════════════════════════════════════════════════════════════════
+   VIEW ITEMS MODAL
+   Populated by JS when "View Items" is clicked.
+   Uses the standard invoice format: PRODUCT | RATE | QTY | AMOUNT
+════════════════════════════════════════════════════════════════ #}
+<div class="modal fade" id="itemsModal" tabindex="-1"
+     aria-labelledby="itemsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content"
+             style="background:var(--bg-surface); border:1px solid var(--border-color);">
+            <div class="modal-header"
+                 style="border-bottom:1px solid var(--border-color);">
+                <h5 class="modal-title text-bright" id="itemsModalLabel">
+                    <i class="bi bi-receipt me-2" style="color:var(--accent);"></i>
+                    Order Items
+                </h5>
+                <button type="button" class="btn-close btn-close-white"
+                        data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="itemsModalBody">
+                {# Populated by buildItemsTable() #}
+            </div>
+            <div class="modal-footer"
+                 style="border-top:1px solid var(--border-color);">
+                <button class="btn btn-sm btn-action btn-dispatch"
+                        data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# ════════════════════════════════════════════════════════════════
+   OTP CANCELLATION MODAL
+   Shown as the second step of the cancel flow (after SweetAlert2 warn).
+════════════════════════════════════════════════════════════════ #}
+<div class="modal fade" id="otpModal" tabindex="-1"
+     aria-labelledby="otpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+        <div class="modal-content"
+             style="background:var(--bg-surface); border:1px solid var(--border-color);">
+            <div class="modal-header"
+                 style="border-bottom:1px solid var(--border-color);">
+                <h5 class="modal-title text-bright" id="otpModalLabel">
+                    <i class="bi bi-shield-lock me-2" style="color:var(--danger);"></i>
+                    Confirm Cancellation
+                </h5>
+                <button type="button" class="btn-close btn-close-white"
+                        data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted" style="font-size:0.85rem;">
+                    <strong style="color:var(--danger);">Cancellation Notice:</strong><br>
+                    A cancellation fee of <strong>₹50</strong> will be deducted from
+                    your paid amount. The remaining balance will be refunded to your
+                    original payment method within 2–3 working days. An email
+                    confirmation will be sent shortly.
+                </p>
+                <div class="mb-3">
+                    <label class="form-label text-muted"
+                           style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        Admin Cancellation OTP
+                    </label>
+                    <input type="text" id="otpInput" class="form-control"
+                           placeholder="0 0 0 0" maxlength="6"
+                           style="background:var(--bg-elevated); color:var(--text-bright);
+                                  border:1px solid var(--border-color); font-family:var(--font-mono);
+                                  letter-spacing:0.2em; font-size:1.2rem; text-align:center;">
+                    <div id="otpError" class="mt-1"
+                         style="color:var(--danger); font-size:0.78rem; display:none;">
+                        Incorrect OTP. Please try again.
+                    </div>
+                    <div id="otpStatus" class="mt-2"
+                         style="color:var(--text-muted); font-size:0.78rem;">
+                        We'll send the OTP to your registered admin email address.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer"
+                 style="border-top:1px solid var(--border-color);">
+                <button class="btn btn-sm btn-action"
+                        style="background:var(--bg-elevated);"
+                        data-bs-dismiss="modal">Back</button>
+                <button class="btn btn-sm btn-action"
+                        style="background:var(--bg-elevated); color:var(--accent);"
+                        onclick="resendAdminCancelOtp()">
+                    <i class="bi bi-arrow-repeat me-1"></i>Resend OTP
+                </button>
+                <button class="btn btn-sm btn-action"
+                        style="background:var(--danger); color:#fff; border:none;"
+                        id="otpConfirmBtn"
+                        onclick="confirmCancelWithOtp()">
+                    <i class="bi bi-x-circle me-1"></i>Confirm Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block extra_scripts %}
+
+<style>
+/* ── Shared Invoice Modal Table (mirrors Invoice Preview exactly) ──
+   Used by openItemsModal() in both user_orders.html and admin_orders.html.
+   Add to base.html or to each file's <style> block. */
+.fp-invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.fp-invoice-table thead tr {
+    background: var(--accent, #007acc);
+}
+.fp-invoice-table thead th {
+    padding: 9px 12px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.fp-invoice-table thead th:not(:first-child) { text-align: right; }
+.fp-invoice-table tbody tr:nth-child(even) { background: var(--bg-elevated); }
+.fp-invoice-table tbody tr:nth-child(odd)  { background: var(--bg-surface);  }
+.fp-invoice-table tbody td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    color: var(--text-bright);
+    vertical-align: middle;
+}
+.fp-invoice-table tbody td:not(:first-child) { text-align: right; }
+.fp-invoice-table tfoot td {
+    padding: 10px 12px;
+    border-top: 2px solid var(--border-color);
+    font-size: 0.88rem;
+}
+.fp-invoice-badge-free {
+    display: inline-block;
+    font-size: 0.62rem; font-weight: 700;
+    color: #28a745;
+    background: rgba(40,167,69,0.12);
+    border: 1px solid rgba(40,167,69,0.3);
+    border-radius: 3px;
+    padding: 1px 5px; margin-left: 5px;
+    vertical-align: middle; line-height: 1.4;
+}
+
+/* ── Filter bar buttons ── */
+.filter-btn {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    transition: all 0.2s ease;
+}
+.filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff !important;
+}
+
+</style>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════════
+   ADMIN ORDERS CONTROLLER
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Live Clock ──────────────────────────────────────────────────────── */
+function startClock() {
+    const tick = () => {
+        document.getElementById("clockDisplay").textContent =
+            new Date().toLocaleTimeString("en-IN", { hour12: false });
+    };
+    tick();
+    setInterval(tick, 1000);
+}
+
+/* ─── Global state for cancel flow ───────────────────────────────────── */
+let _pendingCancelOrderId = null;
+
+const _adminOrderMap = new Map();
+
+/* ─── FILTER + SORT STATE ────────────────────────────────────────────── */
+let _activeFilter = "all";
+let _sortAsc      = true;   // true = oldest first (min-heap order: lowest order ID first)
+
+function applyFilter(filter, clickedBtn) {
+    _activeFilter = filter;
+
+    /* Update button active state */
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    if (clickedBtn) clickedBtn.classList.add("active");
+
+    _renderVisible();
+}
+
+function applySort() {
+    _sortAsc = !_sortAsc;
+    document.getElementById("sortIcon").className  = _sortAsc
+        ? "bi bi-sort-down me-1"
+        : "bi bi-sort-up me-1";
+    document.getElementById("sortLabel").textContent = _sortAsc
+        ? "Oldest First"
+        : "Newest First";
+    _renderVisible();
+}
+
+function _renderVisible() {
+    const container = document.getElementById("ordersContainer");
+
+    /* Collect all orders from the map — Map preserves insertion order,
+       which matches the backend's slot-priority sort (Morning → Afternoon → Evening,
+       oldest timestamp first within each slot). */
+    let orders = [..._adminOrderMap.values()];
+
+    /* Filter */
+    if (_activeFilter !== "all") {
+        orders = orders.filter(o => o.status === _activeFilter);
+    }
+
+    /* Honour the user's sort toggle:
+         _sortAsc = true  → preserve backend order (slot-priority, oldest-first)
+         _sortAsc = false → reverse it ("Newest First" / Evening-last to first)       */
+    if (!_sortAsc) {
+        orders = orders.slice().reverse();
+    }
+
+    /* Rebuild cards */
+    container.innerHTML = "";
+    if (orders.length === 0) {
+        container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-funnel" style="font-size:2.5rem; color:var(--text-muted);"></i>
+                <p class="text-muted mt-3">No orders match this filter.</p>
+            </div>`;
+        return;
+    }
+    orders.forEach(order => container.appendChild(buildOrderCard(order)));
+}
+
+{% raw %}
+/* ─── CSS class maps ─────────────────────────────────────────────────── */
+const SLOT_CLASS = {
+    "Morning":   "slot-morning",
+    "Afternoon": "slot-afternoon",
+    "Evening":   "slot-evening"
+};
+
+const STATUS_BADGE = {
+    "Order Placed":     "badge-status-placed",
+    "Out for Delivery": "badge-status-out-delivery",
+    "Delivered":        "badge-status-delivered",
+    "Cancelled":        "badge-status-cancelled"
+};
+
+const STATUS_CSS = {
+    "Order Placed":     "status-placed",
+    "Out for Delivery": "status-out-delivery",
+    "Delivered":        "status-delivered",
+    "Cancelled":        "status-cancelled"
+};
+
+/* ─── ITEMS PARSER (4-part format) ─────────────────────────────────── */
+function parseItems(itemsArray) {
+    if (!Array.isArray(itemsArray)) return [];
+    return [...itemsArray].sort((a, b) => a.is_free - b.is_free).map(it => {
+        const qtyNum   = parseInt(it.qty_g)          || 0;
+        const priceNum = parseFloat(it.price_at_order) || 0;
+        const isFree   = !!it.is_free;
+        const qtyLabel = qtyNum >= 1000 ? `${(qtyNum/1000).toFixed(2)} kg` : `${qtyNum} g`;
+        const amount   = isFree ? 0 : (qtyNum / 1000) * priceNum;
+        return { id: it.item_id, name: it.name || it.item_id, qty: qtyLabel, priceNum, amount, isFree };
+    });
+}
+{% endraw %}
+
+/* ─── VIEW ITEMS MODAL ─────────────────────────────────────────────── */
+{% raw %}
+/* ─── VIEW ITEMS MODAL ────────────────────────────────────────────────
+   Reads order safely from _adminOrderMap (avoids special-char breakage
+   when items_string is passed inline through onclick attributes).
+   ─────────────────────────────────────────────────────────────────── */
+function openItemsModal(orderId) {
+    const order = _adminOrderMap.get(orderId);
+    if (!order) return;
+    const total = order.total_amount;
+    const items = parseItems(order.items || []);
+
+    const rows = items.length > 0
+        ? items.map(it => `
+            <tr>
+                <td>
+                    ${it.name}
+                    ${it.isFree ? `<span class="fp-invoice-badge-free">FREE</span>` : ""}
+                </td>
+                <td style="font-family:var(--font-mono); color:var(--text-muted);">
+                    ${it.isFree ? "&mdash;" : `₹${it.priceNum.toFixed(2)}/kg`}
+                </td>
+                <td style="font-family:var(--font-mono);">${it.qty}</td>
+                <td style="font-family:var(--font-mono);
+                           color:${it.isFree ? "var(--success)" : "var(--text-bright)"};">
+                    ${it.isFree ? "₹0.00" : `₹${it.amount.toFixed(2)}`}
+                </td>
+            </tr>`).join("")
+        : `<tr><td colspan="4"
+                  style="text-align:center; color:var(--text-muted); padding:14px;">
+               No items found.
+           </td></tr>`;
+
+    document.getElementById("itemsModalLabel").innerHTML =
+        `<i class="bi bi-receipt me-2" style="color:var(--accent);"></i>Items — ${orderId}`;
+
+    document.getElementById("itemsModalBody").innerHTML = `
+        <div class="table-responsive">
+            <table class="fp-invoice-table">
+                <thead>
+                    <tr>
+                        <th style="width:40%; text-align:left;">Product</th>
+                        <th style="width:20%;">Rate</th>
+                        <th style="width:15%;">Qty</th>
+                        <th style="width:25%;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" style="text-align:right; color:var(--text-muted);
+                                               font-size:0.82rem;">Grand Total</td>
+                        <td style="text-align:right; color:var(--accent); font-weight:700;
+                                   font-family:var(--font-mono); font-size:1rem;">
+                            ₹${parseFloat(total).toFixed(2)}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>`;
+
+    new bootstrap.Modal(document.getElementById("itemsModal")).show();
+}
+{% endraw %}
+
+{% raw %}
+/* ─── CANCEL FLOW — Step 1: SweetAlert2-style warning ─────────────── */
+/* We use a lightweight Bootstrap Modal as SweetAlert2 may not be loaded.
+   To use SweetAlert2 instead, replace the confirm() with Swal.fire(). */
+function initiateCancelOrder(orderId) {
+    _pendingCancelOrderId = orderId;
+
+    // Use native confirm as a guard (swap for Swal.fire if available)
+    const proceed = confirm(
+        `⚠ Cancel Order ${orderId}?\n\n` +
+        `A cancellation fee of ₹50 will be deducted from your paid amount.\n` +
+        `The remaining balance will be refunded within 2–3 working days.\n\n` +
+        `Proceed to enter the Admin OTP?`
+    );
+    if (!proceed) {
+        _pendingCancelOrderId = null;
+        return;
+    }
+
+    /* ─── Step 2: Show OTP modal ─── */
+    const otpInput = document.getElementById("otpInput");
+    const otpError = document.getElementById("otpError");
+    const otpStatus = document.getElementById("otpStatus");
+    otpInput.value = "";
+    otpError.style.display = "none";
+    otpStatus.textContent = "Sending OTP to your registered admin email...";
+    new bootstrap.Modal(document.getElementById("otpModal")).show();
+
+    fetch(`/api/orders/${encodeURIComponent(orderId)}/cancel/send-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order_id: orderId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "SUCCESS") {
+            otpStatus.textContent = `OTP sent to ${data.user_email}.`;
+        } else {
+            otpStatus.textContent = data.message || "Could not send cancellation OTP.";
+        }
+    })
+    .catch(() => {
+        otpStatus.textContent = "Could not send cancellation OTP right now.";
+    });
+}
+
+async function confirmCancelWithOtp() {
+    const otp = document.getElementById("otpInput").value.trim();
+    const otpError = document.getElementById("otpError");
+    const otpStatus = document.getElementById("otpStatus");
+    const otpModalEl = document.getElementById("otpModal");
+
+    if (!otp) {
+        otpError.textContent = "Please enter the OTP.";
+        otpError.style.display = "block";
+        return;
+    }
+    otpError.style.display = "none";
+
+    const orderId = _pendingCancelOrderId;
+    if (!orderId) return;
+
+    try {
+        const res  = await fetch(`/api/orders/${encodeURIComponent(orderId)}/cancel/verify`, {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ order_id: orderId, otp })
+        });
+        const data = await res.json();
+
+        if (data.status === "SUCCESS") {
+            /* Update card UI to Cancelled */
+            const cardEl = document.getElementById(`card-${orderId}`);
+            if (cardEl) {
+                const header = cardEl.querySelector(".card-header");
+                if (header) {
+                    header.className = header.className.replace(
+                        /status-\w+(-\w+)?/g, "status-cancelled"
+                    );
+                }
+                /* Update badge */
+                const badge = cardEl.querySelector("[class*='badge-status-']");
+                if (badge) {
+                    badge.className = "badge rounded-pill badge-status-cancelled";
+                    badge.textContent = "Cancelled";
+                }
+                /* Hide action buttons */
+                cardEl.querySelectorAll(".btn-cancel-order").forEach(b => b.style.display = "none");
+                cardEl.querySelectorAll(".btn-dispatch, .btn-deliver").forEach(b => {
+                    b.disabled = true;
+                });
+            }
+            bootstrap.Modal.getInstance(otpModalEl)?.hide();
+            _pendingCancelOrderId = null;
+        } else {
+            otpError.textContent = data.message || "OTP verification failed.";
+            otpError.style.display = "block";
+            otpStatus.textContent = data.message || "Could not cancel the order.";
+        }
+    } catch (err) {
+        console.error("Cancel order error:", err);
+        otpError.textContent = "Network error. Please try again.";
+        otpError.style.display = "block";
+        otpStatus.textContent = "Network error while cancelling order.";
+    }
+}
+
+async function resendAdminCancelOtp() {
+    const orderId = _pendingCancelOrderId;
+    const otpStatus = document.getElementById("otpStatus");
+
+    if (!orderId) {
+        otpStatus.textContent = "No pending order found for OTP resend.";
+        return;
+    }
+
+    otpStatus.textContent = "Resending OTP...";
+
+    try {
+        const res  = await fetch(`/api/orders/${encodeURIComponent(orderId)}/cancel/send-otp`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ order_id: orderId })
+        });
+        const data = await res.json();
+
+        otpStatus.textContent = data.status === "SUCCESS"
+            ? `OTP resent to ${data.user_email}.`
+            : (data.message || "Could not resend OTP.");
+    } catch (err) {
+        otpStatus.textContent = "Could not resend OTP right now.";
+    }
+}
+
+/* ─── BUILD ORDER CARD ──────────────────────────────────────────────── */
+function buildOrderCard(order) {
+
+    const col     = document.createElement("div");
+    col.className = "col-md-6 order-card fade-in";
+    col.id        = `card-${order.order_id}`;
+
+    const slotClass   = SLOT_CLASS[order.delivery_slot]    ?? "slot-evening";
+    const statusCss   = STATUS_CSS[order.status]            ?? "status-placed";
+    const statusBadge = STATUS_BADGE[order.status]          ?? "badge-status-placed";
+    const pdfDate     = (order.timestamp || "").slice(0, 10) || new Date().toISOString().slice(0, 10);
+
+    const canDispatch = order.status === "Order Placed";
+    const canDeliver  = order.status === "Out for Delivery";
+    /* Cancel is STRICTLY only for "Order Placed" */
+    const canCancel   = order.status === "Order Placed";
+
+    col.innerHTML = `
+        <div class="card h-100">
+
+            <!-- Card Header -->
+            <div class="card-header d-flex justify-content-between align-items-center ${statusCss}">
+                <span class="d-flex align-items-center gap-2">
+                    <span class="status-dot"></span>
+                    <strong class="text-bright"
+                            style="font-family:var(--font-mono);">${order.order_id}</strong>
+                    <span class="badge rounded-pill ${statusBadge}">${order.status}</span>
+                </span>
+                <span class="badge rounded-pill ${slotClass}">
+                    <i class="bi bi-clock me-1"></i>${order.delivery_slot}
+                </span>
+            </div>
+
+            <!-- Card Body — Row 1: Meta info -->
+            <div class="card-body pb-2">
+                <div class="d-flex justify-content-between flex-wrap gap-3 mb-3">
+
+                    <!-- Customer -->
+                    <div>
+                        <div class="profile-field-label">Customer</div>
+                        <div class="text-bright" style="font-size:0.9rem;">
+                            <i class="bi bi-person me-1" style="color:var(--accent);"></i>
+                            ${order.user_id}
+                        </div>
+                    </div>
+
+                    <!-- Delivery Agent -->
+                    <div>
+                        <div class="profile-field-label">Delivery Agent</div>
+                        <div class="text-bright" style="font-size:0.9rem;">
+                            <i class="bi bi-bicycle me-1" style="color:var(--accent);"></i>
+                            ${order.boy_name || "Unassigned"}
+                            ${order.boy_phone
+                                ? `<small class="text-muted ms-1">(${order.boy_phone})</small>`
+                                : ""}
+                        </div>
+                    </div>
+
+                    <!-- Total -->
+                    <div>
+                        <div class="profile-field-label">Total</div>
+                        <div class="order-total">
+                            ₹${parseFloat(order.total_amount).toFixed(2)}
+                        </div>
+                    </div>
+
+                    <!-- Timestamp -->
+                    <div>
+                        <div class="profile-field-label">Placed At</div>
+                        <div class="order-timestamp">${order.timestamp || "—"}</div>
+                    </div>
+
+            <!-- Action Buttons — inline under details, no separator -->
+                <div class="action-row d-flex flex-wrap gap-2 mt-2">
+
+                    <!-- View Items -->
+                    <button class="btn btn-sm btn-action btn-dispatch"
+                            onclick="openItemsModal('${order.order_id}')">
+                        <i class="bi bi-list-ul me-1"></i>View Items
+                    </button>
+
+                    <!-- Out for Delivery -->
+                    <button class="btn btn-sm btn-action btn-dispatch"
+                            id="btn-dispatch-${order.order_id}"
+                            ${canDispatch ? "" : "disabled"}
+                            onclick="updateStatus('${order.order_id}', 'Out for Delivery', this)">
+                        <i class="bi bi-truck me-1"></i>Dispatch
+                    </button>
+
+                    <!-- Delivered -->
+                    <button class="btn btn-sm btn-action btn-deliver btn-delivered"
+                            id="btn-deliver-${order.order_id}"
+                            ${canDeliver ? "" : "disabled"}
+                            onclick="markDelivered('${order.order_id}', this)">
+                        <i class="bi bi-check-circle me-1"></i>Delivered
+                    </button>
+
+                    <!-- Cancel — STRICTLY only when "Order Placed" -->
+                    <button class="btn btn-sm btn-action btn-cancel-order"
+                            id="btn-cancel-${order.order_id}"
+                            style="background:var(--danger); color:#fff; border:none;
+                                   ${canCancel ? "" : "display:none;"}"
+                            onclick="initiateCancelOrder('${order.order_id}')">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+
+                    <!-- PDF Receipt -->
+                    <button class="btn btn-sm btn-action btn-pdf"
+                            onclick="downloadReceipt('${order.order_id}')">
+                        <i class="bi bi-file-earmark-pdf me-1"></i>Receipt
+                    </button>
+
+                </div>
+            </div>
+
+        </div>`;
+
+    return col;
+}
+
+
+
+/* ─── STATUS UPDATE ─────────────────────────────────────────────────── */
+async function updateStatus(orderId, newStatus, clickedBtn) {
+    clickedBtn.disabled  = true;
+    clickedBtn.innerHTML = '<span class="spinner-sm"></span> Updating…';
+
+    try {
+        const res  = await fetch(`/api/admin/orders/${encodeURIComponent(orderId)}/status`, {
+            method:  "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ status: newStatus })
+        });
+        const data = await res.json();
+
+        if (data.status === "SUCCESS") {
+            const orderData = _adminOrderMap.get(orderId);
+            if (orderData) orderData.status = newStatus;
+
+            const cardEl = document.getElementById(`card-${orderId}`);
+            const header = cardEl?.querySelector(".card-header");
+
+            if (header) {
+                header.className = header.className.replace(
+                    /status-\w+(-\w+)?/g, STATUS_CSS[newStatus] ?? "status-out-delivery"
+                );
+            }
+            const badge = header?.querySelector("[class*='badge-status-']");
+            if (badge) {
+                badge.className   = `badge rounded-pill ${STATUS_BADGE[newStatus]}`;
+                badge.textContent = newStatus;
+            }
+
+            /* Enable Deliver button */
+            const deliverBtn = document.getElementById(`btn-deliver-${orderId}`);
+            if (deliverBtn) deliverBtn.disabled = false;
+
+            /* Hide Cancel button (order is no longer "Order Placed") */
+            const cancelBtn = document.getElementById(`btn-cancel-${orderId}`);
+            if (cancelBtn) cancelBtn.style.display = "none";
+
+            clickedBtn.innerHTML = '<i class="bi bi-check2 me-1"></i>Dispatched';
+        } else {
+            clickedBtn.disabled  = false;
+            clickedBtn.innerHTML = '<i class="bi bi-truck me-1"></i>Dispatch';
+            alert(`Error: ${data.message}`);
+        }
+    } catch (err) {
+        clickedBtn.disabled  = false;
+        clickedBtn.innerHTML = '<i class="bi bi-truck me-1"></i>Dispatch';
+        console.error(err);
+    }
+}
+
+/* ─── MARK DELIVERED (1-second fade-out per spec) ────────────────────── */
+async function markDelivered(orderId, clickedBtn) {
+    clickedBtn.disabled  = true;
+    clickedBtn.innerHTML = '<span class="spinner-sm"></span> Updating…';
+
+    try {
+        const res  = await fetch(`/api/admin/orders/${encodeURIComponent(orderId)}/status`, {
+            method:  "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ status: "Delivered" })
+        });
+        const data = await res.json();
+
+        if (data.status === "SUCCESS") {
+            const orderData = _adminOrderMap.get(orderId);
+            if (orderData) orderData.status = "Delivered";
+
+            clickedBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Delivered ✔';
+
+            const cardEl = document.getElementById(`card-${orderId}`);
+            if (cardEl) {
+                /* Exactly 1-second fade-out per spec */
+                cardEl.style.transition = "opacity 1s ease, transform 1s ease";
+                cardEl.style.opacity    = "0";
+                cardEl.style.transform  = "scale(0.97)";
+                setTimeout(() => cardEl.remove(), 1000);
+            }
+        } else {
+            clickedBtn.disabled  = false;
+            clickedBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Delivered';
+            alert(`Error: ${data.message}`);
+        }
+    } catch (err) {
+        clickedBtn.disabled  = false;
+        clickedBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Delivered';
+        console.error(err);
+    }
+}
+
+/* ─── LOAD ORDERS ────────────────────────────────────────────────────── */
+async function loadOrders() {
+    const statusMsg = document.getElementById("statusMsg");
+    const container = document.getElementById("ordersContainer");
+
+    try {
+        const res = await fetch("/api/admin/orders/page-data", {
+            method:  "GET",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        const ct = res.headers.get("content-type") || "";
+        if (!ct.includes("application/json")) {
+            container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-exclamation-triangle"
+                       style="font-size:2.5rem; color:var(--danger);"></i>
+                    <p class="text-muted mt-3">
+                        API error (HTTP ${res.status}).
+                        Route <code>/api/admin/orders</code> may not be registered.
+                    </p>
+                </div>`;
+            document.getElementById("loadingPlaceholder")?.remove();
+            statusMsg.textContent = "Failed to load orders — API unreachable.";
+            return;
+        }
+
+        const data = await res.json();
+        document.getElementById("loadingPlaceholder")?.remove();
+
+        if (!data.orders || data.orders.length === 0) {
+            container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-check-circle"
+                       style="font-size:3rem; color:var(--success);"></i>
+                    <p class="text-muted mt-3">No orders at the moment.</p>
+                </div>`;
+            statusMsg.textContent = "No orders found.";
+            return;
+        }
+
+        statusMsg.textContent =
+            `${data.orders.length} order${data.orders.length !== 1 ? "s" : ""} loaded.`;
+        data.orders.forEach(order => {
+            _adminOrderMap.set(order.order_id, order);
+        });
+
+        /* Show filter bar now that data is loaded */
+        document.getElementById("filterBar").style.display = "flex";
+
+        /* Initial render — oldest first (min-heap order) */
+        _renderVisible();
+
+
+    } catch (err) {
+        console.error("loadOrders error:", err);
+        document.getElementById("loadingPlaceholder")?.remove();
+        statusMsg.textContent = "Network error.";
+        container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-wifi-off" style="font-size:2.5rem; color:var(--danger);"></i>
+                <p class="text-muted mt-3">${err.message}</p>
+            </div>`;
+    }
+}
+
+/* ─── PDF RECEIPT ────────────────────────────────────────────────────── */
+function downloadReceipt(orderId) {
+    if (!orderId) {
+        alert("No order ID provided.");
+        return;
+    }
+    window.location.href = `/api/orders/${encodeURIComponent(orderId)}/receipt`;
+}
+
+{% endraw %}
+
+/* ─── PAGE INIT ─────────────────────────────────────────────────────── */
+document.addEventListener("DOMContentLoaded", async () => {
+    startClock();
+    await loadOrders();
+
+    /* Orders page logout: GET /logout -> POST /api/auth/logout */
+    document.getElementById("ordersLogoutLink")?.addEventListener("click", async function (e) {
+        e.preventDefault();
+        try {
+            await fetch("/api/auth/logout", { method: "POST" });
+        } catch (err) {
+            console.warn("Logout request failed:", err);
+        } finally {
+            localStorage.removeItem("user_id");
+            localStorage.removeItem("role");
+            localStorage.removeItem("username");
+            window.location.href = "/";
+        }
+    });
+});
+</script>
+{% endblock %}

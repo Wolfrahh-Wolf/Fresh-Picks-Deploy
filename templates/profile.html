@@ -1,0 +1,495 @@
+{% extends "base.html" %} 
+
+{% block extra_head %}
+<style>
+/* ── Inline edit pencil button ── */
+.pf-edit-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    padding: 2px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    flex-shrink: 0;
+}
+.pf-edit-btn:hover { color: var(--accent); background: rgba(33,150,243,0.1); }
+
+/* ── Inline edit input wrapper ── */
+.pf-inline-edit {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+.pf-inline-edit input {
+    background: var(--bg-elevated);
+    border: 1px solid var(--accent);
+    border-radius: 5px;
+    color: var(--text-bright);
+    font-size: 0.9rem;
+    padding: 3px 8px;
+    outline: none;
+    min-width: 0;
+    flex: 1;
+}
+.pf-inline-edit .pf-save-btn {
+    background: var(--accent);
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 3px 9px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.pf-inline-edit .pf-save-btn:hover { opacity: 0.85; }
+.pf-inline-edit .pf-cancel-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    padding: 3px 9px;
+    cursor: pointer;
+}
+.pf-save-status {
+    font-size: 0.75rem;
+    margin-left: 4px;
+}
+
+/* ── Responsive: Tablet (769px–1024px) ── */
+@media (max-width: 1024px) {
+    .pf-inline-edit { flex-wrap: wrap; }
+    .col-lg-6 { width: 100%; }
+}
+
+/* ── Responsive: Mobile (≤768px) ── */
+@media (max-width: 768px) {
+    .pf-inline-edit input { font-size: 0.85rem; padding: 4px 8px; }
+    .d-flex.align-items-center.mb-4 { flex-wrap: wrap; gap: 0.5rem; }
+    .card-body.d-flex.flex-column.gap-3 { gap: 0.75rem !important; }
+}
+</style>
+{% endblock %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Page Heading -->
+    <div class="d-flex align-items-center mb-4">
+        <a href="/dashboard" class="btn btn-secondary btn-sm me-3">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div>
+            <h3 class="mb-0 text-bright">
+                <i class="bi bi-person-circle me-2" style="color:var(--accent);"></i>My Profile
+            </h3>
+            <p class="text-muted mb-0" style="font-size:0.85rem;">View and manage your account details.</p>
+        </div>
+    </div>
+
+    <!-- Loading indicator (shown while fetching profile) -->
+    <div id="profileLoader" class="text-center py-4">
+        <div class="spinner-sm" style="width:2rem;height:2rem;border-width:3px;"></div>
+        <p class="text-muted mt-2">Loading profile...</p>
+    </div>
+
+    <!-- Main content (hidden until profile loads) -->
+    <div id="profileContent" class="d-none">
+        <div class="row g-4">
+
+            <!-- ── Profile Info Card ── -->
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="bi bi-person-badge me-2"></i>Personal Information
+                    </div>
+                    <div class="card-body">
+
+                        <!-- User ID — read-only, never editable -->
+                        <div class="profile-field">
+                            <span class="profile-field-label">User ID</span>
+                            <span class="profile-field-value">
+                                <span class="id-badge" id="pf-user-id">—</span>
+                            </span>
+                        </div>
+
+                        <!-- Username — read-only per requirement -->
+                        <div class="profile-field">
+                            <span class="profile-field-label">Username</span>
+                            <span class="profile-field-value" id="pf-username">—</span>
+                        </div>
+
+                        <!-- Full Name — editable -->
+                        <div class="profile-field" id="row-full_name">
+                            <span class="profile-field-label">Full Name</span>
+                            <span class="profile-field-value d-flex align-items-center gap-2">
+                                <span id="pf-full-name">—</span>
+                                <button class="pf-edit-btn" onclick="startEdit('full_name','text')"
+                                        title="Edit Full Name">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
+                            </span>
+                        </div>
+
+                        <!-- Email — editable -->
+                        <div class="profile-field" id="row-email">
+                            <span class="profile-field-label">Email</span>
+                            <span class="profile-field-value d-flex align-items-center gap-2">
+                                <span id="pf-email">—</span>
+                                <button class="pf-edit-btn" onclick="startEdit('email','email')"
+                                        title="Edit Email">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
+                            </span>
+                        </div>
+
+                        <!-- Phone — editable -->
+                        <div class="profile-field" id="row-phone">
+                            <span class="profile-field-label">Phone Number</span>
+                            <span class="profile-field-value d-flex align-items-center gap-2">
+                                <span id="pf-phone">—</span>
+                                <button class="pf-edit-btn" onclick="startEdit('phone','tel')"
+                                        title="Edit Phone">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
+                            </span>
+                        </div>
+
+                        <!-- Address — editable (4 sub-fields inline) -->
+                        <div class="profile-field" id="row-address">
+                            <span class="profile-field-label">Address</span>
+                            <span class="profile-field-value d-flex align-items-center gap-2">
+                                <span id="pf-address">—</span>
+                                <button class="pf-edit-btn" onclick="startAddressEdit()"
+                                        title="Edit Address">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Change Password Card ── -->
+            <!-- ── Security & Actions Card (v2: replaces the old Change Password form) ── -->
+            <!--
+                WHY was Change Password removed from here?
+                  - A unified Security Center at /security handles password changes
+                    for BOTH users and admins from one place.
+                  - Keeping a second password form here created inconsistency and
+                    duplicated logic that could get out of sync.
+            -->
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="bi bi-shield-lock me-2"></i>Security &amp; Actions
+                    </div>
+                    <div class="card-body d-flex flex-column gap-3">
+
+                        <!--
+                            SECURITY CENTER BUTTON
+                            Red accent (#F44747 via --danger) signals this is a
+                            security-critical action, consistent with the brand guideline.
+                        -->
+                        <div class="card"
+                             style="border: 1px solid var(--danger) !important;
+                                    background: rgba(244,71,71,0.06) !important;">
+                            <div class="card-body py-3">
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                    <div>
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <i class="bi bi-shield-lock-fill"
+                                               style="color:var(--danger); font-size:1.2rem;"></i>
+                                            <strong class="text-bright">Security Settings</strong>
+                                        </div>
+                                        <p class="text-muted mb-0" style="font-size:0.82rem;">
+                                            Change your password and manage account security.
+                                        </p>
+                                    </div>
+                                    <a href="/settings/security"
+                                       class="btn btn-sm"
+                                       style="background:var(--danger); color:#fff; border:none;
+                                              min-width:130px; text-align:center;">
+                                        <i class="bi bi-arrow-right me-1"></i>Go to Security
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Back to Home -->
+                        <div class="card" style="border: 1px solid var(--border-color) !important;">
+                            <div class="card-body py-3">
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                    <div>
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <i class="bi bi-house"
+                                               style="color:var(--text-muted); font-size:1.2rem;"></i>
+                                            <strong class="text-bright">Dashboard</strong>
+                                        </div>
+                                        <p class="text-muted mb-0" style="font-size:0.82rem;">
+                                            Return to your home screen.
+                                        </p>
+                                    </div>
+                                    <a href="/dashboard" class="btn btn-secondary btn-sm"
+                                       style="min-width:130px; text-align:center;">
+                                        <i class="bi bi-arrow-left me-1"></i>Back to Home
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- End profile content -->
+
+    <!-- Error state (shown if profile fetch fails) -->
+    <div id="profileError" class="d-none">
+        <div class="alert alert-danger">
+            <i class="bi bi-x-circle me-2"></i>
+            <strong>Could not load profile.</strong>
+            <span id="profileErrorMsg"></span>
+            <div class="mt-2">
+                <a href="/dashboard" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script>
+    /*
+     * PROFILE PAGE JAVASCRIPT
+     * ========================
+     * On page load: Fetch profile data from Flask, then display it.
+     * Also handles the change password form submission.
+     */
+
+    /*
+     * FUNCTION: loadProfile
+     * PURPOSE:  Fetch the user's profile data from GET /api/users/me.
+     *           Flask uses the session's user_id to look them up in users.txt.
+     *
+     * STEPS:
+     *   1. GET /api/users/me — Flask uses session
+     *   2. On success: populate all the profile fields on the page
+     *   3. On error: show error state
+     */
+    async function loadProfile() {
+        try {
+            const response = await fetch("/api/users/me", { method: "GET" });
+
+            const result = await response.json();
+
+            if (result.status === "SUCCESS") {
+                /* Populate each field from the returned data */
+                document.getElementById("pf-user-id").textContent   = result.user_id   || "—";
+                document.getElementById("pf-username").textContent  = result.username   || "—";
+                document.getElementById("pf-full-name").textContent = result.full_name  || "—";
+                document.getElementById("pf-email").textContent     = result.email      || "—";
+                document.getElementById("pf-phone").textContent     = result.phone      || "—";
+
+                /*
+                 * Address is stored as "Door,Street,Area,PIN" (CSV within the field).
+                 * We split on comma and join with newlines so each part displays
+                 * on its own line, matching the schema note's display requirement.
+                 */
+                const addrParts = (result.address || "").split(",");
+                _addrParts = addrParts.map(p => p.trim());
+                document.getElementById("pf-address").innerHTML = _addrParts.join("<br>");
+
+                /* Hide loader, show content */
+                document.getElementById("profileLoader").classList.add("d-none");
+                document.getElementById("profileContent").classList.remove("d-none");
+
+            } else {
+                showProfileError(result.message || "Failed to load profile data.");
+            }
+
+        } catch (err) {
+            showProfileError("Could not connect to server. Is Flask running?");
+        }
+    }
+
+    /* ── Raw address parts (kept in memory after profile load) ── */
+    let _addrParts = ["", "", "", ""];
+
+    /* ── Generic single-field inline editor ── */
+    function startEdit(field, inputType) {
+        const display = document.getElementById(`pf-${field.replace("_","-")}`);
+        const currentVal = display.textContent.trim();
+
+        display.parentElement.innerHTML = `
+            <div class="pf-inline-edit" id="edit-${field}">
+                <input type="${inputType}" id="inp-${field}"
+                    value="${currentVal}" autocomplete="off">
+                <button class="pf-save-btn" onclick="saveField('${field}')">
+                    <i class="bi bi-check-lg"></i> Save
+                </button>
+                <button class="pf-cancel-btn" onclick="cancelEdit('${field}', \`${currentVal}\`)">
+                    Cancel
+                </button>
+                <span class="pf-save-status" id="status-${field}"></span>
+            </div>`;
+
+        document.getElementById(`inp-${field}`).focus();
+
+        /* Save on Enter key */
+        document.getElementById(`inp-${field}`)
+            .addEventListener("keydown", e => { if (e.key === "Enter") saveField(field); });
+    }
+
+    /* ── Address inline editor (4 sub-fields) ── */
+    function startAddressEdit() {
+        const [door, street, area, pin] = _addrParts;
+        document.getElementById("pf-address").parentElement.innerHTML = `
+            <div class="pf-inline-edit flex-column align-items-start" id="edit-address"
+                style="gap:6px; width:100%;">
+                <div class="d-flex gap-2 w-100 flex-wrap">
+                    <input type="text" id="inp-door"    value="${door}"
+                        placeholder="Door No" style="flex:1; min-width:110px;">
+                    <input type="text" id="inp-street"  value="${street}"
+                        placeholder="Street" style="flex:2; min-width:140px;">
+                </div>
+                <div class="d-flex gap-2 w-100 flex-wrap">
+                    <input type="text" id="inp-area"    value="${area}"
+                        placeholder="Area" style="flex:2; min-width:140px;">
+                    <input type="text" id="inp-pincode" value="${pin}"
+                        placeholder="PIN" maxlength="6" style="flex:1; min-width:80px;">
+                </div>
+                <div class="d-flex gap-2 align-items-center">
+                    <button class="pf-save-btn" onclick="saveAddress()">
+                        <i class="bi bi-check-lg"></i> Save
+                    </button>
+                    <button class="pf-cancel-btn" onclick="cancelAddressEdit()">Cancel</button>
+                    <span class="pf-save-status" id="status-address"></span>
+                </div>
+            </div>`;
+
+        /* Strip commas from address sub-fields (same as register.html) */
+        ['inp-door','inp-street','inp-area','inp-pincode'].forEach(id => {
+            document.getElementById(id).addEventListener('input', function() {
+                this.value = this.value.replace(/,/g, "");
+            });
+        });
+    }
+
+    /* ── Save a single field ── */
+    async function saveField(field) {
+        const inp    = document.getElementById(`inp-${field}`);
+        const status = document.getElementById(`status-${field}`);
+        const val    = inp.value.trim();
+
+        if (!val) { status.style.color = "var(--danger)"; status.textContent = "Cannot be empty"; return; }
+
+        status.style.color = "var(--text-muted)"; status.textContent = "Saving…";
+
+        try {
+            const res  = await fetch("/api/users/me", {
+                method: "PATCH", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ field, value: val })
+            });
+            const data = await res.json();
+
+            if (data.status === "SUCCESS") {
+                const displayId = `pf-${field.replace("_","-")}`;
+                /* Rebuild the display span with the edit button */
+                const inputType = inp.type;
+                document.getElementById(`edit-${field}`).parentElement.innerHTML = `
+                    <span id="${displayId}">${val}</span>
+                    <button class="pf-edit-btn" onclick="startEdit('${field}','${inputType}')"
+                            title="Edit">
+                        <i class="bi bi-pencil-fill"></i>
+                    </button>`;
+            } else {
+                status.style.color = "var(--danger)";
+                status.textContent = data.message || "Error";
+            }
+        } catch (_) {
+            status.style.color = "var(--danger)"; status.textContent = "Server error";
+        }
+    }
+
+    /* ── Save address (assembles CSV then calls API) ── */
+    async function saveAddress() {
+        const door    = document.getElementById("inp-door").value.trim();
+        const street  = document.getElementById("inp-street").value.trim();
+        const area    = document.getElementById("inp-area").value.trim();
+        const pincode = document.getElementById("inp-pincode").value.trim();
+        const status  = document.getElementById("status-address");
+
+        if (!door || !street || !area || !pincode) {
+            status.style.color = "var(--danger)"; status.textContent = "All parts required"; return;
+        }
+
+        status.style.color = "var(--text-muted)"; status.textContent = "Saving…";
+        const combined = `${door},${street},${area},${pincode}`;
+
+        try {
+            const res  = await fetch("/api/users/me", {
+                method: "PATCH", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ field: "address", value: combined })
+            });
+            const data = await res.json();
+
+            if (data.status === "SUCCESS") {
+                _addrParts = [door, street, area, pincode];
+                document.getElementById("edit-address").parentElement.innerHTML = `
+                    <span id="pf-address">${[door, street, area, pincode].map(p=>p.trim()).join("<br>")}</span>
+                    <button class="pf-edit-btn" onclick="startAddressEdit()" title="Edit Address">
+                        <i class="bi bi-pencil-fill"></i>
+                    </button>`;
+            } else {
+                status.style.color = "var(--danger)";
+                status.textContent = data.message || "Error";
+            }
+        } catch (_) {
+            status.style.color = "var(--danger)"; status.textContent = "Server error";
+        }
+    }
+
+    /* ── Cancel helpers ── */
+    function cancelEdit(field, originalVal) {
+        const inputType = document.getElementById(`inp-${field}`)?.type || "text";
+        const displayId = `pf-${field.replace("_","-")}`;
+        document.getElementById(`edit-${field}`).parentElement.innerHTML = `
+            <span id="${displayId}">${originalVal}</span>
+            <button class="pf-edit-btn" onclick="startEdit('${field}','${inputType}')" title="Edit">
+                <i class="bi bi-pencil-fill"></i>
+            </button>`;
+    }
+
+    function cancelAddressEdit() {
+        const [door, street, area, pin] = _addrParts;
+        document.getElementById("edit-address").parentElement.innerHTML = `
+            <span id="pf-address">${_addrParts.map(p=>p.trim()).join("<br>")}</span>
+            <button class="pf-edit-btn" onclick="startAddressEdit()" title="Edit Address">
+                <i class="bi bi-pencil-fill"></i>
+            </button>`;
+    }
+    /*
+     * FUNCTION: showProfileError
+     * PURPOSE:  Show the error panel with a message
+     */
+    function showProfileError(msg) {
+        document.getElementById("profileLoader").classList.add("d-none");
+        document.getElementById("profileError").classList.remove("d-none");
+        document.getElementById("profileErrorMsg").textContent = " " + msg;
+    }
+
+
+    /* Load profile data as soon as the page is ready */
+    loadProfile();
+</script>
+{% endblock %}

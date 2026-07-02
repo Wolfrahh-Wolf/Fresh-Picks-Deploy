@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<style>
+/* ── Responsive: Tablet (769px–1024px) ── */
+
+/* ── Responsive: Tablet (769px–1024px) ── */
+@media (max-width: 1024px) {
+    .welcome-banner { padding: 1.25rem 1.5rem; }
+}
+
+/* ── Responsive: Mobile (≤768px) ── */
+@media (max-width: 768px) {
+    .col-sm-6.col-lg-4 { width: 50%; }
+    .welcome-banner h2 { font-size: 1.35rem; }
+    .col-lg-6 { width: 100%; }
+    .d-flex.gap-2.flex-wrap { flex-direction: column; }
+    .d-flex.gap-2.flex-wrap .btn { width: 100%; text-align: center; }
+}
+</style>
+{% endblock %}
+
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- ── Welcome Banner ── -->
+    <div class="welcome-banner fade-in">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h2>
+                    <i class="bi bi-hand-wave me-2" style="color:var(--accent);"></i>
+                    Hey, <span style="color:var(--accent-light);">{{ username }}</span>! 👋
+                </h2>
+                <p class="mb-0">Welcome back to FreshPicks. What would you like to do today?</p>
+            </div>
+            <span class="badge bg-success" style="font-size:0.85rem; padding:0.5em 1em; color:#1E1E1E!important;">
+                <i class="bi bi-circle-fill me-1" style="font-size:0.5rem;"></i>Online
+            </span>
+        </div>
+    </div>
+
+    <!-- ── Navigation Cards ── -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-sm-6 col-lg-4">
+            <div class="stat-card-wrap">
+                <a class="stat-card-link" href="/shop">
+                    <div class="card text-center" style="border-left: 3px solid var(--accent) !important;">
+                        <div class="card-body py-3">
+                            <div style="font-size:1.8rem;">🛒</div>
+                            <div class="text-bright fw-bold mt-1">Shop</div>
+                            <div class="text-muted" style="font-size:0.78rem;">Browse Fresh Produce</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-4">
+            <div class="stat-card-wrap">
+                <a class="stat-card-link" href="/orders">
+                    <div class="card text-center" style="border-left: 3px solid var(--success) !important;">
+                        <div class="card-body py-3">
+                            <div style="font-size:1.8rem;">📦</div>
+                            <div class="text-bright fw-bold mt-1">My Orders</div>
+                            <div class="text-muted" style="font-size:0.78rem;">Track & Download Receipts</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-4">
+            <div class="stat-card-wrap">
+                <a class="stat-card-link" href="/profile">
+                    <div class="card text-center" style="border-left: 3px solid var(--warning) !important;">
+                        <div class="card-body py-3">
+                            <div style="font-size:1.8rem;">👤</div>
+                            <div class="text-bright fw-bold mt-1">My Profile</div>
+                            <div class="text-muted" style="font-size:0.78rem;">View & Edit Details</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ── Account Info + Quick Actions ── -->
+    <div class="row g-4">
+
+        <!-- Account Information Card (v2: replaces the old summary + links) -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="bi bi-person-circle me-2"></i>Account Information
+                </div>
+                <div class="card-body">
+
+                    <div class="profile-field">
+                        <span class="profile-field-label">Username</span>
+                        <span class="profile-field-value" id="summaryUsername">—</span>
+                    </div>
+
+                    <div class="profile-field">
+                        <span class="profile-field-label">User ID</span>
+                        <span class="profile-field-value">
+                            <span class="id-badge" id="summaryUserId">—</span>
+                        </span>
+                    </div>
+
+                    <div class="profile-field">
+                        <span class="profile-field-label">Full Name</span>
+                        <span class="profile-field-value" id="summaryFullName">—</span>
+                    </div>
+
+                    <!-- Phone (fetched from live profile API) -->
+                    <div class="profile-field">
+                        <span class="profile-field-label">Phone</span>
+                        <span class="profile-field-value" id="summaryPhone">—</span>
+                    </div>
+
+                    <!-- Email (fetched from live profile API) -->
+                    <div class="profile-field">
+                        <span class="profile-field-label">Email</span>
+                        <span class="profile-field-value" id="summaryEmail">—</span>
+                    </div>
+
+                    <div class="profile-field">
+                        <span class="profile-field-label">Account Status</span>
+                        <span class="profile-field-value">
+                            <span class="badge bg-success" style="color:#1E1E1E!important;">Active</span>
+                        </span>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2 flex-wrap">
+                        <a href="/profile" class="btn btn-primary btn-sm">
+                            <i class="bi bi-person me-1"></i>View Full Profile
+                        </a>
+                        <a href="/logout" id="homeLogoutBtn2" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-box-arrow-right me-1"></i>Logout
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Card -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="bi bi-lightning-charge me-2"></i>Quick Actions
+                </div>
+                <div class="card-body d-flex flex-column gap-3">
+
+                    <!--
+                        SECURITY SETTINGS BUTTON 
+                    -->
+                    <div class="card"
+                         style="border: 1px solid var(--danger) !important;
+                                background: rgba(244,71,71,0.06) !important;">
+                        <div class="card-body py-3">
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                <div>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <!-- Red lock icon — consistent with security = red -->
+                                        <i class="bi bi-shield-lock-fill"
+                                           style="color:var(--danger); font-size:1.2rem;"></i>
+                                        <strong class="text-bright">Security Settings</strong>
+                                    </div>
+                                    <p class="text-muted mb-0" style="font-size:0.82rem;">
+                                        Change your Password.
+                                    </p>
+                                </div>
+                                <a href="/settings/security"
+                                   class="btn btn-sm"
+                                   style="background:var(--danger); color:#fff; border:none;
+                                          min-width:130px; text-align:center;">
+                                    <i class="bi bi-arrow-right me-1"></i>Go to Security
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--
+                        LOGOUT BUTTON 
+                    -->
+                    <div class="card" style="border: 1px solid var(--border-color) !important;">
+                        <div class="card-body py-3">
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                <div>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <i class="bi bi-box-arrow-right"
+                                           style="color:var(--text-muted); font-size:1.2rem;"></i>
+                                        <strong class="text-bright">Sign Out</strong>
+                                    </div>
+                                    <p class="text-muted mb-0" style="font-size:0.82rem;">
+                                        End your current admin session.
+                                    </p>
+                                </div>
+                                <a href="/logout" id="homeLogoutBtn1" class="btn btn-secondary btn-sm"
+                                   style="min-width:130px; text-align:center;">
+                                    <i class="bi bi-box-arrow-right me-1"></i>Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script>
+    (async function loadLiveProfile() {
+        try {
+            const response = await fetch("/api/users/me", { method: "GET" });
+
+            const result = await response.json();
+
+            if (result.status === "SUCCESS") {
+                document.getElementById("summaryUsername").textContent = result.username  || "—";  // ← ADD THIS
+                document.getElementById("summaryUserId").textContent   = result.user_id   || "—";
+                document.getElementById("summaryFullName").textContent = result.full_name || "—";
+                document.getElementById("summaryPhone").textContent    = result.phone     || "—";
+                document.getElementById("summaryEmail").textContent    = result.email     || "—";
+            }
+
+        } catch (err) {
+            console.warn("Could not load live profile:", err);
+        }
+    })();
+
+
+    /* ── Logout: GET /logout -> POST /api/auth/logout ── */
+    ['homeLogoutBtn1','homeLogoutBtn2'].forEach(id => {
+        document.getElementById(id)?.addEventListener('click', async function(e) {
+            e.preventDefault();
+            try { await fetch('/api/auth/logout', { method: 'POST' }); } catch(_) {}
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('role');
+            localStorage.removeItem('username');
+            window.location.href = '/';
+        });
+    });
+
+</script>
+{% endblock %}

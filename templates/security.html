@@ -1,0 +1,601 @@
+{% extends "base.html" %} 
+
+{% block title %}Security Center{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Page Heading with red accent — signals security/critical area -->
+    <div class="d-flex align-items-center mb-4">
+        <a href="javascript:history.back()" class="btn btn-secondary btn-sm me-3">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div>
+            <h3 class="mb-0 text-bright">
+                <!--
+                    Red shield icon: consistent with "security = #F44747" design rule.
+                    This creates visual contrast vs. blue (informational) elements.
+                -->
+                <i class="bi bi-shield-lock-fill me-2" style="color:var(--danger);"></i>
+                Security Center
+            </h3>
+            <p class="text-muted mb-0" style="font-size:0.85rem;">
+                <!-- Role-aware subtitle — updated by JS on page load -->
+                <span id="roleSubtitle">Change your account password securely.</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+
+            <!-- Main Security Card -->
+            <div class="card"
+                 style="border-top: 3px solid var(--danger) !important;">
+                <!-- Red top border — the "brand-dot" equivalent for this critical page -->
+
+                <div class="card-header"
+                     style="border-bottom: 1px solid var(--border-color);
+                            background: rgba(244,71,71,0.08) !important;">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-lock-fill" style="color:var(--danger);"></i>
+                        <span class="text-bright fw-semibold">Change Password</span>
+                        <!-- Role badge updates via JS -->
+                        <span class="badge ms-auto" id="roleBadge"
+                              style="background:var(--bg-elevated);color:var(--text-muted);">
+                            Loading...
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <!-- Main alert box for this card -->
+                    <div id="mainAlertBox" class="alert d-none mb-4" role="alert"></div>
+
+                    <!-- ══════════════════════════════════════
+                         STEP 1: Current Password
+                         ══════════════════════════════════════ -->
+                    <div id="step1Section">
+
+                        <!-- Step label -->
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div style="width:24px;height:24px;border-radius:50%;
+                                        background:var(--danger);color:#fff;
+                                        display:flex;align-items:center;justify-content:center;
+                                        font-size:0.75rem;font-weight:700;flex-shrink:0;">1</div>
+                            <span class="text-bright fw-semibold">Verify Current Password</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="old_password" class="form-label">
+                                <i class="bi bi-lock me-1"></i>Current Password
+                            </label>
+                            <input type="password"
+                                   class="form-control"
+                                   id="old_password"
+                                   placeholder="Enter your current password"
+                                   autofocus>
+                        </div>
+
+                        <button class="btn btn-full"
+                                id="step1Btn"
+                                style="background:var(--danger);color:#fff;border:none;"
+                                onclick="proceedToStep2()">
+                            <i class="bi bi-arrow-right me-2"></i>Continue
+                        </button>
+
+                    </div>
+                    <!-- End Step 1 -->
+
+                    <!-- ══════════════════════════════════════
+                         STEP 2: New Password
+                         Hidden initially, revealed after Step 1
+                         ══════════════════════════════════════ -->
+                    <div id="step2Section" class="d-none">
+
+                        <hr style="border-color:var(--border-color); margin: 1.5rem 0;">
+
+                        <!-- Step label -->
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div style="width:24px;height:24px;border-radius:50%;
+                                        background:var(--danger);color:#fff;
+                                        display:flex;align-items:center;justify-content:center;
+                                        font-size:0.75rem;font-weight:700;flex-shrink:0;">2</div>
+                            <span class="text-bright fw-semibold">Set New Password</span>
+                        </div>
+
+                        <!-- New Password field with live strength bar -->
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">
+                                <i class="bi bi-lock-fill me-1"></i>New Password
+                            </label>
+                            <input type="password"
+                                   class="form-control"
+                                   id="new_password"
+                                   placeholder="Min. 8 chars"
+                                   oninput="updateStrengthBar(this.value)">
+                            <!-- Password strength bar (4 segments) -->
+                            <div class="mt-2 d-flex gap-1" id="strengthBar">
+                                <div class="flex-fill" id="sb1"
+                                     style="height:4px;border-radius:2px;background:var(--border-color);transition:background 0.2s;"></div>
+                                <div class="flex-fill" id="sb2"
+                                     style="height:4px;border-radius:2px;background:var(--border-color);transition:background 0.2s;"></div>
+                                <div class="flex-fill" id="sb3"
+                                     style="height:4px;border-radius:2px;background:var(--border-color);transition:background 0.2s;"></div>
+                                <div class="flex-fill" id="sb4"
+                                     style="height:4px;border-radius:2px;background:var(--border-color);transition:background 0.2s;"></div>
+                            </div>
+                            <div class="form-text" id="strengthLabel" style="color:var(--text-muted);">
+                                Needs: uppercase, lowercase, digit, special char
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="mb-4">
+                            <label for="confirm_password" class="form-label">
+                                <i class="bi bi-lock-fill me-1"></i>Confirm New Password
+                            </label>
+                            <input type="password"
+                                   class="form-control"
+                                   id="confirm_password"
+                                   placeholder="Repeat new password">
+                        </div>
+
+                        <!-- This button opens the OTP modal -->
+                        <button class="btn btn-full"
+                                id="step2Btn"
+                                style="background:var(--danger);color:#fff;border:none;"
+                                onclick="proceedToOtp()">
+                            <i class="bi bi-key me-2"></i>Verify with OTP
+                        </button>
+
+                    </div>
+                    <!-- End Step 2 -->
+
+                    <!-- Rules reminder -->
+                    <div class="mt-4 p-3"
+                         style="background:var(--bg-elevated);border-radius:var(--radius);
+                                border-left:3px solid var(--danger);">
+                        <div style="font-size:0.78rem;color:var(--text-muted);">
+                            <strong class="text-bright">Password Requirements:</strong>
+                            <ul class="mb-0 mt-1" style="padding-left:1.2rem;">
+                                <li>Minimum 8 characters</li>
+                                <li>At least 1 uppercase letter (A–Z)</li>
+                                <li>At least 1 lowercase letter (a–z)</li>
+                                <li>At least 1 digit (0–9)</li>
+                                <li>At least 1 special character (!@#$%...)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- End Main Security Card -->
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     OTP VERIFICATION MODAL
+     Opens when Step 2 is complete and the server has emailed an OTP.
+     The actual /api/change_password call happens with the OTP included,
+     so the password update is enforced server-side.
+
+     data-bs-backdrop="static"  -> cannot close by clicking outside
+     data-bs-keyboard="false"   -> cannot close with Escape key
+     ══════════════════════════════════════════════════════ -->
+<div class="modal fade"
+     id="otpModal"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content"
+             style="background:var(--bg-surface);
+                    border: 1px solid var(--danger);
+                    border-radius: var(--radius-lg);">
+
+            <!-- Modal Header — red accent for security context -->
+            <div class="modal-header"
+                 style="border-bottom:1px solid var(--border-color);
+                        background:rgba(244,71,71,0.08);">
+                <h5 class="modal-title">
+                    <i class="bi bi-shield-lock me-2" style="color:var(--danger);"></i>
+                    Security Verification
+                </h5>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body p-4">
+
+                <!-- OTP Delivery Status -->
+                <div class="alert alert-info mb-4">
+                    <strong><i class="bi bi-envelope-check me-1"></i>Email Verification Required</strong><br>
+                    <span style="font-size:0.82rem;color:var(--text-muted);">
+                        We will send a one-time password to your registered email address.
+                        The code remains valid for 10 minutes.
+                    </span>
+                    <div class="mt-2" id="otpStatusText"
+                         style="font-size:0.82rem;color:var(--text-muted);">
+                        We will send the OTP when you continue.
+                    </div>
+                </div>
+
+                <!-- OTP Alert (wrong OTP feedback) -->
+                <div id="otpAlertBox" class="alert d-none mb-3" role="alert"></div>
+
+                <!-- OTP Input -->
+                <label for="otpInput" class="form-label">
+                    <i class="bi bi-key me-1"></i>Enter OTP
+                </label>
+                <input type="text"
+                       class="form-control otp-field"
+                       id="otpInput"
+                       placeholder="0 0 0 0"
+                       maxlength="4">
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer"
+                 style="border-top:1px solid var(--border-color);">
+                <button type="button"
+                        class="btn"
+                        id="resendOtpBtn"
+                        style="background:var(--bg-elevated);color:var(--text-muted);"
+                        onclick="resendPasswordChangeOtp()">
+                    <i class="bi bi-arrow-repeat me-1"></i>Resend OTP
+                </button>
+                <button type="button"
+                        class="btn"
+                        id="verifyOtpBtn"
+                        style="background:var(--danger);color:#fff;border:none;"
+                        onclick="handleOtpAndChangePassword()">
+                    <i class="bi bi-check-circle me-1"></i>Verify & Change Password
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- End OTP Modal -->
+
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script>
+    /*
+     * SECURITY CENTER JAVASCRIPT
+     * ============================
+     * Manages the 3-step password change flow:
+     *   Step 1: Capture old password
+     *   Step 2: Capture + validate new password (with strength meter)
+     *   OTP Modal: Send, resend, and verify server-side email OTP
+     */
+
+    let otpModal; /* Bootstrap Modal instance — global so all functions can reach it */
+
+    /* ── Initialize modal + Enter-key shortcuts when DOM is ready ── */
+    document.addEventListener("DOMContentLoaded", function () {
+        otpModal = new bootstrap.Modal(document.getElementById("otpModal"));
+
+        /* Set role-aware labels from localStorage */
+        const role = localStorage.getItem("role") || "user";
+
+        if (role === "admin") {
+            document.getElementById("roleSubtitle").textContent =
+                "Change your administrator account password securely.";
+            document.getElementById("roleBadge").textContent   = "Admin";
+            document.getElementById("roleBadge").style.background = "var(--accent)";
+            document.getElementById("roleBadge").style.color  = "#fff";
+        } else {
+            document.getElementById("roleSubtitle").textContent =
+                "Change your account password securely.";
+            document.getElementById("roleBadge").textContent   = "User";
+            document.getElementById("roleBadge").style.background = "var(--success)";
+            document.getElementById("roleBadge").style.color  = "#1E1E1E";
+        }
+
+        /* Enter in old password field → proceed to step 2 */
+        document.getElementById("old_password").addEventListener("keypress", function (e) {
+            if (e.key === "Enter") proceedToStep2();
+        });
+
+        /* Enter in OTP field → verify */
+        document.getElementById("otpInput").addEventListener("keypress", function (e) {
+            if (e.key === "Enter") handleOtpAndChangePassword();
+        });
+
+    }); /* ← DOMContentLoaded properly closed here */
+
+    /* ════════════════════════════════════════════════════════════════
+       GLOBAL HELPER FUNCTIONS
+       Defined at global scope so onclick="" attributes can reach them.
+       ════════════════════════════════════════════════════════════════ */
+
+    /*
+     * FUNCTION: showMainAlert
+     * PURPOSE:  Show a message in the main card (outside modal)
+     */
+    function showMainAlert(message, type) {
+        const box = document.getElementById("mainAlertBox");
+        box.className = `alert alert-${type}`;
+        box.innerHTML = message;
+        box.classList.remove("d-none");
+        box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    /*
+     * FUNCTION: showOtpAlert
+     * PURPOSE:  Show a message inside the OTP modal
+     */
+    function showOtpAlert(message, type) {
+        const box = document.getElementById("otpAlertBox");
+        box.className = `alert alert-${type}`;
+        box.innerHTML = message;
+        box.classList.remove("d-none");
+    }
+
+    function setOtpStatus(message) {
+        document.getElementById("otpStatusText").textContent = message;
+    }
+
+    function resetPasswordFlowUi() {
+        document.getElementById("old_password").disabled = false;
+        document.getElementById("step1Btn").classList.remove("d-none");
+        document.getElementById("step2Section").classList.add("d-none");
+        document.getElementById("verifyOtpBtn").disabled = false;
+        document.getElementById("verifyOtpBtn").innerHTML =
+            '<i class="bi bi-check-circle me-1"></i>Verify & Change Password';
+    }
+
+    /*
+     * FUNCTION: proceedToStep2
+     * PURPOSE:  Validate Step 1 then reveal Step 2 fields.
+     *           Old password is NOT sent to server here — that happens
+     *           only in the final PATCH call, avoiding a brute-force oracle.
+     */
+    function proceedToStep2() {
+        const old_pass = document.getElementById("old_password").value.trim();
+
+        if (!old_pass) {
+            showMainAlert("Please enter your current password.", "danger");
+            return;
+        }
+
+        document.getElementById("mainAlertBox").classList.add("d-none");
+        document.getElementById("step2Section").classList.remove("d-none");
+        document.getElementById("old_password").disabled = true;
+        document.getElementById("step1Btn").classList.add("d-none");
+
+        setTimeout(() => document.getElementById("new_password").focus(), 100);
+    }
+
+    /*
+     * FUNCTION: updateStrengthBar
+     * PURPOSE:  Real-time visual feedback on new password strength.
+     */
+    function updateStrengthBar(val) {
+        const hasUpper   = /[A-Z]/.test(val);
+        const hasLower   = /[a-z]/.test(val);
+        const hasDigit   = /[0-9]/.test(val);
+        const hasSpecial = /[^a-zA-Z0-9]/.test(val);
+        const hasLength  = val.length >= 8;
+
+        const green = "var(--success)";
+        const gray  = "var(--border-color)";
+
+        document.getElementById("sb1").style.background = hasUpper   ? green : gray;
+        document.getElementById("sb2").style.background = hasLower   ? green : gray;
+        document.getElementById("sb3").style.background = hasDigit   ? green : gray;
+        document.getElementById("sb4").style.background = hasSpecial ? green : gray;
+
+        const missing = [];
+        if (!hasLength)  missing.push("8+ chars");
+        if (!hasUpper)   missing.push("uppercase");
+        if (!hasLower)   missing.push("lowercase");
+        if (!hasDigit)   missing.push("digit");
+        if (!hasSpecial) missing.push("special char");
+
+        const label = document.getElementById("strengthLabel");
+        if (missing.length === 0) {
+            label.style.color = "var(--success)";
+            label.textContent = "✓ Password meets all requirements";
+        } else {
+            label.style.color = "var(--text-muted)";
+            label.textContent = "Still needs: " + missing.join(", ");
+        }
+    }
+
+    /*
+     * FUNCTION: proceedToOtp
+     * PURPOSE:  Validate Step 2, then POST to send-otp and open the modal.
+     */
+    async function proceedToOtp() {
+        const new_pass = document.getElementById("new_password").value.trim();
+        const confirm  = document.getElementById("confirm_password").value.trim();
+
+        if (!new_pass || !confirm) {
+            showMainAlert("Please fill in both new password fields.", "danger");
+            return;
+        }
+
+        if (new_pass !== confirm) {
+            showMainAlert("New passwords do not match.", "danger");
+            return;
+        }
+
+        const hasUpper   = /[A-Z]/.test(new_pass);
+        const hasLower   = /[a-z]/.test(new_pass);
+        const hasDigit   = /[0-9]/.test(new_pass);
+        const hasSpecial = /[^a-zA-Z0-9]/.test(new_pass);
+        const hasLength  = new_pass.length >= 8;
+
+        if (!hasLength || !hasUpper || !hasLower || !hasDigit || !hasSpecial) {
+            showMainAlert(
+                '<i class="bi bi-exclamation-triangle me-1"></i>' +
+                "Password doesn't meet complexity requirements. Check the indicator above.",
+                "danger"
+            );
+            return;
+        }
+
+        const step2Btn = document.getElementById("step2Btn");
+        step2Btn.disabled = true;
+        step2Btn.innerHTML = '<span class="spinner-sm"></span> Sending OTP...';
+
+        try {
+            const response = await fetch("/api/users/me/password/send-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: "{}"
+            });
+            const result = await response.json();
+
+            if (result.status !== "SUCCESS") {
+                showMainAlert(
+                    `<i class="bi bi-exclamation-triangle me-1"></i>${result.message || "Could not send OTP right now."}`,
+                    "danger"
+                );
+                return;
+            }
+
+            document.getElementById("mainAlertBox").classList.add("d-none");
+            document.getElementById("otpAlertBox").classList.add("d-none");
+            document.getElementById("otpInput").value = "";
+            setOtpStatus(`OTP sent to ${result.user_email}.`);
+            otpModal.show();
+            setTimeout(() => document.getElementById("otpInput").focus(), 400);
+
+        } catch (err) {
+            showMainAlert(
+                '<i class="bi bi-exclamation-triangle me-1"></i>Could not send OTP right now. Please try again.',
+                "danger"
+            );
+        } finally {
+            step2Btn.disabled = false;
+            step2Btn.innerHTML = '<i class="bi bi-key me-2"></i>Verify with OTP';
+        }
+    }
+
+    /*
+     * FUNCTION: resendPasswordChangeOtp
+     */
+    async function resendPasswordChangeOtp() {
+        const resendBtn = document.getElementById("resendOtpBtn");
+        resendBtn.disabled = true;
+        setOtpStatus("Resending OTP...");
+
+        try {
+            const response = await fetch("/api/users/me/password/resend-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: "{}"
+            });
+            const result = await response.json();
+
+            if (result.status === "SUCCESS") {
+                setOtpStatus(`OTP resent to ${result.user_email}.`);
+                showOtpAlert(
+                    '<i class="bi bi-envelope-check me-1"></i>Password OTP resent successfully.',
+                    "info"
+                );
+            } else {
+                setOtpStatus(result.message || "Could not resend OTP.");
+                showOtpAlert(
+                    `<i class="bi bi-exclamation-triangle me-1"></i>${result.message || "Could not resend OTP."}`,
+                    "warning"
+                );
+            }
+        } catch (err) {
+            setOtpStatus("Could not resend OTP right now.");
+            showOtpAlert(
+                '<i class="bi bi-exclamation-triangle me-1"></i>Could not resend OTP right now.',
+                "warning"
+            );
+        } finally {
+            resendBtn.disabled = false;
+        }
+    }
+
+    /*
+     * FUNCTION: handleOtpAndChangePassword
+     * PURPOSE:  Final step — PATCH /api/users/me/password with old + new + OTP.
+     *           C binary re-verifies old password, complexity, then writes new hash.
+     */
+    async function handleOtpAndChangePassword() {
+        const entered = document.getElementById("otpInput").value.trim();
+
+        if (!entered) {
+            showOtpAlert("Please enter the OTP.", "danger");
+            return;
+        }
+
+        const old_pass = document.getElementById("old_password").value;
+        const new_pass = document.getElementById("new_password").value;
+
+        const btn = document.getElementById("verifyOtpBtn");
+        btn.disabled  = true;
+        btn.innerHTML = '<span class="spinner-sm"></span> Changing...';
+
+        try {
+            const response = await fetch("/api/users/me/password", {
+                method:  "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body:    JSON.stringify({
+                    old_password: old_pass,
+                    new_password: new_pass,
+                    otp: entered
+                })
+            });
+            const result = await response.json();
+
+            if (result.status === "SUCCESS") {
+                otpModal.hide();
+                showMainAlert(
+                    '<i class="bi bi-check-circle me-2"></i>' +
+                    '<strong>Password changed successfully!</strong> Redirecting to login...',
+                    "success"
+                );
+                setTimeout(async () => {
+                    localStorage.clear();
+                    try { await fetch("/api/auth/logout", { method: "POST" }); } catch (_) {}
+                    window.location.href = "/";
+                }, 2200);
+
+            } else if (result.otp_error) {
+                showOtpAlert(
+                    `<i class="bi bi-x-circle me-1"></i>${result.message || "OTP verification failed."}`,
+                    "danger"
+                );
+                document.getElementById("otpInput").value = "";
+                document.getElementById("otpInput").focus();
+                btn.disabled  = false;
+                btn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Verify & Change Password';
+
+            } else {
+                otpModal.hide();
+                showMainAlert(
+                    '<i class="bi bi-x-circle me-1"></i>' +
+                    (result.message || "Could not change password. Start OTP verification again."),
+                    "danger"
+                );
+                resetPasswordFlowUi();
+            }
+
+        } catch (err) {
+            otpModal.hide();
+            showMainAlert(
+                "Could not change password right now. Start OTP verification again.",
+                "danger"
+            );
+            resetPasswordFlowUi();
+        }
+    }
+</script>
+{% endblock %}
