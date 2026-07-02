@@ -1,0 +1,530 @@
+/*
+ * dark-theme.css - Fresh Picks: VS Code Inspired Dark Theme
+ * ===========================================================
+ * Global stylesheet — shared by all pages.
+ * Page-specific rules have been extracted and inlined into
+ * each template's own <style> block.
+ *
+ * Color Palette:
+ *   Background:   #1E1E1E  (VS Code editor background)
+ *   Surface/Card: #252526  (VS Code sidebar)
+ *   Border:       #3E3E42  (VS Code separator lines)
+ *   Text Primary: #CCCCCC  (VS Code default text)
+ *   Text Muted:   #858585  (VS Code comments)
+ *   Accent Blue:  #007ACC  (VS Code blue - links, buttons)
+ *   Accent Hover: #1E97E8  (Lighter blue on hover)
+ *   Success:      #28A745  (Green)
+ *   Error/Danger: #F44747  (VS Code red)
+ *   Warning:      #CCA700  (Muted gold)
+ *
+ * Team: CodeCrafters | Project: Fresh Picks | SDP-1
+ */
+
+/* ══════════════════════════════════════════════════
+   §1 · THEME FOUNDATION
+   ══════════════════════════════════════════════════ */
+:root {
+    /* Backgrounds */
+    --bg-main:          #1e1e1e;
+    --bg-surface:       #252526;
+    --bg-elevated:      #2d2d30;
+
+    /* Accent */
+    --accent:           #007acc;
+    --accent-hover:     #1e97e8;
+
+    /* Text */
+    --text-primary:     #ffffff;
+    --text-bright:      #ffffff;
+    --text-muted:       #858585;
+    --accent-light:     #5bb8ff;
+
+    /* Borders */
+    --border-color:     #3e3e42;
+
+    /* Semantic */
+    --success:          #28a745;
+    --danger:           #f44747;
+    --warning:          #cca700;
+
+    /* Typography */
+    --font-main:        "Segoe UI", "Inter", system-ui, sans-serif;
+    --font-mono:        "Consolas", "Courier New", monospace;
+
+    /* Shape & Motion */
+    --radius:           6px;
+    --radius-lg:        10px;
+    --transition:       0.2s ease;
+}
+/* ══════════════════════════════════════════════════
+   §2 · GLOBAL RESET & TYPOGRAPHY
+   ══════════════════════════════════════════════════ */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+html, body {
+    height: 100%;
+}
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+p {
+    color: var(--text-primary);
+}
+a {
+    color: var(--accent-hover);
+    text-decoration: none;
+    transition: color var(--transition);
+}
+a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+hr {
+    border-color: var(--border-color);
+    opacity: 1;
+    margin: 1.5rem 0;
+}
+/* Scrollbar (Chromium) */
+::-webkit-scrollbar          { width: 8px; }
+::-webkit-scrollbar-track    { background: var(--bg-main); }
+::-webkit-scrollbar-thumb    { background: var(--border-color); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+/* ── Navbar ── */
+.navbar {
+    background-color: var(--bg-surface) !important;
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.65rem 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    min-height: 58px;
+}
+.navbar-brand {
+    color: var(--text-primary) !important;
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: -0.02em;
+}
+.navbar-brand .brand-dot {
+    color: var(--accent);
+}
+.navbar-nav .nav-link {
+    color: var(--text-muted) !important;
+    transition: color var(--transition);
+    padding: 0.4rem 0.75rem !important;
+    border-radius: var(--radius);
+}
+.navbar-nav .nav-link:hover {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-elevated);
+}
+.navbar-nav .nav-link.active {
+    color: var(--accent-hover) !important;
+}
+.navbar-toggler {
+    border-color: var(--border-color) !important;
+    padding: 0.3rem 0.5rem;
+}
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+.navbar-collapse {
+    background-color: var(--bg-surface) !important;
+}
+/* ── Main content ── */
+main {
+    flex: 1;
+    padding: 2rem 0;
+}
+/* ── Footer ── */
+footer {
+    background-color: var(--bg-surface);
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 1.25rem 0;
+    font-size: 0.82rem;
+    text-align: center;
+}
+footer a {
+    color: var(--text-muted);
+}
+footer a:hover {
+    color: var(--accent-hover);
+}
+/* ── Cards ── */
+.card {
+    background-color: var(--bg-surface) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    transition: transform var(--transition), box-shadow var(--transition);
+    color: var(--text-primary) !important;
+}
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.card-header {
+    background-color: var(--bg-elevated) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
+}
+.card-body {
+    padding: 1.5rem;
+}
+.card-title {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.card-text {
+    color: var(--text-muted);
+}
+/* ── Stat card links (admin dash + user dash) ── */
+a.stat-card-link {
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+a.stat-card-link:hover .card {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 122, 204, 0.2);
+}
+.stat-card-wrap {
+    position: relative;
+}
+/* ── Portal cards (index.html + user_home.html) ── */
+.portal-card {
+    cursor: pointer;
+    border: 2px solid var(--border-color) !important;
+    transition: border-color var(--transition), transform var(--transition),
+                box-shadow var(--transition) !important;
+    text-align: center;
+    padding: 2rem 1.5rem !important;
+}
+.portal-card:hover {
+    border-color: var(--accent) !important;
+    transform: translateY(-4px) !important;
+    box-shadow: 0 12px 32px rgba(0, 122, 204, 0.2) !important;
+}
+.portal-card .portal-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+/* ── Buttons ── */
+.btn {
+    border-radius: var(--radius) !important;
+    font-weight: 500;
+    font-size: 0.88rem;
+    padding: 0.55rem 1.25rem;
+    transition: all var(--transition);
+    letter-spacing: 0.01em;
+}
+.btn-primary {
+    background-color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: var(--text-primary) !important;
+}
+.btn-primary:hover {
+    background-color: var(--accent-hover) !important;
+    border-color: var(--accent-hover) !important;
+    box-shadow: 0 4px 12px rgba(0, 122, 204, 0.35);
+    transform: translateY(-1px);
+}
+.btn-primary:active {
+    transform: translateY(0);
+}
+/* Neutralise Bootstrap 5's default focus-visible ring for all button variants */
+.btn:focus-visible {
+    box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.45) !important;
+    outline: none !important;
+}
+.btn-secondary {
+    background-color: var(--bg-elevated) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+.btn-secondary:hover {
+    background-color: var(--border-color) !important;
+}
+.btn-danger {
+    background-color: var(--danger) !important;
+    border-color: var(--danger) !important;
+}
+.btn-full {
+    width: 100%;
+}
+/* ── Action buttons (Orders page) ── */
+.btn-action {
+    font-size: 0.82rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius);
+    font-weight: 500;
+    transition: opacity var(--transition), transform var(--transition),
+                box-shadow var(--transition);
+    border: none;
+    cursor: pointer;
+}
+.btn-action:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+/* ── Badges ── */
+.badge {
+    font-weight: 500;
+    font-size: 0.72rem;
+    padding: 0.3em 0.65em;
+    border-radius: 4px;
+}
+.badge.bg-primary { 
+    background-color: var(--accent) !important; 
+}
+.badge.bg-success { 
+    background-color: var(--success) !important; 
+    color: var(--bg-main) !important; 
+}
+.badge.bg-danger  { 
+    background-color: var(--danger) !important; 
+}
+/* Monospace ID pill */
+.id-badge {
+    display: inline-block;
+    background-color: rgba(0, 122, 204, 0.15);
+    color: var(--accent-hover);
+    border: 1px solid rgba(0, 122, 204, 0.3);
+    border-radius: 4px;
+    padding: 0.2em 0.6em;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+}
+/* ── Alerts ── */
+.alert {
+    border-radius: var(--radius) !important;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    border: 1px solid transparent;
+}
+/* ── Forms ── */
+.form-label {
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+}
+.form-control, .form-select {
+    background-color: var(--bg-elevated) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius) !important;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.9rem;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.2) !important;
+    outline: none;
+}
+.form-control::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.7;
+}
+.form-control.is-valid   { border-color: var(--success) !important; }
+.form-control.is-invalid { border-color: var(--danger) !important; }
+/* Prevent Bootstrap's light disabled background from bleeding through */
+.form-control:disabled,
+.form-control[readonly],
+.form-select:disabled {
+    background-color: var(--bg-elevated) !important;
+    color: var(--text-muted) !important;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+/* ══════════════════════════════════════════════════
+   §7b · DASHBOARD & PROFILE
+   ══════════════════════════════════════════════════ */
+.welcome-banner {
+    background: linear-gradient(135deg, var(--bg-surface), var(--bg-elevated));
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+}
+.welcome-banner h2 {
+    font-size: 1.6rem;
+    margin-bottom: 0.25rem;
+}
+.welcome-banner p {
+    color: var(--text-muted);
+    margin: 0;
+}
+.profile-field {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.profile-field:last-child {
+    border-bottom: none;
+}
+.profile-field-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.2rem;
+}
+.profile-field-value {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+/* Section header used across admin pages */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.section-header h5 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+.section-header .count-pill {
+    background: rgba(0, 122, 204, 0.15);
+    border: 1px solid rgba(0, 122, 204, 0.3);
+    color: var(--accent-hover);
+    font-size: 0.72rem;
+    padding: 0.15em 0.55em;
+    border-radius: 10px;
+    font-family: var(--font-mono);
+}
+.section-header .section-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-left: auto;
+}
+/* Empty state */
+.empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: var(--text-muted);
+}
+.empty-state i {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.75rem;
+    opacity: 0.5;
+}
+/* ── fp-toast — Admin/Inventory toast alias (maps to cart-toast system) ── */
+#toastContainer {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+/* ── Status header tints ── */
+.card-header.status-placed {
+    border-left: 4px solid var(--accent) !important;
+    background-color: rgba(0, 122, 204, 0.07) !important;
+}
+.card-header.status-out-delivery {
+    border-left: 4px solid var(--warning) !important;
+    background-color: rgba(204, 167, 0, 0.07) !important;
+}
+.card-header.status-delivered {
+    border-left: 4px solid var(--success) !important;
+    background-color: rgba(40, 167, 69, 0.07) !important;
+}
+/* ══════════════════════════════════════════════════
+   §8 · UTILITIES & ANIMATIONS
+   ══════════════════════════════════════════════════ */
+.text-bright   { color: var(--text-bright, #ffffff) !important; }
+.text-accent   { color: var(--accent-hover) !important; }
+.text-danger   { color: var(--danger) !important; }
+.text-muted    { color: var(--text-muted) !important; }
+.text-success  { color: var(--success) !important; }
+.text-warning  { color: var(--warning) !important; }
+.spinner-sm {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--text-primary);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    display: inline-block;
+    margin-right: 0.4rem;
+    vertical-align: middle;
+}
+.fade-in {
+    animation: fadeIn 0.4s ease;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+    from { opacity: 0.3; transform: scale(0.8); }
+    to   { opacity: 1;   transform: scale(1.1); }
+}
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+.table {
+    color: var(--text-primary) !important;
+}
+.table th {
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-color: var(--border-color) !important;
+}
+.table td {
+    border-color: var(--border-color) !important;
+    vertical-align: middle;
+}
+/* Pulse animation on "Ready to checkout" text */
+@keyframes fp-pulse-green {
+    0%, 100% { opacity: 1;    text-shadow: none; }
+    50%       { opacity: 0.7; text-shadow: 0 0 8px rgba(52, 208, 88, 0.7); }
+}
+/* Nuclear fix: make all Bootstrap modal close buttons white */
+.modal-content .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+/* Explicit white on all modal footer close buttons */
+.modal-footer .btn {
+    color: var(--text-bright, #ffffff) !important;
+}
