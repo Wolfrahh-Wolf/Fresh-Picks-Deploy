@@ -1604,7 +1604,7 @@ def api_download_receipt(order_id):
 @app.route("/api/orders/<order_id>/receipt/email", methods=["POST"])
 def api_email_receipt(order_id):
     """POST /api/orders/<order_id>/receipt/email"""
-    
+
     print(f"RECEIPT: role={session.get('role')} uid={session.get('user_id')} order={order_id}") # Logger
 
     if session.get("role") != "user":
@@ -1646,6 +1646,9 @@ def api_email_receipt(order_id):
         sg.client.mail.send.post(request_body=message.get())
 
     except Exception as e:
+        print(f"RECEIPT MAIL ERROR: {type(e).__name__}: {e}")
+        if hasattr(e, 'body'):
+            print(f"SENDGRID BODY: {e.body}")
         return jsonify({"status": "ERROR", "message": str(e)})
     finally:
         _cleanup_temp_file(tmp_path)
