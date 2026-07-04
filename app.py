@@ -14,6 +14,7 @@ import hashlib
 import heapq
 import tempfile
 import socket
+import threading
 from datetime import datetime, timedelta
 from queue import SimpleQueue
 from generate_receipt import generate_receipt
@@ -173,13 +174,20 @@ def _otp_email_html(purpose, otp_code, reference=""):
 
 
 def _send_otp_email(recipient_email, otp_code, purpose, reference=""):
-    """Replaces run_c_binary('mailer', ['otp', ...]) with Flask-Mail."""
     try:
         subject, text_body, html_body = _otp_email_html(purpose, otp_code, reference)
         msg = Message(subject=subject, recipients=[recipient_email],
                       body=text_body, html=html_body)
-        mail.send(msg)
-        return {"status": "SUCCESS", "data": "Email sent"}
+
+        def send_async():
+            with app.app_context():
+                try:
+                    mail.send(msg)
+                except Exception as e:
+                    print(f"MAIL ERROR (async): {type(e).__name__}: {e}")
+
+        threading.Thread(target=send_async, daemon=True).start()
+        return {"status": "SUCCESS", "data": "Email queued"}
     except Exception as e:
         print(f"MAIL ERROR: {type(e).__name__}: {e}") # Logger
         return {"status": "ERROR", "data": str(e)}
@@ -1591,7 +1599,14 @@ def api_email_receipt(order_id):
                 content_type="application/pdf",
                 data=f.read()
             )
-        mail.send(msg)
+        def send_async():
+            with app.app_context():
+                try:
+                    mail.send(msg)
+                except Exception as e:
+                    print(f"MAIL ERROR (receipt): {type(e).__name__}: {e}")
+
+        threading.Thread(target=send_async, daemon=True).start()
 
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)})
