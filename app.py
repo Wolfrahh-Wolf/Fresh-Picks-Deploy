@@ -18,6 +18,7 @@ import threading
 import sendgrid
 import base64
 from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Email
 from sendgrid.helpers.mail import (
     Mail as SGMail,
     Attachment,
@@ -188,7 +189,7 @@ def _send_otp_email(recipient_email, otp_code, purpose, reference=""):
     try:
         subject, text_body, html_body = _otp_email_html(purpose, otp_code, reference)
         message = SGMail(
-            from_email = ("FreshPicks", Config.SMTP_EMAIL),
+            from_email   = Email(Config.SMTP_EMAIL, "FreshPicks"),
             to_emails    = recipient_email,
             subject      = subject,
             html_content = html_body
@@ -1628,7 +1629,7 @@ def api_email_receipt(order_id):
             pdf_data = base64.b64encode(f.read()).decode()
 
         message = SGMail(
-            from_email = ("FreshPicks", Config.SMTP_EMAIL),
+            from_email   = Email(Config.SMTP_EMAIL, "FreshPicks"),
             to_emails    = user_email,
             subject      = f"FreshPicks Receipt — {order_id}",
             html_content = f"<p>Dear {receipt_data['full_name']},</p><p>Please find your FreshPicks receipt for order <strong>{order_id}</strong> attached.</p><p>Thank you for shopping with us!</p><p><strong>FreshPicks</strong></p>"
