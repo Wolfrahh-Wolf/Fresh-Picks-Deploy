@@ -49,8 +49,8 @@ db.init_app(app)
 
 app.config["MAIL_SERVER"]   = Config.SMTP_HOST
 app.config["MAIL_PORT"]     = Config.SMTP_PORT
-app.config["MAIL_USE_SSL"]  = True
-app.config["MAIL_USE_TLS"]  = False 
+app.config["MAIL_USE_TLS"]  = True
+app.config["MAIL_USE_SSL"]  = False
 app.config["MAIL_USERNAME"] = Config.SMTP_EMAIL
 app.config["MAIL_PASSWORD"] = Config.SMTP_APP_PASSWORD
 app.config["MAIL_DEFAULT_SENDER"] = (Config.SENDER_NAME, Config.SMTP_EMAIL)
