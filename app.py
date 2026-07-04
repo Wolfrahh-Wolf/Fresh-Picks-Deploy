@@ -1133,6 +1133,31 @@ def api_verify_and_checkout():
 
     db.session.commit()
 
+    try:
+        receipt_data, tmp_path, err = _build_receipt_pdf(new_order_id)
+        if not err:
+            user = db.session.get(User, user_id)
+            pdf_data = base64.b64encode(open(tmp_path, "rb").read()).decode()
+            from sendgrid.helpers.mail import Mail as SGMail, Attachment, FileContent, FileName, FileType, Disposition
+            message = SGMail(
+                from_email   = ("FreshPicks", Config.SMTP_EMAIL),
+                to_emails    = user.email,
+                subject      = f"FreshPicks Receipt — {new_order_id}",
+                html_content = f"<p>Dear {user.full_name},</p><p>Your order <strong>{new_order_id}</strong> has been placed successfully. Receipt attached.</p><p><strong>FreshPicks</strong></p>"
+            )
+            attachment = Attachment(
+                file_content = FileContent(pdf_data),
+                file_name    = FileName(f"{new_order_id}_receipt.pdf"),
+                file_type    = FileType("application/pdf"),
+                disposition  = Disposition("attachment")
+            )
+            message.attachment = attachment
+            from sendgrid import SendGridAPIClient
+            SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY")).client.mail.send.post(request_body=message.get())
+            _cleanup_temp_file(tmp_path)
+    except Exception as e:
+        print(f"RECEIPT MAIL ERROR: {e}")  # non-blocking — order still succeeds
+
     session.pop("pending_slot",      None)
     session.pop("pending_rzp_order", None)
 
@@ -1579,6 +1604,9 @@ def api_download_receipt(order_id):
 @app.route("/api/orders/<order_id>/receipt/email", methods=["POST"])
 def api_email_receipt(order_id):
     """POST /api/orders/<order_id>/receipt/email"""
+    
+    print(f"RECEIPT: role={session.get('role')} uid={session.get('user_id')} order={order_id}") # Logger
+
     if session.get("role") != "user":
         return jsonify({"status": "ERROR", "message": "Login required"}), 403
 

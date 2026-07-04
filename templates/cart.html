@@ -1467,7 +1467,6 @@ async function confirmPayment() {
                             })
                         });
                         const verifyData = await verifyRes.json();
-                        console.log("[DEBUG] verifyData.items:", verifyData.items, Array.isArray(verifyData.items));
 
                         if (verifyData.status !== "SUCCESS") {
                             throw new Error(verifyData.message || "Order verification failed");
