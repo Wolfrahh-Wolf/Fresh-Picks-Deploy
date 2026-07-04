@@ -15,6 +15,17 @@ import heapq
 import tempfile
 import socket
 import threading
+import sendgrid
+import base64
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import (
+    Mail as SGMail,
+    Attachment,
+    FileContent,
+    FileName, 
+    FileType, 
+    Disposition
+)
 from datetime import datetime, timedelta
 from queue import SimpleQueue
 from generate_receipt import generate_receipt
@@ -54,7 +65,7 @@ app.config["MAIL_USE_SSL"]  = False
 app.config["MAIL_USERNAME"] = Config.SMTP_EMAIL
 app.config["MAIL_PASSWORD"] = Config.SMTP_APP_PASSWORD
 app.config["MAIL_DEFAULT_SENDER"] = (Config.SENDER_NAME, Config.SMTP_EMAIL)
-mail = Mail(app)
+# mail = Mail(app)
 
 _rzp_client = razorpay.Client(auth=(Config.RAZORPAY_KEY_ID, Config.RAZORPAY_KEY_SECRET))
 
@@ -176,20 +187,17 @@ def _otp_email_html(purpose, otp_code, reference=""):
 def _send_otp_email(recipient_email, otp_code, purpose, reference=""):
     try:
         subject, text_body, html_body = _otp_email_html(purpose, otp_code, reference)
-        msg = Message(subject=subject, recipients=[recipient_email],
-                      body=text_body, html=html_body)
-
-        def send_async():
-            with app.app_context():
-                try:
-                    mail.send(msg)
-                except Exception as e:
-                    print(f"MAIL ERROR (async): {type(e).__name__}: {e}")
-
-        threading.Thread(target=send_async, daemon=True).start()
-        return {"status": "SUCCESS", "data": "Email queued"}
+        message = SGMail(
+            from_email   = Config.SMTP_EMAIL,
+            to_emails    = recipient_email,
+            subject      = subject,
+            html_content = html_body
+        )
+        sg = SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
+        sg.client.mail.send.post(request_body=message.get())
+        return {"status": "SUCCESS", "data": "Email sent"}
     except Exception as e:
-        print(f"MAIL ERROR: {type(e).__name__}: {e}") # Logger
+        print(f"MAIL ERROR: {type(e).__name__}: {e}")
         return {"status": "ERROR", "data": str(e)}
 
 
@@ -1588,25 +1596,26 @@ def api_email_receipt(order_id):
             return jsonify({"status": "ERROR",
                             "message": "No valid email found for this order"}), 400
 
-        msg = Message(
-            subject=f"FreshPicks Receipt — {order_id}",
-            recipients=[user_email],
-            body=f"Dear {receipt_data['full_name']},\n\nPlease find your FreshPicks receipt for order {order_id} attached.\n\nThank you for shopping with us!\n\nFreshPicks"
-        )
         with open(tmp_path, "rb") as f:
-            msg.attach(
-                filename=f"{order_id}_receipt.pdf",
-                content_type="application/pdf",
-                data=f.read()
-            )
-        def send_async():
-            with app.app_context():
-                try:
-                    mail.send(msg)
-                except Exception as e:
-                    print(f"MAIL ERROR (receipt): {type(e).__name__}: {e}")
+            pdf_data = base64.b64encode(f.read()).decode()
 
-        threading.Thread(target=send_async, daemon=True).start()
+        message = SGMail(
+            from_email   = Config.SMTP_EMAIL,
+            to_emails    = user_email,
+            subject      = f"FreshPicks Receipt — {order_id}",
+            html_content = f"<p>Dear {receipt_data['full_name']},</p><p>Please find your FreshPicks receipt for order <strong>{order_id}</strong> attached.</p><p>Thank you for shopping with us!</p><p><strong>FreshPicks</strong></p>"
+        )
+
+        attachment = Attachment(
+            file_content = FileContent(pdf_data),
+            file_name    = FileName(f"{order_id}_receipt.pdf"),
+            file_type    = FileType("application/pdf"),
+            disposition  = Disposition("attachment")
+        )
+        message.attachment = attachment
+
+        sg = SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
+        sg.client.mail.send.post(request_body=message.get())
 
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)})

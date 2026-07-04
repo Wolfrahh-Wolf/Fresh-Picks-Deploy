@@ -6,3 +6,4 @@ python-dotenv
 razorpay
 fpdf2
 gunicorn
+sendgrid
