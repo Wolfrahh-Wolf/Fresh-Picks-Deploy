@@ -49,6 +49,7 @@ db.init_app(app)
 app.config["MAIL_SERVER"]   = Config.SMTP_HOST
 app.config["MAIL_PORT"]     = Config.SMTP_PORT
 app.config["MAIL_USE_SSL"]  = True
+app.config["MAIL_USE_TLS"]  = False 
 app.config["MAIL_USERNAME"] = Config.SMTP_EMAIL
 app.config["MAIL_PASSWORD"] = Config.SMTP_APP_PASSWORD
 app.config["MAIL_DEFAULT_SENDER"] = (Config.SENDER_NAME, Config.SMTP_EMAIL)
@@ -180,6 +181,7 @@ def _send_otp_email(recipient_email, otp_code, purpose, reference=""):
         mail.send(msg)
         return {"status": "SUCCESS", "data": "Email sent"}
     except Exception as e:
+        print(f"MAIL ERROR: {type(e).__name__}: {e}") # Logger
         return {"status": "ERROR", "data": str(e)}
 
 
