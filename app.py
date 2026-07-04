@@ -1332,13 +1332,14 @@ def api_admin_order_stream():
     def event_generator():
         try:
             while True:
-                order = q.get()
-                yield f"data: {json.dumps(order)}\n\n"
+                try:
+                    order = q.get(timeout=25)   # unblock before Gunicorn timeout
+                    yield f"data: {json.dumps(order)}\n\n"
+                except Exception:
+                    yield f": keepalive\n\n"    # SSE comment — keeps connection alive
         finally:
-            _order_listeners.remove(q)
-
-    return Response(event_generator(), mimetype="text/event-stream",
-                    headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+            if q in _order_listeners:
+                _order_listeners.remove(q)
 
 
 @app.route("/api/admin/orders/<order_id>/status", methods=["PATCH"])
