@@ -17,10 +17,10 @@
 
 ## Demo Access
 
-| Role  | Username     | Password      |
-|-------|-------------|---------------|
-| User  | `demo_user` | `Demo@1234`   |
-| Admin | `Admin`     | your password |
+| Role  | Username | Password    |
+|-------|----------|-------------|
+| User  | `User`   | `User@123`  |
+| Admin | `Admin`  | `Admin@123` |
 
 > OTP emails may land in spam on first receipt — mark as "Not Spam" to receive future emails correctly.
 
@@ -97,64 +97,29 @@ Flask serves both the rendered HTML pages (Jinja2 SSR) and a JSON REST API consu
 <!-- Add screenshots here -->
 ## Screenshots
 
-| | |
-|---|---|
-| ![Landing](static/screenshots/landing.png) | ![Portals](static/screenshots/portals.png) |
-| ![Features](static/screenshots/features.png) | ![User Dashboard](static/screenshots/user_dash.png) |
-| ![Shop](static/screenshots/shop.png) | ![Cart](static/screenshots/cart.png) |
-| ![Orders](static/screenshots/orders.png) | ![Admin Dashboard](static/screenshots/admin_dash.png) |
-| ![Admin Orders](static/screenshots/admin_orders.png) | ![Analytics](static/screenshots/admin_analytics.png) |
+![Landing](static/screenshots/landing.png)
+![Portals](static/screenshots/portals.png)
+![Features](static/screenshots/features.png)
+![User Dashboard](static/screenshots/user_dash.png)
+![Shop](static/screenshots/shop.png)
+![Cart](static/screenshots/cart.png)
+![Orders](static/screenshots/orders.png)
+![Admin Dashboard](static/screenshots/admin_dash.png)
+![Admin Orders](static/screenshots/admin_orders.png)
+![Analytics](static/screenshots/admin_analytics.png)
 
 ---
 
-## Getting Started
-
-### Prerequisites
-
-```
-Python 3.10+
-PostgreSQL (or a Supabase project)
-Razorpay account (test keys work)
-SendGrid account (free tier)
-```
-
-### Install Dependencies
+## Running Locally
 
 ```bash
 pip install -r requirements.txt
-```
-
-### Environment Variables
-
-Copy `.env.example` to `.env` and fill in your values:
-
-```bash
-cp .env.example .env
-```
-
-```env
-APP_SECRET_KEY=your_secret_key
-DATABASE_URL=postgresql://...
-RAZORPAY_KEY_ID=rzp_test_...
-RAZORPAY_KEY_SECRET=...
-SMTP_EMAIL=your_sendgrid_verified_email
-SENDGRID_API_KEY=SG....
-OTP_TTL_MINUTES=10
-```
-
-### Seed the Database
-
-```bash
+cp .env.example .env   # fill in your values
 python seed.py
-```
-
-### Run Locally
-
-```bash
 python app.py
 ```
 
-Visit `http://localhost:5000`
+The live version is deployed at [fresh-picks-deploy.onrender.com](https://fresh-picks-deploy.onrender.com) — no local setup needed to explore the app.
 
 ---
 
