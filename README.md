@@ -97,15 +97,34 @@ Flask serves both the rendered HTML pages (Jinja2 SSR) and a JSON REST API consu
 <!-- Add screenshots here -->
 ## Screenshots
 
+**Landing Page**
 ![Landing](static/screenshots/landing.png)
+
+**Portals**
 ![Portals](static/screenshots/portals.png)
+
+**Features**
 ![Features](static/screenshots/features.png)
+
+**User Dashboard**
 ![User Dashboard](static/screenshots/user_dash.png)
+
+**Shop**
 ![Shop](static/screenshots/shop.png)
+
+**Cart**
 ![Cart](static/screenshots/cart.png)
+
+**Orders**
 ![Orders](static/screenshots/orders.png)
+
+**Admin Dashboard**
 ![Admin Dashboard](static/screenshots/admin_dash.png)
+
+**Admin Orders**
 ![Admin Orders](static/screenshots/admin_orders.png)
+
+**Analytics**
 ![Analytics](static/screenshots/admin_analytics.png)
 
 ---
