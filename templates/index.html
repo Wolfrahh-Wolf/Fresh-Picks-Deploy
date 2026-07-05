@@ -1,10 +1,151 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 
-{% block title %}Welcome{% endblock %}
+{% block title %}Fresh Picks — Online Grocery Delivery{% endblock %}
 
 {% block extra_head %}
 <style>
-/* ── Page-specific CSS extracted from dark-theme.css (index.html) ── */
+
+/* ── Hero ─────────────────────────────────────────────────────────── */
+.lp-hero {
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 1rem 3rem;
+    position: relative;
+}
+
+.lp-hero > * { position: relative; z-index: 1; }
+
+.lp-logo {
+    font-size: 5.5rem;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+    animation: lp-float 3.5s ease-in-out infinite;
+    display: block;
+}
+
+@keyframes lp-float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-12px); }
+}
+
+.lp-title {
+    font-size: 3.8rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    color: var(--text-bright);
+    margin-bottom: 0;
+    line-height: 1.05;
+}
+
+.lp-title-accent {
+    background: linear-gradient(110deg, var(--accent) 0%, var(--accent-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.lp-tagline {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 580px;
+    margin: 1.5rem auto 2.75rem;
+    line-height: 1.7;
+}
+
+.lp-tagline strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.lp-cta-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.lp-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    background: var(--accent);
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 0.82rem 2.2rem;
+    border-radius: var(--radius-lg);
+    border: 2px solid transparent;
+    text-decoration: none;
+    transition: all 0.22s ease;
+    box-shadow: 0 4px 20px rgba(0,122,204,0.3);
+}
+.lp-btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0,122,204,0.42);
+    color: #fff;
+    text-decoration: none;
+}
+
+.lp-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.82rem 1.6rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    text-decoration: none;
+    transition: all 0.22s ease;
+}
+.lp-btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent-hover);
+    text-decoration: none;
+}
+
+/* ── Scroll chevron ──────────────────────────────────────────────── */
+.lp-scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--text-muted);
+    font-size: 1.35rem;
+    animation: lp-bounce 2.2s ease-in-out infinite;
+    z-index: 1;
+    opacity: 0.55;
+    text-decoration: none;
+}
+@keyframes lp-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0);  }
+    50%       { transform: translateX(-50%) translateY(7px); }
+}
+
+/* ── Portal section ──────────────────────────────────────────────── */
+.lp-portals {
+    padding: 3.5rem 0 1.5rem;
+}
+
+.lp-portals-label {
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+}
+
+/* Portal cards — match admin dash stat-card aesthetic */
 .portal-card {
     cursor: pointer;
     border: 2px solid var(--border-color) !important;
@@ -13,75 +154,212 @@
     text-align: center;
     padding: 2rem 1.5rem !important;
 }
-
 .portal-card:hover {
     border-color: var(--accent) !important;
     transform: translateY(-4px) !important;
     box-shadow: 0 12px 32px rgba(0, 122, 204, 0.2) !important;
 }
-
 .portal-card .portal-icon {
     font-size: 2.8rem;
     margin-bottom: 1rem;
     display: block;
 }
+.portal-card h3 { 
+    font-size: 1.2rem; 
+    margin-bottom: 0.5rem
+ }
 
-.portal-card h3 {
-    font-size: 1.2rem;
+/* ── Section headers ─────────────────────────────────────────────── */
+.lp-section {
+    padding: 4rem 0 1rem;
+}
+
+.lp-section-title {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.35rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-bottom: 0.65rem;
+}
+.lp-section-title i { color: var(--accent); }
+
+.lp-subsection-title {
+    font-size: 1.05rem;
+    color: var(--accent-light);
+    font-weight: 600;
+    margin-bottom: 1.1rem;
+    margin-top: 2rem;
+    letter-spacing: 0.02em;
+}
+
+/* ── Feature pres-cards ──────────────────────────────────────────── */
+.lp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.lp-feat-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1.35rem;
+    text-align: center;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+.lp-feat-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0,122,204,0.45);
+    text-decoration: none;
+    color: inherit;
+}
+.lp-feat-icon {
+    font-size: 2rem;
+    color: var(--accent);
+    margin-bottom: 0.7rem;
+    display: block;
+    transition: transform 0.2s ease;
+}
+.lp-feat-card:hover .lp-feat-icon { transform: scale(1.1); }
+.lp-feat-card h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.35rem;
+}
+.lp-feat-card p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ── Unified engineering / infra cards ───────────────────────────── */
+.lp-eng-card {
+    background: linear-gradient(145deg, var(--bg-surface) 0%, var(--bg-main) 100%);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 1.6rem;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+.lp-eng-card:hover {
+    transform: scale(1.025);
+    box-shadow: 0 10px 30px rgba(0,122,204,0.14);
+    border-color: var(--accent);
+}
+.lp-eng-card-bg-icon {
+    position: absolute;
+    right: -12px;
+    bottom: -18px;
+    font-size: 5.5rem;
+    color: rgba(255,255,255,0.028);
+    transform: rotate(-15deg);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+.lp-eng-card:hover .lp-eng-card-bg-icon {
+    color: rgba(0,122,204,0.08);
+    transform: rotate(0deg) scale(1.1);
+}
+.lp-eng-card-inner { position: relative; z-index: 1; }
+.lp-eng-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
     margin-bottom: 0.5rem;
 }
-
-.hero-section {
-    text-align: center;
-    padding: 4rem 1rem 2rem;
+.lp-eng-card-header i {
+    font-size: 1.4rem;
+    color: var(--accent);
+    flex-shrink: 0;
 }
-
-.hero-section h1 {
-    font-size: 2.8rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-hover) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 1rem;
-}
-
-.hero-section p {
-    color: var(--text-muted);
+.lp-eng-card-title {
     font-size: 1.1rem;
-    max-width: 500px;
-    margin: 0 auto 2.5rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin: 0;
+}
+.lp-eng-badge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--success);
+    background: rgba(40,167,69,0.1);
+    padding: 0.18rem 0.55rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 0.85rem;
+}
+.lp-eng-card p {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.6;
 }
 
-/* ── Responsive: Tablet (769px–1024px) ── */
+/* Accent color variants for infra section */
+.lp-eng-card.accent-green  { border-left-color: var(--success); }
+.lp-eng-card.accent-green .lp-eng-card-header i { color: var(--success); }
+.lp-eng-card.accent-green .lp-eng-badge { color: var(--success); background: rgba(40,167,69,0.1); }
+
+.lp-eng-card.accent-orange { border-left-color: #e67e22; }
+.lp-eng-card.accent-orange .lp-eng-card-header i { color: #e67e22; }
+.lp-eng-card.accent-orange .lp-eng-badge { color: #e67e22; background: rgba(230,126,34,0.1); }
+
+.lp-eng-card.accent-purple { border-left-color: #8b5cf6; }
+.lp-eng-card.accent-purple .lp-eng-card-header i { color: #8b5cf6; }
+.lp-eng-card.accent-purple .lp-eng-badge { color: #8b5cf6; background: rgba(139,92,246,0.1); }
+
+/* ── Section divider ─────────────────────────────────────────────── */
+.lp-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin: 1rem 0 0;
+}
+
+/* ── Footer register nudge ───────────────────────────────────────── */
+.lp-register-nudge {
+    text-align: center;
+    padding: 3.5rem 0 4.5rem;
+}
+.lp-register-nudge p {
+    color: var(--text-muted);
+    margin-bottom: 1.1rem;
+    font-size: 1rem;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
-    .hero-section {
-        padding: 3rem 1rem 1.5rem;
-    }
-    .hero-section h1 {
-        font-size: 2.3rem;
-    }
+    .lp-title   { font-size: 3rem; }
+    .lp-section { padding: 3rem 0 1rem; }
 }
 
-/* ── Responsive: Mobile (≤768px) ── */
 @media (max-width: 768px) {
-    .hero-section {
-        padding: 2.25rem 1rem 1rem;
-    }
-    .hero-section h1 {
-        font-size: 1.9rem;
-        flex-wrap: wrap;
-    }
-    .hero-section p {
-        font-size: 1rem;
-        max-width: 100%;
-    }
-    .portal-card {
-        padding: 1.5rem 1rem !important;
-    }
-    .portal-card .portal-icon {
-        font-size: 2.3rem;
-    }
+    .lp-hero    { min-height: 75vh; padding: 3rem 1rem 2.5rem; }
+    .lp-logo    { font-size: 4rem; }
+    .lp-title   { font-size: 2.25rem; letter-spacing: -0.5px; }
+    .lp-tagline { font-size: 1rem; margin-bottom: 2rem; }
+    .lp-cta-row { flex-direction: column; gap: 0.75rem; }
+    .lp-btn-primary, .lp-btn-ghost { width: 100%; justify-content: center; }
+    .lp-section-title { font-size: 1.5rem; }
+    .lp-grid { grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+    .lp-portal-card .card { padding: 1.5rem 1rem 1.25rem; }
+    .lp-eng-card { padding: 1.25rem; }
+    .lp-eng-card-title { font-size: 1rem; }
+    .lp-eng-card-bg-icon { font-size: 4rem; }
+    .lp-scroll-hint { display: none; }
 }
 </style>
 {% endblock %}
@@ -89,88 +367,443 @@
 {% block content %}
 <div class="container">
 
-    {# Hero section: app name + tagline #}
-    <div class="hero-section">
-        <h1>
-            <i class="bi bi-basket2-fill me-3"
-               style="font-size:2.5rem; -webkit-text-fill-color: var(--accent);"></i>
-            Fresh Picks
+    {# ══════════════════════════════════════════════════════════════
+       HERO
+       Full-height intro with animated logo, title, and dual CTAs.
+       "Get Started" scrolls to the portal cards below.
+       ══════════════════════════════════════════════════════════════ #}
+    <div class="lp-hero">
+
+        <i class="bi bi-basket3-fill lp-logo"></i>
+
+        <h1 class="lp-title">
+            <span class="lp-title-accent">Fresh</span> Picks
         </h1>
-        <p>Your neighbourhood grocery store, now online. Fresh produce, fast delivery.</p>
-    </div>
 
-    {# Two portal cards side by side (stacks on mobile) #}
-    <div class="row justify-content-center g-4 pb-5">
-
-        {# ── Admin Portal Card ── #}
-        <div class="col-md-5 col-lg-4">
-            <div class="card portal-card"
-                 onclick="window.location.href='/login/admin'"
-                 role="button"
-                 tabindex="0"
-                 onkeypress="if(event.key==='Enter') window.location.href='/login/admin'">
-
-                <div class="card-body">
-                    <span class="portal-icon">🛡️</span>
-                    <h3 class="card-title">Admin Portal</h3>
-                    <p class="card-text mb-3">
-                        Manage inventory, monitor active orders,
-                        and update delivery statuses.
-                    </p>
-                    <span class="badge bg-danger mb-3"
-                          style="color:#1E1E1E!important;">Staff Only</span>
-                    <div>
-                        <a href="/login/admin" class="btn btn-primary btn-full">
-                            <i class="bi bi-shield-lock me-2"></i>Admin Login
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {# end Admin Portal Card #}
-
-        {# ── User Portal Card ── #}
-        <div class="col-md-5 col-lg-4">
-            {#
-              onclick/href: NOW uses /login/user (split route — Session 5).
-              Flask maps GET /login/user → renders user_login.html (new page,
-              also created in Session 5) with the Cart-Check icon.
-            #}
-            <div class="card portal-card"
-                 onclick="window.location.href='/login/user'"
-                 role="button"
-                 tabindex="0"
-                 onkeypress="if(event.key==='Enter') window.location.href='/login/user'">
-
-                <div class="card-body">
-                    <span class="portal-icon">🛒</span>
-                    <h3 class="card-title">User Portal</h3>
-                    <p class="card-text mb-3">
-                        Browse fresh produce, manage your orders,
-                        and update your profile.
-                    </p>
-                    <span class="badge bg-success mb-3"
-                          style="color:#1E1E1E!important;">Customer</span>
-                    <div>
-                        {# Updated href — split route #}
-                        <a href="/login/user" class="btn btn-primary btn-full">
-                            <i class="bi bi-cart-check me-2"></i>User Login
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {# end User Portal Card #}
-
-    </div>
-    {# end portal cards row #}
-
-    {# New user? Register link #}
-    <div class="text-center pb-4">
-        <p class="text-muted">
-            New customer?
-            <a href="/register">Create an account &rarr;</a>
+        <p class="lp-tagline">
+            Your neighbourhood grocery store, now online.<br>
+            Fresh produce, fast delivery.
         </p>
+
+        <div class="lp-cta-row">
+            <a href="#portals" class="lp-btn-primary">
+                <i class="bi bi-rocket-takeoff"></i>Get Started
+            </a>
+        </div>
+
+        {# Down chevron — smooth scroll hint #}
+        <a href="#portals" class="lp-scroll-hint" aria-hidden="true">
+            <i class="bi bi-chevron-double-down"></i>
+        </a>
+
+    </div>
+    {# end hero #}
+
+
+    {# ══════════════════════════════════════════════════════════════
+       PORTAL CARDS
+       Admin Portal and User Portal — entry point for both roles.
+       ══════════════════════════════════════════════════════════════ #}
+    
+
+    <div class="lp-portals" id="portals">
+
+        <p class="lp-portals-label">Choose your portal to continue</p>
+
+        {# ── Demo Credentials Card ── #}
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-10 col-lg-8">
+                <div class="lp-eng-card" style="padding: 1.25rem 1.5rem;">
+                    <i class="bi bi-key lp-eng-card-bg-icon"></i>
+                    <div class="lp-eng-card-inner">
+                        <div class="lp-eng-card-header mb-3">
+                            <i class="bi bi-key-fill"></i>
+                            <h3 class="lp-eng-card-title">Quick Demo Access</h3>
+                            <span class="badge ms-auto"
+                                style="background:rgba(0,122,204,0.15);
+                                        color:var(--accent-hover);
+                                        border:1px solid rgba(0,122,204,0.3);
+                                        font-size:0.68rem; font-weight:600;">
+                                Try it out
+                            </span>
+                        </div>
+                        <div class="row g-0">
+                            <div class="col-6 pe-3" style="border-right:1px solid var(--border-color);">
+                                <div class="mb-1">
+                                    <span class="badge bg-danger"
+                                        style="font-size:0.65rem;">Admin</span>
+                                </div>
+                                <div style="font-size:0.7rem; color:var(--text-muted);
+                                            text-transform:uppercase; letter-spacing:0.08em;
+                                            margin-bottom:0.2rem;">Username</div>
+                                <code style="font-size:0.82rem; color:var(--text-primary);">Admin</code>
+                                <div style="font-size:0.7rem; color:var(--text-muted);
+                                            text-transform:uppercase; letter-spacing:0.08em;
+                                            margin-top:0.6rem; margin-bottom:0.2rem;">Password</div>
+                                <code style="font-size:0.82rem; color:var(--text-primary);">Admin@123</code>
+                            </div>
+                            <div class="col-6 ps-3">
+                                <div class="mb-1">
+                                    <span class="badge bg-success"
+                                        style="color:#1E1E1E!important; font-size:0.65rem;">
+                                        User
+                                    </span>
+                                </div>
+                                <div style="font-size:0.7rem; color:var(--text-muted);
+                                            text-transform:uppercase; letter-spacing:0.08em;
+                                            margin-bottom:0.2rem;">Username</div>
+                                <code style="font-size:0.82rem; color:var(--text-primary);">User</code>
+                                <div style="font-size:0.7rem; color:var(--text-muted);
+                                            text-transform:uppercase; letter-spacing:0.08em;
+                                            margin-top:0.6rem; margin-bottom:0.2rem;">Password</div>
+                                <code style="font-size:0.82rem; color:var(--text-primary);">User@123</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ── Portal Cards — equal width and height ── #}
+        <div class="row justify-content-center g-4 pb-3">
+
+            {# ── Admin Portal Card ── #}
+            <div class="col-md-5 col-lg-4">
+                <div class="card portal-card"
+                    onclick="window.location.href='/login/admin'"
+                    role="button"
+                    tabindex="0"
+                    onkeypress="if(event.key==='Enter') window.location.href='/login/admin'">
+                    <div class="card-body">
+                        <span class="portal-icon">🛡️</span>
+                        <h3 class="card-title">Admin Portal</h3>
+                        <p class="card-text mb-3">
+                            Manage inventory, monitor active orders,
+                            and update delivery statuses.
+                        </p>
+                        <span class="badge bg-danger mb-3"
+                            style="color:#1E1E1E!important;">Staff Only</span>
+                        <div>
+                            <a href="/login/admin" class="btn btn-primary btn-full">
+                                <i class="bi bi-shield-lock me-2"></i>Admin Login
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# ── User Portal Card ── #}
+            <div class="col-md-5 col-lg-4">
+                <div class="card portal-card"
+                    onclick="window.location.href='/login/user'"
+                    role="button"
+                    tabindex="0"
+                    onkeypress="if(event.key==='Enter') window.location.href='/login/user'">
+                    <div class="card-body">
+                        <span class="portal-icon">🛒</span>
+                        <h3 class="card-title">User Portal</h3>
+                        <p class="card-text mb-3">
+                            Browse fresh produce, manage your orders,
+                            and update your profile.
+                        </p>
+                        <span class="badge bg-success mb-3"
+                            style="color:#1E1E1E!important;">Customer</span>
+                        <div>
+                            <a href="/login/user" class="btn btn-primary btn-full">
+                                <i class="bi bi-cart-check me-2"></i>User Login
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+</div>
+
+        <div class="text-center pb-2">
+            <p class="text-muted" style="font-size:0.9rem;">
+                New customer? <a href="/register">Create an account &rarr;</a>
+            </p>
+        </div>
+
+    </div>
+
+    {# end portals #}
+
+    <hr class="lp-divider">
+
+
+    {# ══════════════════════════════════════════════════════════════
+       APPLICATION FEATURES
+       ══════════════════════════════════════════════════════════════ #}
+    <div class="lp-section">
+        <h2 class="lp-section-title"><i class="bi bi-window-stack"></i>Application Features</h2>
+
+        <h4 class="lp-subsection-title">User Features</h4>
+        <div class="lp-grid">
+            <a href="/register" class="lp-feat-card" target="_blank">
+                <span class="lp-feat-icon"><i class="bi bi-person-plus"></i></span>
+                <h4>Register</h4>
+                <p>New user onboarding</p>
+            </a>
+            <a href="/dashboard" class="lp-feat-card" target="_blank">
+                <span class="lp-feat-icon"><i class="bi bi-house-door"></i></span>
+                <h4>User Dash</h4>
+                <p>Customer dashboard</p>
+            </a>
+            <a href="/shop" class="lp-feat-card" target="_blank">
+                <span class="lp-feat-icon"><i class="bi bi-cart3"></i></span>
+                <h4>Shop</h4>
+                <p>Browse &amp; purchase vegetables</p>
+            </a>
+            <a href="/orders" class="lp-feat-card" target="_blank">
+                <span class="lp-feat-icon"><i class="bi bi-bag-check"></i></span>
+                <h4>My Orders</h4>
+                <p>Customer order history</p>
+            </a>
+            <a href="/profile" class="lp-feat-card" target="_blank">
+                <span class="lp-feat-icon"><i class="bi bi-person-badge"></i></span>
+                <h4>Profile</h4>
+                <p>User details &amp; security</p>
+            </a>
+        </div>
+
+        <h4 class="lp-subsection-title">Administrative Controls</h4>
+        <div class="lp-grid">
+            <a href="/admin/dashboard" class="lp-feat-card" target="_blank">
+                <span class="lp-feat-icon"><i class="bi bi-speedometer2"></i></span>
+                <h4>Admin Dash</h4>
+                <p>Admin control center</p>
+            </a>
+            <a href="/admin/inventory" class="lp-feat-card" target="_blank">
+                <span class="lp-feat-icon"><i class="bi bi-box-seam"></i></span>
+                <h4>Inventory</h4>
+                <p>Manage stock</p>
+            </a>
+            <a href="/admin/orders" class="lp-feat-card" target="_blank">
+                <span class="lp-feat-icon"><i class="bi bi-receipt"></i></span>
+                <h4>Admin Orders</h4>
+                <p>Dispatch &amp; track</p>
+            </a>
+            <a href="/admin/users" class="lp-feat-card" target="_blank">
+                <span class="lp-feat-icon"><i class="bi bi-people"></i></span>
+                <h4>Users List</h4>
+                <p>Customer directory</p>
+            </a>
+            <a href="/admin/analytics" class="lp-feat-card" target="_blank">
+                <span class="lp-feat-icon"><i class="bi bi-bar-chart-line"></i></span>
+                <h4>Analytics</h4>
+                <p>Revenue &amp; insights</p>
+            </a>
+        </div>
+    </div>
+
+    <hr class="lp-divider">
+
+
+    {# ══════════════════════════════════════════════════════════════
+       ALGORITHMIC CORE
+       Only Min-Heap (dispatch) and Round-Robin (agent assignment).
+       Singly LL, Doubly LL, and Hash Table removed —
+       data persistence now handled by PostgreSQL.
+       ══════════════════════════════════════════════════════════════ #}
+    <div class="lp-section">
+        <h2 class="lp-section-title"><i class="bi bi-diagram-3-fill"></i>Algorithmic Core</h2>
+        <h4 class="lp-subsection-title">Dispatch &amp; Routing</h4>
+        <div class="lp-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+
+            <div class="lp-eng-card">
+                <i class="bi bi-diagram-2 lp-eng-card-bg-icon"></i>
+                <div class="lp-eng-card-inner">
+                    <div class="lp-eng-card-header">
+                        <i class="bi bi-diagram-2"></i>
+                        <h3 class="lp-eng-card-title">Min-Heap Priority Queue</h3>
+                    </div>
+                    <div class="lp-eng-badge">Priority-Based Sorting</div>
+                    <p>Powers the admin order dispatch engine. Queued orders are sorted by delivery slot preference - Morning slots bubble to the heap root for immediate extraction and assignment.</p>
+                </div>
+            </div>
+
+            <div class="lp-eng-card">
+                <i class="bi bi-arrow-repeat lp-eng-card-bg-icon"></i>
+                <div class="lp-eng-card-inner">
+                    <div class="lp-eng-card-header">
+                        <i class="bi bi-arrow-repeat"></i>
+                        <h3 class="lp-eng-card-title">Round-Robin Assignment</h3>
+                    </div>
+                    <div class="lp-eng-badge">Round-Robin</div>
+                    <p>Cycles through available delivery agents one by one, ensuring every agent gets an equal share of orders. No one gets overloaded, no one sits idle.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <hr class="lp-divider">
+
+
+    {# ══════════════════════════════════════════════════════════════
+       CLOUD INFRASTRUCTURE & STACK
+       New section — replaces the old Intranet / local-deployment content.
+       Covers the production deployment setup on Render + Supabase.
+       ══════════════════════════════════════════════════════════════ #}
+    <div class="lp-section">
+        <h2 class="lp-section-title"><i class="bi bi-cloud-fill"></i>Cloud Infrastructure &amp; Stack</h2>
+        <h4 class="lp-subsection-title">Production Deployment</h4>
+        <div class="lp-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+
+            <div class="lp-eng-card">
+                <i class="bi bi-server lp-eng-card-bg-icon"></i>
+                <div class="lp-eng-card-inner">
+                    <div class="lp-eng-card-header">
+                        <i class="bi bi-cpu-fill"></i>
+                        <h3 class="lp-eng-card-title">Flask · Python</h3>
+                    </div>
+                    <div class="lp-eng-badge">REST API Gateway</div>
+                    <p>Python REST API layer. Manages routing, auth sessions, request handling, and database calls.</p>
+                </div>
+            </div>
+
+            <div class="lp-eng-card ">
+                <i class="bi bi-database lp-eng-card-bg-icon"></i>
+                <div class="lp-eng-card-inner">
+                    <div class="lp-eng-card-header">
+                        <i class="bi bi-database-fill"></i>
+                        <h3 class="lp-eng-card-title">PostgreSQL · Supabase</h3>
+                    </div>
+                    <div class="lp-eng-badge">Cloud RDBMS</div>
+                    <p>Cloud-hosted relational database. Stores users, orders, inventory, and transactions — queried via SQL through Supabase's managed Postgres instance.</p>
+                </div>
+            </div>
+
+            <div class="lp-eng-card">
+                <i class="bi bi-cloud-upload lp-eng-card-bg-icon"></i>
+                <div class="lp-eng-card-inner">
+                    <div class="lp-eng-card-header">
+                        <i class="bi bi-cloud-arrow-up-fill"></i>
+                        <h3 class="lp-eng-card-title">Render</h3>
+                    </div>
+                    <div class="lp-eng-badge">PaaS · Auto-Deploy</div>
+                    <p>Cloud deployment platform. Pulls from GitHub, builds the container, and serves the app publicly with automatic HTTPS.</p>
+                </div>
+            </div>
+
+            <div class="lp-eng-card">
+                <i class="bi bi-send lp-eng-card-bg-icon"></i>
+                <div class="lp-eng-card-inner">
+                    <div class="lp-eng-card-header">
+                        <i class="bi bi-send-fill"></i>
+                        <h3 class="lp-eng-card-title">SendGrid</h3>
+                    </div>
+                    <div class="lp-eng-badge">Transactional Email API</div>
+                    <p>Transactional email API. Delivers OTPs, password change notifications, and order receipts programmatically on trigger.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <hr class="lp-divider">
+
+
+    {# ══════════════════════════════════════════════════════════════
+       ENGINEERING EXCELLENCE
+       Replaces old "Unique Engineering Features" heading.
+       Retains: Password Hashing + all of Automated Mailing & Integrations.
+       Removes: HTTPS / Intranet Hosting (superseded by Render + Supabase).
+       ══════════════════════════════════════════════════════════════ #}
+    <div class="lp-section">
+        <h2 class="lp-section-title"><i class="bi bi-cpu-fill"></i>Engineering Excellence</h2>
+
+        <h4 class="lp-subsection-title">Security Layer</h4>
+        <div class="lp-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+
+            <div class="lp-eng-card">
+                <i class="bi bi-incognito lp-eng-card-bg-icon"></i>
+                <div class="lp-eng-card-inner">
+                    <div class="lp-eng-card-header">
+                        <i class="bi bi-incognito"></i>
+                        <h3 class="lp-eng-card-title">Password Hashing</h3>
+                    </div>
+                    <div class="lp-eng-badge">SHA-256 Cryptography</div>
+                    <p>Plaintext credentials are cryptographically hashed in Python before being written to the database, ensuring stored passwords are never exposed as readable strings.</p>
+                </div>
+            </div>
+
+            <div class="lp-eng-card">
+                <i class="bi bi-key lp-eng-card-bg-icon"></i>
+                <div class="lp-eng-card-inner">
+                    <div class="lp-eng-card-header">
+                        <i class="bi bi-key-fill"></i>
+                        <h3 class="lp-eng-card-title">OTP Verification</h3>
+                    </div>
+                    <div class="lp-eng-badge">Time-To-Live Logic</div>
+                    <p>Secure, time-limited One-Time Passwords guard critical operations — account registration, password changes, and order cancellations — with email-based 2-step verification.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <h4 class="lp-subsection-title">Automated Mailing &amp; Integrations</h4>
+        <div class="lp-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+
+            <div class="lp-eng-card">
+                <i class="bi bi-envelope-paper lp-eng-card-bg-icon"></i>
+                <div class="lp-eng-card-inner">
+                    <div class="lp-eng-card-header">
+                        <i class="bi bi-envelope-paper-fill"></i>
+                        <h3 class="lp-eng-card-title">Receipt Dispatch</h3>
+                    </div>
+                    <div class="lp-eng-badge">SendGrid SMTP</div>
+                    <p>Instantly packages the generated PDF invoice and emails it directly to the customer's inbox upon a successful checkout — fully automated, zero manual steps.</p>
+                </div>
+            </div>
+
+            <div class="lp-eng-card">
+                <i class="bi bi-envelope-check lp-eng-card-bg-icon"></i>
+                <div class="lp-eng-card-inner">
+                    <div class="lp-eng-card-header">
+                        <i class="bi bi-envelope-check-fill"></i>
+                        <h3 class="lp-eng-card-title">OTP Dispatch</h3>
+                    </div>
+                    <div class="lp-eng-badge">SendGrid API</div>
+                    <p>OTP codes for registration, password changes, and cancellations are instantly composed and relayed to the customer's inbox via the SendGrid transactional API.</p>
+                </div>
+            </div>
+
+            <div class="lp-eng-card">
+                <i class="bi bi-credit-card lp-eng-card-bg-icon"></i>
+                <div class="lp-eng-card-inner">
+                    <div class="lp-eng-card-header">
+                        <i class="bi bi-credit-card-fill"></i>
+                        <h3 class="lp-eng-card-title">Payment Gateway</h3>
+                    </div>
+                    <div class="lp-eng-badge">Razorpay · HMAC-SHA256</div>
+                    <p>A secure 2-step checkout pipeline using server-side HMAC-SHA256 signature validation to prevent client-side cart spoofing before any order is committed.</p>
+                </div>
+            </div>
+
+            <div class="lp-eng-card">
+                <i class="bi bi-file-earmark-pdf lp-eng-card-bg-icon"></i>
+                <div class="lp-eng-card-inner">
+                    <div class="lp-eng-card-header">
+                        <i class="bi bi-file-earmark-pdf-fill"></i>
+                        <h3 class="lp-eng-card-title">Dynamic Receipts</h3>
+                    </div>
+                    <div class="lp-eng-badge">FPDF · Python</div>
+                    <p>High-fidelity PDF invoices generated on the fly, embedding brand assets, exact timestamps, itemised totals, and delivery slot details for every completed order.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    {# ── Register nudge at the very bottom ── #}
+    <div class="lp-register-nudge">
+        <p>New to Fresh Picks?</p>
+        <a href="/register" class="btn btn-primary btn-lg px-5">
+            <i class="bi bi-person-plus me-2"></i>Create an Account
+        </a>
     </div>
 
 </div>
