@@ -1,11 +1,3 @@
-"""
-app.py - Fresh Picks: Flask Application (PostgreSQL Edition)
-
-Replaces all C binary subprocess IPC with direct SQLAlchemy queries.
-Frontend templates are unchanged except for fetch() URLs, which now
-follow REST conventions (see REST_ROUTE_MAPPING.md).
-"""
-
 import os
 import re
 import json

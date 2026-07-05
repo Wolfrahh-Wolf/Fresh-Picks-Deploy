@@ -44,11 +44,23 @@
         }
 
         /* Brand text white by default */
+        .navbar-brand:hover {
+            color: inherit !important;
+        }
+        .navbar-brand:hover #brand-fresh {
+            color: var(--accent);
+        }
+
         .navbar-brand {
-            color: #ffffff !important;
+            text-decoration: none;
         }
         .navbar-brand:hover {
-            color: var(--accent) !important;
+            color: inherit !important;
+            text-decoration: underline;
+            text-decoration-color: var(--accent);
+        }
+        .navbar-brand:hover #brand-fresh {
+            color: var(--accent);
         }
     </style>
 
@@ -68,7 +80,7 @@
         <div class="container">
             <a class="navbar-brand" href="/" id="navbar-brand-link">
                 <i class="bi bi-basket3-fill me-2" style="color: var(--accent);"></i>
-                <span class="text-bright">Fresh</span>Picks
+                <span id="brand-fresh">Fresh</span>Picks
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
