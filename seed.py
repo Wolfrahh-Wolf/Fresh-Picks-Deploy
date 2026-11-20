@@ -71,7 +71,7 @@ def seed_users():
             "full_name": "User",
             "email":     "yashwantharumugam2007@gmail.com",
             "phone":     "6382717541",
-            "address":   "123,Azhagar Street,West Tambaram,600045",
+            "address":   "No 11 FF2,Elumalai Street,Tambaram West,600045",
         },
         {
             "user_id":   "U1002",
@@ -80,7 +80,7 @@ def seed_users():
             "full_name": "Yashwanth A",
             "email":     "yashwantharumugam2007@gmail.com",
             "phone":     "6382717541",
-            "address":   "456,Gandhi Road,Nungambakkam,600034",
+            "address":   "No 11 FF2,Elumalai Street,Tambaram West,600045",
         },
         {
             "user_id":   "U1003",
@@ -88,8 +88,8 @@ def seed_users():
             "password":  "pbkdf2:sha256:1000000$Eq0vehakiHGMAtUB$93c4638c1622c5704a8d79743e5f07279b11d271ce9dda6edf0ac2b6143f22d3",
             "full_name": "User Three",
             "email":     "yashwantharumugam2007@gmail.com",
-            "phone":     "0000000003",
-            "address":   "789,Anna Salai,Teynampet,600018",
+            "phone":     "6382717541",
+            "address":   "No 11 FF2,Elumalai Street,Tambaram West,600045",
         },
         {
             "user_id":   "U1004",
@@ -97,8 +97,8 @@ def seed_users():
             "password":  "pbkdf2:sha256:1000000$Eq0vehakiHGMAtUB$93c4638c1622c5704a8d79743e5f07279b11d271ce9dda6edf0ac2b6143f22d3",
             "full_name": "User Four",
             "email":     "yashwantharumugam2007@gmail.com",
-            "phone":     "0000000004",
-            "address":   "321,Mahatma Gandhi Salai,Mylapore,600004",
+            "phone":     "6382717541",
+            "address":   "No 11 FF2,Elumalai Street,Tambaram West,600045",
         },
         {
             "user_id":   "U1005",
@@ -106,8 +106,8 @@ def seed_users():
             "password":  "pbkdf2:sha256:1000000$Eq0vehakiHGMAtUB$93c4638c1622c5704a8d79743e5f07279b11d271ce9dda6edf0ac2b6143f22d3",
             "full_name": "User Five",
             "email":     "yashwantharumugam2007@gmail.com",
-            "phone":     "0000000005",
-            "address":   "567,Rajaaji Salai,T Nagar,600017",
+            "phone":     "6382717541",
+            "address":   "No 11 FF2,Elumalai Street,Tambaram West,600045",
         },
     ]
     inserted = skipped = 0
