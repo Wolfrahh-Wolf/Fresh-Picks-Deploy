@@ -71,7 +71,7 @@ def seed_users():
             "full_name": "User",
             "email":     "user@freshpicks.com",
             "phone":     "6382717541",
-            "address":   "West Tambaram, 600045",
+            "address":   "123,Azhagar Street,West Tambaram,600045",
         },
         {
             "user_id":   "U1002",
@@ -80,7 +80,7 @@ def seed_users():
             "full_name": "Yashwanth A",
             "email":     "yashwanth@freshpicks.com",
             "phone":     "6382717541",
-            "address":   "West Tambaram, 600045",
+            "address":   "456,Gandhi Road,Nungambakkam,600034",
         },
         {
             "user_id":   "U1003",
@@ -89,7 +89,7 @@ def seed_users():
             "full_name": "User Three",
             "email":     "user3@freshpicks.com",
             "phone":     "0000000003",
-            "address":   "Tamil Nadu, 600000",
+            "address":   "789,Anna Salai,Teynampet,600018",
         },
         {
             "user_id":   "U1004",
@@ -98,7 +98,7 @@ def seed_users():
             "full_name": "User Four",
             "email":     "user4@freshpicks.com",
             "phone":     "0000000004",
-            "address":   "Tamil Nadu, 600000",
+            "address":   "321,Mahatma Gandhi Salai,Mylapore,600004",
         },
         {
             "user_id":   "U1005",
@@ -107,7 +107,7 @@ def seed_users():
             "full_name": "User Five",
             "email":     "user5@freshpicks.com",
             "phone":     "0000000005",
-            "address":   "Tamil Nadu, 600000",
+            "address":   "567,Rajaaji Salai,T Nagar,600017",
         },
     ]
     inserted = skipped = 0
