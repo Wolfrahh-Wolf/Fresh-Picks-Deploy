@@ -221,3 +221,25 @@ class CartItem(db.Model):
             "item_total":      round(item_total, 2),
             "is_free":         self.is_free,
         }
+
+
+class OTPVerification(db.Model):
+    __tablename__ = "otp_verifications"
+
+    id            = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    client_token  = db.Column(db.String(48), nullable=False)
+    flow_key      = db.Column(db.String(128), nullable=False)
+    full_key      = db.Column(db.String(200), unique=True, nullable=False)
+    otp_code      = db.Column(db.String(10), nullable=False)
+    recipient     = db.Column(db.String(256), nullable=False)
+    purpose       = db.Column(db.String(32), nullable=False)
+    reference     = db.Column(db.String(128), nullable=True)
+    expires_at    = db.Column(db.Float, nullable=False)
+    created_at    = db.Column(db.Float, nullable=False)
+    payload       = db.Column(db.Text, nullable=True)
+
+    __table_args__ = (
+        db.Index("ix_otp_client_token", "client_token"),
+        db.Index("ix_otp_flow_key", "flow_key"),
+        db.Index("ix_otp_expires", "expires_at"),
+    )

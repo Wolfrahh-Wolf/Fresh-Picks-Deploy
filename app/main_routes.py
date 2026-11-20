@@ -33,7 +33,7 @@ from .constants import (
     FREEBIE_MULTIPLIER_50G, PRICE_DIVISOR_G, MINIMUM_ORDER_AMOUNT,
     RAZORPAY_PAISE_MULTIPLIER, LOW_STOCK_THRESHOLD_G
 )
-from .models import User, Admin, Product, FreeItem, DeliveryBoy, Order, OrderItem, CartItem
+from .models import User, Admin, Product, FreeItem, DeliveryBoy, Order, OrderItem, CartItem, OTPVerification
 from .generate_receipt import generate_receipt
 
 logger = __import__('logging').getLogger(__name__)
@@ -41,7 +41,6 @@ logger = __import__('logging').getLogger(__name__)
 bp = Blueprint('main', __name__, url_prefix='')
 
 # ── Global State ─────────────────────────────────────────────────────
-OTP_STORE = {}
 OTP_TTL_MINUTES = 10  # Loaded from config in app factory
 _order_listeners: list = []
 
@@ -83,11 +82,13 @@ def _safe_float(value, default=0.0):
 # HELPERS — OTP Flow
 # ═════════════════════════════════════════════════════════════
 def _purge_expired_otps():
+    """Delete expired OTP records from the database."""
     now_ts = datetime.now(datetime.UTC).timestamp() if hasattr(datetime, "UTC") \
         else datetime.utcnow().timestamp()
-    expired_keys = [k for k, v in OTP_STORE.items() if v.get("expires_at", 0) < now_ts]
-    for key in expired_keys:
-        OTP_STORE.pop(key, None)
+    db.session.query(OTPVerification).filter(
+        OTPVerification.expires_at < now_ts
+    ).delete()
+    db.session.commit()
 
 
 def _get_otp_client_token():
@@ -161,6 +162,7 @@ def _send_otp_email(recipient_email, otp_code, purpose, reference="", full_name=
 
 
 def _start_otp_flow(flow_key, recipient_email, purpose, reference="", payload=None, full_name=""):
+    """Create a new OTP verification stored in the database."""
     existing = _get_otp_flow(flow_key)
     if existing:
         return {
@@ -170,16 +172,23 @@ def _start_otp_flow(flow_key, recipient_email, purpose, reference="", payload=No
 
     _purge_expired_otps()
     otp_code = _generate_otp_code()
-    OTP_STORE[_otp_store_key(flow_key)] = {
-        "otp": otp_code,
-        "recipient_email": recipient_email,
-        "purpose": purpose,
-        "reference": reference,
-        "expires_at": (datetime.utcnow() + timedelta(minutes=OTP_TTL_MINUTES)).timestamp(),
-        "created_at": datetime.utcnow().timestamp()
-    }
-    if payload is not None:
-        OTP_STORE[_otp_store_key(flow_key)]["payload"] = payload
+    full_key = _otp_store_key(flow_key)
+    now_ts = datetime.utcnow().timestamp()
+    expires_ts = now_ts + (OTP_TTL_MINUTES * 60)
+
+    db.session.add(OTPVerification(
+        client_token=_get_otp_client_token(),
+        flow_key=flow_key,
+        full_key=full_key,
+        otp_code=otp_code,
+        recipient=recipient_email,
+        purpose=purpose,
+        reference=reference,
+        expires_at=expires_ts,
+        created_at=now_ts,
+        payload=json.dumps(payload) if payload else None,
+    ))
+    db.session.commit()
 
     logger.info(
         "OTP dispatched | Purpose=%s | Ref=%s | To=%s | Code=%s | TTL=%smin",
@@ -191,18 +200,32 @@ def _start_otp_flow(flow_key, recipient_email, purpose, reference="", payload=No
 
 def _restart_otp_flow(flow_key, otp_state):
     return _start_otp_flow(
-        flow_key, otp_state["recipient_email"], otp_state["purpose"],
-        otp_state.get("reference", ""), otp_state.get("payload")
+        flow_key, otp_state["recipient"], otp_state["purpose"],
+        otp_state.get("reference", ""), json.loads(otp_state.get("payload", "{}")) if otp_state.get("payload") else None
     )
 
 
 def _get_otp_flow(flow_key):
     _purge_expired_otps()
-    return OTP_STORE.get(_otp_store_key(flow_key))
+    full_key = _otp_store_key(flow_key)
+    record = db.session.query(OTPVerification).filter_by(full_key=full_key).first()
+    if not record:
+        return None
+    return {
+        "otp": record.otp_code,
+        "recipient_email": record.recipient,
+        "purpose": record.purpose,
+        "reference": record.reference,
+        "expires_at": record.expires_at,
+        "created_at": record.created_at,
+        "payload": record.payload,
+    }
 
 
 def _clear_otp_flow(flow_key):
-    OTP_STORE.pop(_otp_store_key(flow_key), None)
+    full_key = _otp_store_key(flow_key)
+    db.session.query(OTPVerification).filter_by(full_key=full_key).delete()
+    db.session.commit()
 
 
 def _validate_otp_flow(flow_key, entered_code, reference=""):
