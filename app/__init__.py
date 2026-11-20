@@ -2,6 +2,9 @@
 __init__.py - Fresh Picks: Application Factory
 """
 import os
+import mimetypes
+mimetypes.add_type("image/svg+xml", ".svg")
+
 from flask import Flask
 
 from .config import Config
@@ -12,6 +15,11 @@ from .logging_setup import setup_logging
 def create_app(config_class=None):
     """Application factory for Fresh Picks."""
     app = Flask(__name__, template_folder="../templates", static_folder="../static")
+
+    # Register MIME types for static files
+    app.config.update(
+        SEND_FILE_MAX_AGE_DEFAULT=3600,
+    )
 
     # Configuration
     if config_class:
@@ -46,6 +54,11 @@ def create_app(config_class=None):
     # Register blueprints/routes
     from . import main_routes
     app.register_blueprint(main_routes.bp)
+
+    # ── Favicon Route (redirects browsers looking for /favicon.ico) ─
+    @app.route("/favicon.ico")
+    def favicon():
+        return app.send_static_file("favicon.svg")
 
     # ── Database Table Initialization ───────────────────────────────
     with app.app_context():
