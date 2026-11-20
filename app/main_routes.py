@@ -23,7 +23,7 @@ from flask import (
     Response
 )
 from flask_mail import Message
-from sendgrid.helpers.mail import Email, Attachment, FileContent, FileName, FileType, Disposition
+from sendgrid.helpers.mail import Email, Attachment, FileContent, FileName, FileType, Disposition, Mail as SGMail
 from sendgrid import SendGridAPIClient
 
 SENDGRID_FROM_EMAIL = os.environ.get("SENDGRID_FROM_EMAIL", "")
