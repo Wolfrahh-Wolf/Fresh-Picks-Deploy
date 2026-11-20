@@ -700,7 +700,7 @@ def api_update_profile():
 
     data      = request.get_json(silent=True) or {}
     field     = data.get("field", "").strip()
-    new_value = data.get("new_value", "").strip()
+    new_value = (data.get("new_value") or data.get("value") or "").strip()
 
     valid_fields = {"full_name", "email", "phone", "address"}
     if field not in valid_fields:
