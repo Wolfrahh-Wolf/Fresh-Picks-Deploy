@@ -16,7 +16,7 @@ from .logging_setup import setup_logging
 
 def create_app(config_class=None):
     """Application factory for Fresh Picks."""
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder="../templates")
 
     # Configuration
     if config_class:
