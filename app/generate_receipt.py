@@ -11,8 +11,20 @@ from datetime import datetime
 # PATH HELPERS
 # ─────────────────────────────────────────────────────────────
 _HERE      = os.path.dirname(os.path.abspath(__file__))
-_FONT_DIR  = os.path.normpath(os.path.join(_HERE, "static", "fonts"))
-_ICON_DIR  = os.path.normpath(os.path.join(_HERE, "static", "icons"))
+_PROJECT   = os.path.dirname(_HERE)
+
+# Render may deploy to /src/ or project root; try both
+_candidate = os.path.normpath(os.path.join(_PROJECT, "static", "fonts"))
+if os.path.isdir(_candidate):
+    _FONT_DIR = _candidate
+else:
+    _FONT_DIR = os.path.normpath(os.path.join(_HERE, "static", "fonts"))
+
+_candidate = os.path.normpath(os.path.join(_PROJECT, "static", "icons"))
+if os.path.isdir(_candidate):
+    _ICON_DIR = _candidate
+else:
+    _ICON_DIR = os.path.normpath(os.path.join(_HERE, "static", "icons"))
 
 def _font(name):
     return os.path.join(_FONT_DIR, name)
@@ -264,7 +276,7 @@ def generate_receipt(data: dict, output_path: str) -> None:
     pdf.set_font(F, "", 7.5)
     pdf.set_text_color(*C_LABEL)
     for sl in [
-        "123 Grocery Ave, Market City, Chennai \u2013 600045",
+        "123, Thirumangalam Main Road, West Tambaram, Chennai \u2013 600045",
         "GSTIN: 22AAAAA0000A1Z5  |  FSSAI: 10020042004971",
         "+91 98765 43210  |  support@freshpicks.in",
     ]:

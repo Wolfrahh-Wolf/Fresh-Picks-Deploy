@@ -25,6 +25,8 @@ from flask import (
 from flask_mail import Message
 from sendgrid.helpers.mail import Email, Attachment, FileContent, FileName, FileType, Disposition
 from sendgrid import SendGridAPIClient
+
+SENDGRID_FROM = os.environ.get("SENDGRID_FROM_EMAIL", os.environ.get("SMTP_EMAIL", "noreply@freshpicks.in"))
 from sqlalchemy.orm import joinedload
 
 from .extensions import db, rzp_client
@@ -149,7 +151,7 @@ def _send_otp_email(recipient_email, otp_code, purpose, reference="", full_name=
     try:
         subject, text_body, html_body = _otp_email_html(purpose, otp_code, reference, full_name, ttl_minutes)
         message = SGMail(
-            from_email   = Email(os.environ.get("SMTP_EMAIL", ""), "FreshPicks"),
+            from_email   = Email(SENDGRID_FROM, "FreshPicks"),
             to_emails    = recipient_email,
             subject      = subject,
             html_content = html_body
@@ -1177,7 +1179,7 @@ def api_verify_and_checkout():
             user = db.session.get(User, user_id)
             pdf_data = base64.b64encode(open(tmp_path, "rb").read()).decode()
             message = SGMail(
-                from_email   = (os.environ.get("SMTP_EMAIL", ""), "FreshPicks"),
+                from_email   = Email(SENDGRID_FROM, "FreshPicks"),
                 to_emails    = user.email,
                 subject      = f"FreshPicks Receipt — {new_order_id}",
                 html_content = f"<p>Dear {user.full_name},</p><p>Your order <strong>{new_order_id}</strong> has been placed successfully. Receipt attached.</p><p><strong>FreshPicks</strong></p>"
@@ -1522,7 +1524,7 @@ def api_email_receipt(order_id):
             pdf_data = base64.b64encode(f.read()).decode()
 
         message = SGMail(
-            from_email   = Email(os.environ.get("SMTP_EMAIL", ""), "FreshPicks"),
+            from_email   = Email(SENDGRID_FROM, "FreshPicks"),
             to_emails    = user_email,
             subject      = f"FreshPicks Receipt — {order_id}",
             html_content = f"<p>Dear {receipt_data['full_name']},</p><p>Please find your FreshPicks receipt for order <strong>{order_id}</strong> attached.</p><p>Thank you for shopping with us!</p><p><strong>FreshPicks</strong></p>"
