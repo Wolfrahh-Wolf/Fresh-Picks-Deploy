@@ -23,14 +23,9 @@ from flask import (
     Response
 )
 from flask_mail import Message
-from sendgrid.helpers.mail import Email, Attachment, FileContent, FileName, FileType, Disposition, Mail as SGMail
-from sendgrid.helpers.mail import From, To
-from sendgrid import SendGridAPIClient
-
-SENDGRID_FROM = os.environ.get("SENDGRID_FROM_EMAIL", os.environ.get("SMTP_EMAIL", "noreply@freshpicks.in"))
 from sqlalchemy.orm import joinedload
 
-from .extensions import db, rzp_client
+from .extensions import db, mail, rzp_client
 from .extensions import csrf
 from .constants import (
     SLOT_PRIORITY, VALID_ORDER_STATUSES, FREEBIE_THRESHOLD,
@@ -151,21 +146,19 @@ def _render_email_template(template_name, context):
 def _send_otp_email(recipient_email, otp_code, purpose, reference="", full_name="", ttl_minutes=10):
     try:
         subject, text_body, html_body = _otp_email_html(purpose, otp_code, reference, full_name, ttl_minutes)
-        message = SGMail(
-            from_email=From(SENDGRID_FROM, "FreshPicks"),
-            to_emails=To(recipient_email),
+        msg = Message(
             subject=subject,
-            html_content=html_body,
-            plain_text_content=text_body,
+            sender=(app.config.get("SENDER_NAME", "FreshPicks"), app.config.get("SMTP_EMAIL")),
+            recipients=[recipient_email],
+            body=text_body,
+            html=html_body
         )
-        sg = SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
-        response = sg.send(message)
-        logger.info("SENDGRID SUCCESS | status=%s | to=%s | from=%s", response.status_code, recipient_email, SENDGRID_FROM)
+        mail.send(msg)
+        logger.info("MAIL SUCCESS | status=SENT | to=%s | from=%s", recipient_email, app.config.get("SMTP_EMAIL"))
         return {"status": "SUCCESS", "data": "Email sent"}
     except Exception as e:
-        logger.error("MAIL ERROR: %s: %s | to=%s | from=%s | api_key_set=%s | type=%s",
-                     type(e).__name__, e, recipient_email, SENDGRID_FROM,
-                     bool(os.environ.get("SENDGRID_API_KEY")), type(e).__module__)
+        logger.error("MAIL ERROR: %s: %s | to=%s | from=%s",
+                     type(e).__name__, e, recipient_email, app.config.get("SMTP_EMAIL"))
         return {"status": "ERROR", "data": str(e)}
 
 
@@ -1183,30 +1176,23 @@ def api_verify_and_checkout():
         receipt_data, tmp_path, err = _build_receipt_pdf(new_order_id)
         if not err:
             user = db.session.get(User, user_id)
-            pdf_data = base64.b64encode(open(tmp_path, "rb").read()).decode()
-            message = SGMail(
-                from_email=From(SENDGRID_FROM, "FreshPicks"),
-                to_emails=To(user.email),
+            msg = Message(
                 subject=f"FreshPicks Receipt - {new_order_id}",
-                html_content=f"<p>Dear {user.full_name},</p><p>Your order <strong>{new_order_id}</strong> has been placed successfully. Receipt attached.</p><p><strong>FreshPicks</strong></p>"
+                sender=(app.config.get("SENDER_NAME", "FreshPicks"), app.config.get("SMTP_EMAIL")),
+                recipients=[user.email],
+                body=f"Dear {user.full_name},\n\nYour order {new_order_id} has been placed successfully. Receipt attached.\n\nRegards,\nFreshPicks"
             )
-            attachment = Attachment(
-                file_content=FileContent(pdf_data),
-                file_name=FileName(f"{new_order_id}_receipt.pdf"),
-                file_type=FileType("application/pdf"),
-                disposition=Disposition("attachment")
-            )
-            message.attachment = attachment
-            sg = SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
-            resp = sg.send(message)
-            logger.info("RECEIPT SENDGRID | status=%s | to=%s | order=%s", resp.status_code, user.email, new_order_id)
+            with open(tmp_path, "rb") as f:
+                msg.attach(f"{new_order_id}_receipt.pdf", "application/pdf", f.read())
+            mail.send(msg)
+            logger.info("MAIL SUCCESS | to=%s | order=%s", user.email, new_order_id)
             _cleanup_temp_file(tmp_path)
         else:
             receipt_err = "PDF generation failed"
     except Exception as e:
         receipt_err = str(e)
-        logger.error("RECEIPT MAIL ERROR: %s: %s | to=%s | from=%s",
-                     type(e).__name__, e, user.email if 'user' in dir() else 'unknown', SENDGRID_FROM)
+        logger.error("RECEIPT MAIL ERROR: %s: %s | to=%s",
+                     type(e).__name__, e, user.email if 'user' in dir() else 'unknown')
 
     session.pop("pending_slot",      None)
     session.pop("pending_rzp_order", None)
@@ -1532,33 +1518,20 @@ def api_email_receipt(order_id):
             return jsonify({"status": "ERROR",
                             "message": "No valid email found for this order"}), 400
 
-        with open(tmp_path, "rb") as f:
-            pdf_data = base64.b64encode(f.read()).decode()
-
-        message = SGMail(
-            from_email=From(SENDGRID_FROM, "FreshPicks"),
-            to_emails=To(user_email),
+        msg = Message(
             subject=f"FreshPicks Receipt - {order_id}",
-            html_content=f"<p>Dear {receipt_data['full_name']},</p><p>Please find your FreshPicks receipt for order <strong>{order_id}</strong> attached.</p><p>Thank you for shopping with us!</p><p><strong>FreshPicks</strong></p>",
-            plain_text_content=f"Dear {receipt_data['full_name']}, Please find your FreshPicks receipt for order {order_id} attached."
+            sender=(app.config.get("SENDER_NAME", "FreshPicks"), app.config.get("SMTP_EMAIL")),
+            recipients=[user_email],
+            body=f"Dear {receipt_data['full_name']},\n\nPlease find your FreshPicks receipt for order {order_id} attached.\n\nThank you for shopping with us!\n\nRegards,\nFreshPicks"
         )
-
-        attachment = Attachment(
-            file_content=FileContent(pdf_data),
-            file_name=FileName(f"{order_id}_receipt.pdf"),
-            file_type=FileType("application/pdf"),
-            disposition=Disposition("attachment")
-        )
-        message.attachment = attachment
-
-        sg = SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
-        resp = sg.send(message)
-        logger.info("RESEND RECEIPT SENDGRID | status=%s | to=%s | order=%s", resp.status_code, user_email, order_id)
+        with open(tmp_path, "rb") as f:
+            msg.attach(f"{order_id}_receipt.pdf", "application/pdf", f.read())
+        mail.send(msg)
+        logger.info("MAIL SUCCESS | to=%s | order=%s", user_email, order_id)
 
     except Exception as e:
-        logger.error("RESEND RECEIPT MAIL ERROR: %s: %s | to=%s | from=%s | body=%s",
-                     type(e).__name__, e, user_email, SENDGRID_FROM,
-                     e.body if hasattr(e, 'body') else 'N/A')
+        logger.error("RESEND RECEIPT MAIL ERROR: %s: %s | to=%s",
+                     type(e).__name__, e, user_email)
         return jsonify({"status": "ERROR", "message": str(e)})
     finally:
         if tmp_path:
