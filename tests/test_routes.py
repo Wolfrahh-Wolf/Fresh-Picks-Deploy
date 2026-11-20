@@ -3,6 +3,19 @@ test_routes.py - Tests for HTTP routes and endpoints.
 """
 
 
+class TestHealthEndpoint:
+    def test_health_returns_200(self, client):
+        resp = client.get("/health")
+        assert resp.status_code == 200
+        data = resp.get_json()
+        assert data["status"] == "healthy"
+
+    def test_health_contains_version(self, client):
+        resp = client.get("/health")
+        data = resp.get_json()
+        assert "version" in data
+
+
 class TestProductRoutes:
     def test_products_list(self, client):
         resp = client.get("/api/products")

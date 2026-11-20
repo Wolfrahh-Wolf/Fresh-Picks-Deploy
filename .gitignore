@@ -79,9 +79,3 @@ temp/
 # Flask
 instance/
 .webassets-cache
-
-# Alembic (keep migrations, ignore data)
-# alembic.ini is committed for configuration
-
-# Render
-render.yaml
