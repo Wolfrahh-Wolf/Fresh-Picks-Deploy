@@ -24,6 +24,7 @@ from flask import (
 )
 from flask_mail import Message
 from sendgrid.helpers.mail import Email, Attachment, FileContent, FileName, FileType, Disposition, Mail as SGMail
+from sendgrid.helpers.mail import From, To
 from sendgrid import SendGridAPIClient
 
 SENDGRID_FROM = os.environ.get("SENDGRID_FROM_EMAIL", os.environ.get("SMTP_EMAIL", "noreply@freshpicks.in"))
@@ -151,19 +152,20 @@ def _send_otp_email(recipient_email, otp_code, purpose, reference="", full_name=
     try:
         subject, text_body, html_body = _otp_email_html(purpose, otp_code, reference, full_name, ttl_minutes)
         message = SGMail(
-            from_email   = SENDGRID_FROM,
-            to_emails    = recipient_email,
-            subject      = subject,
-            html_content = html_body
+            from_email=From(SENDGRID_FROM, "FreshPicks"),
+            to_emails=To(recipient_email),
+            subject=subject,
+            html_content=html_body,
+            text_content=text_body,
         )
         sg = SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
-        result = sg.client.mail.send.post(request_body=message.get())
-        logger.info("SENDGRID RESPONSE | status=%s | to=%s", result.status_code, recipient_email)
+        response = sg.send(message)
+        logger.info("SENDGRID SUCCESS | status=%s | to=%s | from=%s", response.status_code, recipient_email, SENDGRID_FROM)
         return {"status": "SUCCESS", "data": "Email sent"}
     except Exception as e:
-        logger.error("MAIL ERROR: %s: %s | to=%s | from=%s | api_key_set=%s",
+        logger.error("MAIL ERROR: %s: %s | to=%s | from=%s | api_key_set=%s | type=%s",
                      type(e).__name__, e, recipient_email, SENDGRID_FROM,
-                     bool(os.environ.get("SENDGRID_API_KEY")))
+                     bool(os.environ.get("SENDGRID_API_KEY")), type(e).__module__)
         return {"status": "ERROR", "data": str(e)}
 
 
@@ -1176,29 +1178,33 @@ def api_verify_and_checkout():
 
     db.session.commit()
 
+    receipt_err = None
     try:
         receipt_data, tmp_path, err = _build_receipt_pdf(new_order_id)
         if not err:
             user = db.session.get(User, user_id)
             pdf_data = base64.b64encode(open(tmp_path, "rb").read()).decode()
             message = SGMail(
-                from_email   = SENDGRID_FROM,
-                to_emails    = user.email,
-                subject      = f"FreshPicks Receipt - {new_order_id}",
-                html_content = f"<p>Dear {user.full_name},</p><p>Your order <strong>{new_order_id}</strong> has been placed successfully. Receipt attached.</p><p><strong>FreshPicks</strong></p>"
+                from_email=From(SENDGRID_FROM, "FreshPicks"),
+                to_emails=To(user.email),
+                subject=f"FreshPicks Receipt - {new_order_id}",
+                html_content=f"<p>Dear {user.full_name},</p><p>Your order <strong>{new_order_id}</strong> has been placed successfully. Receipt attached.</p><p><strong>FreshPicks</strong></p>"
             )
             attachment = Attachment(
-                file_content = FileContent(pdf_data),
-                file_name    = FileName(f"{new_order_id}_receipt.pdf"),
-                file_type    = FileType("application/pdf"),
-                disposition  = Disposition("attachment")
+                file_content=FileContent(pdf_data),
+                file_name=FileName(f"{new_order_id}_receipt.pdf"),
+                file_type=FileType("application/pdf"),
+                disposition=Disposition("attachment")
             )
             message.attachment = attachment
             sg = SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
-            resp = sg.client.mail.send.post(request_body=message.get())
+            resp = sg.send(message)
             logger.info("RECEIPT SENDGRID | status=%s | to=%s | order=%s", resp.status_code, user.email, new_order_id)
             _cleanup_temp_file(tmp_path)
+        else:
+            receipt_err = "PDF generation failed"
     except Exception as e:
+        receipt_err = str(e)
         logger.error("RECEIPT MAIL ERROR: %s: %s | to=%s | from=%s",
                      type(e).__name__, e, user.email if 'user' in dir() else 'unknown', SENDGRID_FROM)
 
@@ -1530,22 +1536,23 @@ def api_email_receipt(order_id):
             pdf_data = base64.b64encode(f.read()).decode()
 
         message = SGMail(
-            from_email   = SENDGRID_FROM,
-            to_emails    = user_email,
-            subject      = f"FreshPicks Receipt - {order_id}",
-            html_content = f"<p>Dear {receipt_data['full_name']},</p><p>Please find your FreshPicks receipt for order <strong>{order_id}</strong> attached.</p><p>Thank you for shopping with us!</p><p><strong>FreshPicks</strong></p>"
+            from_email=From(SENDGRID_FROM, "FreshPicks"),
+            to_emails=To(user_email),
+            subject=f"FreshPicks Receipt - {order_id}",
+            html_content=f"<p>Dear {receipt_data['full_name']},</p><p>Please find your FreshPicks receipt for order <strong>{order_id}</strong> attached.</p><p>Thank you for shopping with us!</p><p><strong>FreshPicks</strong></p>",
+            text_content=f"Dear {receipt_data['full_name']}, Please find your FreshPicks receipt for order {order_id} attached."
         )
 
         attachment = Attachment(
-            file_content = FileContent(pdf_data),
-            file_name    = FileName(f"{order_id}_receipt.pdf"),
-            file_type    = FileType("application/pdf"),
-            disposition  = Disposition("attachment")
+            file_content=FileContent(pdf_data),
+            file_name=FileName(f"{order_id}_receipt.pdf"),
+            file_type=FileType("application/pdf"),
+            disposition=Disposition("attachment")
         )
         message.attachment = attachment
 
         sg = SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
-        resp = sg.client.mail.send.post(request_body=message.get())
+        resp = sg.send(message)
         logger.info("RESEND RECEIPT SENDGRID | status=%s | to=%s | order=%s", resp.status_code, user_email, order_id)
 
     except Exception as e:
