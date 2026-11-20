@@ -16,8 +16,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from app import app
-from models import db, Admin, User, Product, FreeItem, DeliveryBoy, Order, OrderItem
+from app import create_app
+from app.extensions import db
+from app.models import Admin, User, Product, FreeItem, DeliveryBoy, Order, OrderItem
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger("seed")
@@ -337,6 +338,7 @@ if __name__ == "__main__":
     print("=" * 52)
     print()
 
+    app = create_app()
     with app.app_context():
         db.create_all()
         logger.info("Tables verified / created.\n")
