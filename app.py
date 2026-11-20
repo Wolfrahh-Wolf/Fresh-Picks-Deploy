@@ -290,16 +290,6 @@ def _generate_next_id(prefix, model, id_column):
 
 
 # ═════════════════════════════════════════════════════════════
-# RAZORPAY SECURITY HEADERS
-# ═════════════════════════════════════════════════════════════
-@app.after_request
-def set_security_headers(response):
-    response.headers["Permissions-Policy"] = "accelerometer=*, gyroscope=*, magnetometer=*"
-    response.headers["Access-Control-Expose-Headers"] = "x-rtb-fingerprint-id, request-id"
-    return response
-
-
-# ═════════════════════════════════════════════════════════════
 # PAGE ROUTES — Server-rendered HTML (REST-corrected paths)
 # ═════════════════════════════════════════════════════════════
 @app.route("/")
@@ -1784,37 +1774,45 @@ def api_analytics():
 
 
 # ═════════════════════════════════════════════════════════════
+# HEALTH CHECK ENDPOINT
+# ═════════════════════════════════════════════════════════════
+@app.route("/health")
+def health_check():
+    """GET /health — Deployment health check."""
+    try:
+        db.session.execute(db.text("SELECT 1"))
+        db_status = "connected"
+    except Exception:
+        db_status = "disconnected"
+    return jsonify({"status": "ok", "database": db_status}), 200
+
+
+# ═════════════════════════════════════════════════════════════
+# SECURITY HEADERS
+# ═════════════════════════════════════════════════════════════
+@app.after_request
+def set_security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.razorpay.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "accelerometer=*, gyroscope=*, magnetometer=*"
+    response.headers["Access-Control-Expose-Headers"] = "x-rtb-fingerprint-id, request-id"
+    return response
+
+
+# ═════════════════════════════════════════════════════════════
 # APP STARTUP
 # ═════════════════════════════════════════════════════════════
-# if __name__ == "__main__":
-#     with app.app_context():
-#         db.create_all()
-
-#     app.run(
-#         host     = "0.0.0.0",
-#         port     = int(os.environ.get("PORT", 5000)),
-#         debug    = os.environ.get("FLASK_DEBUG", "false").lower() == "true",
-#         threaded = True
-#     )
-
-# if __name__ == "__main__":
-#     with app.app_context():
-#         db.create_all()
-
-#     app.run(
-#         host="0.0.0.0",
-#         port=int(os.environ.get("PORT", 5000)),
-#         debug=os.environ.get("FLASK_DEBUG", "false").lower() == "true",
-#         threaded=True
-#     )
-
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
 
     HOST  = "0.0.0.0"
-    PORT  = 5000
-    DEBUG = True
+    PORT  = int(os.environ.get("PORT", 5000))
+    DEBUG = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
 
     def get_local_ip():
         """
