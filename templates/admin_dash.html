@@ -83,7 +83,7 @@
     </div>
 
     {# ══════════════════════════════════════════════
-       QUICK STATS ROW — now fully wired
+       QUICK STATS ROW - now fully wired
        Each card is wrapped in an <a> tag.
        Products → /admin/inventory
        Orders   → /admin/orders
@@ -175,23 +175,23 @@
                     <div class="profile-field">
                         <span class="profile-field-label">Admin ID</span>
                         <span class="profile-field-value">
-                            <span class="id-badge" id="adminIdDisplay">—</span>
+                            <span class="id-badge" id="adminIdDisplay">-</span>
                         </span>
                     </div>
 
                     <div class="profile-field">
                         <span class="profile-field-label">Username</span>
-                        <span class="profile-field-value" id="adminUsernameInfo">—</span>
+                        <span class="profile-field-value" id="adminUsernameInfo">-</span>
                     </div>
 
                     <div class="profile-field">
                         <span class="profile-field-label">Display Name</span>
-                        <span class="profile-field-value" id="adminNameDisplay">—</span>
+                        <span class="profile-field-value" id="adminNameDisplay">-</span>
                     </div>
 
                     <div class="profile-field">
                         <span class="profile-field-label">Email</span>
-                        <span class="profile-field-value" id="adminEmailDisplay">—</span>
+                        <span class="profile-field-value" id="adminEmailDisplay">-</span>
                     </div>
 
                     <div class="profile-field">
@@ -215,7 +215,7 @@
 
                     {#
                       SECURITY SETTINGS BUTTON (unchanged from v2)
-                      Red accent: intentional — security = critical action.
+                      Red accent: intentional - security = critical action.
                     #}
                     <div class="card"
                          style="border: 1px solid var(--danger) !important;
@@ -284,8 +284,8 @@
             const result = await res.json();
 
             if (result.status === "SUCCESS") {
-                document.getElementById("adminUsernameInfo").textContent = result.username || "—";
-                document.getElementById("adminIdDisplay").textContent    = result.user_id  || "—";
+                document.getElementById("adminUsernameInfo").textContent = result.username || "-";
+                document.getElementById("adminIdDisplay").textContent    = result.user_id  || "-";
                 document.getElementById("adminNameDisplay").textContent  = result.name     || "Admin";
                 
                 document.getElementById("adminEmailDisplay").textContent = result.email    || "No Email Provided";

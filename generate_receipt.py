@@ -1,5 +1,5 @@
 """
-generate_receipt.py — Fresh Picks: Server-Side PDF Receipt Engine
+generate_receipt.py - Fresh Picks: Server-Side PDF Receipt Engine
 """
 
 import os
@@ -208,7 +208,7 @@ def generate_receipt(data: dict, output_path: str) -> None:
     COL = [8, 88, 35, 24, 25]   # # | Item | Rate | Qty | Amount = 180mm
 
     # ── Pre-load icon paths ───────────────────────────────────
-    # Bootstrap Icons (SVG→PNG, accent-blue) — exact match to HTML receipt
+    # Bootstrap Icons (SVG→PNG, accent-blue) - exact match to HTML receipt
     ICO_BASKET   = _icon("icon_basket.png")           # bi-basket2-fill   brand name
     ICO_ENVELOPE = _icon("icon_envelope.png")          # bi-envelope-fill  email
     ICO_PHONE_CT = _icon("icon_phone_contact.png")     # bi-telephone-fill contact phone
@@ -220,11 +220,11 @@ def generate_receipt(data: dict, output_path: str) -> None:
     y = 15
 
     # ═════════════════════════════════════════════════════════
-    # SECTION 1 — HEADER
+    # SECTION 1 - HEADER
     # ═════════════════════════════════════════════════════════
 
     # 🧺 basket icon before brand name
-    ICON_SIZE = 5.0   # mm — icon size used throughout
+    ICON_SIZE = 5.0   # mm - icon size used throughout
     _embed_icon(pdf, ICO_BASKET, LEFT, y + 1.5, ICON_SIZE)
     brand_x = LEFT + (ICON_SIZE + 1.5 if ICO_BASKET else 0)
 
@@ -233,7 +233,7 @@ def generate_receipt(data: dict, output_path: str) -> None:
     pdf.set_text_color(*C_ACCENT)
     pdf.cell(0, 8, "Fresh Picks", ln=False)
 
-    # "ORDER RECEIPT" — top right
+    # "ORDER RECEIPT" - top right
     pdf.set_font(F, "", 7)
     pdf.set_text_color(*C_LABEL)
     pdf.set_xy(LEFT, y)
@@ -277,7 +277,7 @@ def generate_receipt(data: dict, output_path: str) -> None:
     y += 6
 
     # ═════════════════════════════════════════════════════════
-    # SECTION 2 — BILL TO / SLOT / STATUS
+    # SECTION 2 - BILL TO / SLOT / STATUS
     # ═════════════════════════════════════════════════════════
     col_w = W / 3
 
@@ -309,7 +309,7 @@ def generate_receipt(data: dict, output_path: str) -> None:
     pdf.set_xy(sx, y)
     pdf.set_font(F, "B", 7.5)
     pdf.set_text_color(*(C_STATUS_DEL if is_del else C_STATUS_PLC))
-    # ✓ is BMP — DejaVuSans renders it fine
+    # ✓ is BMP - DejaVuSans renders it fine
     badge_label = ("\u2713 " + status.upper()) if is_del else status.upper()
     pdf.cell(bw, 5, badge_label, align="C")
 
@@ -318,7 +318,7 @@ def generate_receipt(data: dict, output_path: str) -> None:
     y += 5
 
     # ═════════════════════════════════════════════════════════
-    # SECTION 3 — CONTACT
+    # SECTION 3 - CONTACT
     # ═════════════════════════════════════════════════════════
     pdf.set_xy(LEFT, y)
     pdf.set_font(F, "B", 6.5)
@@ -343,7 +343,7 @@ def generate_receipt(data: dict, output_path: str) -> None:
     pdf.cell(0, 4, data.get("user_email", ""), ln=True)
     y += 5
 
-    # Address — 4 lines
+    # Address - 4 lines
     addr_parts = [p.strip() for p in data.get("address", "").split(",")]
     while len(addr_parts) < 4:
         addr_parts.append("")
@@ -359,7 +359,7 @@ def generate_receipt(data: dict, output_path: str) -> None:
     y += 5
 
     # ═════════════════════════════════════════════════════════
-    # SECTION 4 — DELIVERY PARTNER
+    # SECTION 4 - DELIVERY PARTNER
     # 🛵 scooter PNG icon embedded on the left
     # ═════════════════════════════════════════════════════════
     box_h = 20
@@ -374,7 +374,7 @@ def generate_receipt(data: dict, output_path: str) -> None:
     pdf.set_text_color(*C_LABEL)
     pdf.cell(0, 4, "DELIVERY PARTNER")
 
-    # 🛵 scooter icon (PNG) — 7 mm square, vertically centred in box
+    # 🛵 scooter icon (PNG) - 7 mm square, vertically centred in box
     SCOOTER_SIZE = 7.0
     _embed_icon(pdf, ICO_SCOOTER,
                 x=LEFT + 3,
@@ -402,13 +402,13 @@ def generate_receipt(data: dict, output_path: str) -> None:
     y += box_h + 6
 
     # ═════════════════════════════════════════════════════════
-    # SECTION 5 — ITEMS TABLE
+    # SECTION 5 - ITEMS TABLE
     # 🎁 gift icon (PNG) replaces the text "FREE" badge
     # ═════════════════════════════════════════════════════════
     items = _parse_items(data.get("items_string", ""))
     y     = _table_header(pdf, y, F, LEFT, COL)
 
-    GIFT_SIZE = 3.8   # mm — gift icon size inside item row
+    GIFT_SIZE = 3.8   # mm - gift icon size inside item row
 
     for row_num, item in enumerate(items, start=1):
         ROW_H = 9
@@ -434,14 +434,14 @@ def generate_receipt(data: dict, output_path: str) -> None:
         pdf.set_text_color(*C_LABEL)
         pdf.cell(COL[0], 6, str(row_num), align="C")
 
-        # Item name — plain, no badge here
+        # Item name - plain, no badge here
         nx = LEFT + COL[0]
         pdf.set_xy(nx + 1, y + (ROW_H - 6) / 2)
         pdf.set_font(F, "B" if not item["is_free"] else "", 8.5)
         pdf.set_text_color(*C_BLACK)
         pdf.cell(COL[1] - 2, 6, item["name"])
 
-        # Rate column — for FREE items: 🎁 icon + "FREE" text centred in the column
+        # Rate column - for FREE items: 🎁 icon + "FREE" text centred in the column
         #               for paid items: rate string right-aligned as normal
         x = LEFT + COL[0] + COL[1]
         if item["is_free"]:
@@ -498,7 +498,7 @@ def generate_receipt(data: dict, output_path: str) -> None:
     y += 4
 
     # ═════════════════════════════════════════════════════════
-    # SECTION 6 — TOTALS
+    # SECTION 6 - TOTALS
     # ═════════════════════════════════════════════════════════
     if y + 35 > PAGE_BOTTOM:
         pdf.add_page(); y = 20
@@ -528,7 +528,7 @@ def generate_receipt(data: dict, output_path: str) -> None:
     y = pdf.get_y() + 6
 
     # ═════════════════════════════════════════════════════════
-    # SECTION 7 — FOOTER
+    # SECTION 7 - FOOTER
     # ═════════════════════════════════════════════════════════
     if y + 22 > PAGE_BOTTOM:
         pdf.add_page(); y = 20
@@ -557,7 +557,7 @@ def generate_receipt(data: dict, output_path: str) -> None:
 
 
 # ─────────────────────────────────────────────────────────────
-# CLI  —  python generate_receipt.py --make-icons
+# CLI  -  python generate_receipt.py --make-icons
 # ─────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     if "--make-icons" in sys.argv:

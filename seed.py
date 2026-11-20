@@ -2,7 +2,7 @@
 seed.py - Fresh Picks: One-Time Database Seeder
 
 Populates the database with real project data.
-Safe to re-run — skips existing records, never overwrites.
+Safe to re-run - skips existing records, never overwrites.
 
 Usage:
     python seed.py
@@ -327,7 +327,7 @@ def seed_orders():
 if __name__ == "__main__":
     print()
     print("=" * 52)
-    print("  Fresh Picks — Database Seeder")
+    print("  Fresh Picks - Database Seeder")
     print("=" * 52)
     print()
 

@@ -9,23 +9,23 @@ import os
 from dotenv import load_dotenv
 
 # Load .env file for local development.
-# In production (Render), env vars are injected directly — load_dotenv()
+# In production (Render), env vars are injected directly - load_dotenv()
 # silently does nothing if no .env file is found, so this is safe either way.
 load_dotenv()
 
 
 class Config:
-    """Base configuration — shared across all environments."""
+    """Base configuration - shared across all environments."""
 
     # ── Flask Core ──────────────────────────────────────────────────────
     SECRET_KEY = os.environ.get("APP_SECRET_KEY")
 
     # ── Database (SQLAlchemy) ───────────────────────────────────────────
-    # Transaction-mode pooler (port 6543) — used for normal app queries.
+    # Transaction-mode pooler (port 6543) - used for normal app queries.
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # Session-mode pooler (port 5432) — used only for one-off migrations
+    # Session-mode pooler (port 5432) - used only for one-off migrations
     # (e.g. flask db upgrade), not used by the running app itself.
     DIRECT_URL = os.environ.get("DIRECT_URL")
 

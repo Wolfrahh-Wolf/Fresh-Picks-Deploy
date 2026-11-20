@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container py-4">
 
-    <!-- Page Heading with red accent — signals security/critical area -->
+    <!-- Page Heading with red accent - signals security/critical area -->
     <div class="d-flex align-items-center mb-4">
         <a href="javascript:history.back()" class="btn btn-secondary btn-sm me-3">
             <i class="bi bi-arrow-left"></i>
@@ -20,7 +20,7 @@
                 Security Center
             </h3>
             <p class="text-muted mb-0" style="font-size:0.85rem;">
-                <!-- Role-aware subtitle — updated by JS on page load -->
+                <!-- Role-aware subtitle - updated by JS on page load -->
                 <span id="roleSubtitle">Change your account password securely.</span>
             </p>
         </div>
@@ -32,7 +32,7 @@
             <!-- Main Security Card -->
             <div class="card"
                  style="border-top: 3px solid var(--danger) !important;">
-                <!-- Red top border — the "brand-dot" equivalent for this critical page -->
+                <!-- Red top border - the "brand-dot" equivalent for this critical page -->
 
                 <div class="card-header"
                      style="border-bottom: 1px solid var(--border-color);
@@ -161,9 +161,9 @@
                             <strong class="text-bright">Password Requirements:</strong>
                             <ul class="mb-0 mt-1" style="padding-left:1.2rem;">
                                 <li>Minimum 8 characters</li>
-                                <li>At least 1 uppercase letter (A–Z)</li>
-                                <li>At least 1 lowercase letter (a–z)</li>
-                                <li>At least 1 digit (0–9)</li>
+                                <li>At least 1 uppercase letter (A-Z)</li>
+                                <li>At least 1 lowercase letter (a-z)</li>
+                                <li>At least 1 digit (0-9)</li>
                                 <li>At least 1 special character (!@#$%...)</li>
                             </ul>
                         </div>
@@ -199,7 +199,7 @@
                     border: 1px solid var(--danger);
                     border-radius: var(--radius-lg);">
 
-            <!-- Modal Header — red accent for security context -->
+            <!-- Modal Header - red accent for security context -->
             <div class="modal-header"
                  style="border-bottom:1px solid var(--border-color);
                         background:rgba(244,71,71,0.08);">
@@ -278,7 +278,7 @@
      *   OTP Modal: Send, resend, and verify server-side email OTP
      */
 
-    let otpModal; /* Bootstrap Modal instance — global so all functions can reach it */
+    let otpModal; /* Bootstrap Modal instance - global so all functions can reach it */
 
     /* ── Initialize modal + Enter-key shortcuts when DOM is ready ── */
     document.addEventListener("DOMContentLoaded", function () {
@@ -357,7 +357,7 @@
     /*
      * FUNCTION: proceedToStep2
      * PURPOSE:  Validate Step 1 then reveal Step 2 fields.
-     *           Old password is NOT sent to server here — that happens
+     *           Old password is NOT sent to server here - that happens
      *           only in the final PATCH call, avoiding a brute-force oracle.
      */
     function proceedToStep2() {
@@ -525,7 +525,7 @@
 
     /*
      * FUNCTION: handleOtpAndChangePassword
-     * PURPOSE:  Final step — PATCH /api/users/me/password with old + new + OTP.
+     * PURPOSE:  Final step - PATCH /api/users/me/password with old + new + OTP.
      *           C binary re-verifies old password, complexity, then writes new hash.
      */
     async function handleOtpAndChangePassword() {

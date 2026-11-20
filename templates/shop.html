@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Shop — FreshPicks{% endblock %}
+{% block title %}Shop - FreshPicks{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -190,7 +190,7 @@
 }
 .custom-gram-input::placeholder { color: var(--text-muted); opacity: 0.7; }
 
-/* ── Min-Order Progress Bar — Glassmorphism, natural flow (NOT sticky) ── */
+/* ── Min-Order Progress Bar - Glassmorphism, natural flow (NOT sticky) ── */
 #progressSection {
     background: rgba(37, 37, 38, 0.8);
     backdrop-filter: blur(10px);
@@ -349,7 +349,7 @@
         max-width: 100% !important;
     }
 
-    /* 3 columns — overrides Bootstrap's row-cols-* on the inner row */
+    /* 3 columns - overrides Bootstrap's row-cols-* on the inner row */
     #productGrid .row > .col {
         width: 33.333% !important;
         flex: 0 0 33.333% !important;
@@ -360,7 +360,7 @@
     .veg-card { min-height: unset !important; }
     .veg-card-body h6.text-bright { min-height: unset !important; }
 
-    /* Fixed image height — prevents ballooning with col width */
+    /* Fixed image height - prevents ballooning with col width */
     .card-img-wrap {
         aspect-ratio: 1 / 1 !important;
         height: unset !important;
@@ -569,7 +569,7 @@
     letter-spacing: 0.06em;
 }
 
-/* ── Responsive: Tablet (769px–1024px) ── */
+/* ── Responsive: Tablet (769px-1024px) ── */
 @media (max-width: 1024px) {
     .col-lg-3.sidebar { display: none; }
     #productGrid .col-sm-6 { width: 50%; }
@@ -617,7 +617,7 @@
        Stays visible while the user scrolls through products.
        JS colours it based on three thresholds:
          --danger  (red)    → < ₹75
-         --warning (yellow) → ₹75 – ₹99
+         --warning (yellow) → ₹75 - ₹99
          --success (green)  → ≥ ₹100
     #}
     <div id="progressSection">
@@ -666,7 +666,7 @@
                     Categories
                 </p>
 
-                {# Pills — populated by buildCategorySidebar() #}
+                {# Pills - populated by buildCategorySidebar() #}
                 <div id="categoryList"></div>
 
             </div>
@@ -706,7 +706,7 @@
             </div>
 
             {#
-               Product grid — Bootstrap row-cols breakpoints:
+               Product grid - Bootstrap row-cols breakpoints:
                  xs  : 1 col  (phones)
                  sm  : 2 cols (large phones / small tablets)
                  md  : 2 cols (tablets)
@@ -758,7 +758,7 @@
 {% block extra_scripts %}
 <script>
 /*
- * shop.html — FreshPicks Shopping Page Script
+ * shop.html - FreshPicks Shopping Page Script
  * =============================================
  * 1. Restore cart state from server on load  (GET  /api/cart)
  * 2. Fetch products on load                  (GET  /api/products)
@@ -768,7 +768,7 @@
  * 6. Add to cart                             (POST /api/cart/items)
  *    Payload: { "veg_id": "...", "qty_g": <integer grams> }
  * 7. Live progress bar  (₹0 → ₹100 minimum order)
- * 8. VS Code–styled toast notifications
+ * 8. VS Code-styled toast notifications
  */
 
 /* ── State ─────────────────────────────────────── */
@@ -818,7 +818,7 @@ const CAT_ICONS = {
 
 /**
  * loadCartState
- * GET /api/cart — restores cartTotal & cartItemsMap so the
+ * GET /api/cart - restores cartTotal & cartItemsMap so the
  * progress bar is accurate when the user returns to the shop page.
  */
 async function loadCartState() {
@@ -835,7 +835,7 @@ async function loadCartState() {
             });
             updateProgressBar();
         }
-    } catch (_) { /* Silent fail — progress bar stays at ₹0 */ }
+    } catch (_) { /* Silent fail - progress bar stays at ₹0 */ }
 }
 
 /**
@@ -868,7 +868,7 @@ async function fetchProducts() {
 
 
 /* ════════════════════════════════════════════════
-   RENDER — CATEGORY SIDEBAR
+   RENDER - CATEGORY SIDEBAR
 ════════════════════════════════════════════════ */
 
 /**
@@ -896,7 +896,7 @@ function buildCategorySidebar(products) {
     });
 }
 
-/** _makePill — creates a single category pill <button>. */
+/** _makePill - creates a single category pill <button>. */
 const PILL_TAG_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;margin-right:0.45rem;vertical-align:middle;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>';
 const PILL_ALL_SVG = '<i class="bi bi-grid me-2" style="font-size:0.82rem;vertical-align:middle;"></i>';
 
@@ -923,7 +923,7 @@ function setCategory(cat, clickedPill) {
 
 
 /* ════════════════════════════════════════════════
-   RENDER — PRODUCT GRID
+   RENDER - PRODUCT GRID
 ════════════════════════════════════════════════ */
 
 /**
@@ -1018,7 +1018,7 @@ function renderProducts(products) {
         row.className = "row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-xl-3 row-cols-xxl-4 g-3";
 
         /* CRITICAL: Attach the full section skeleton to the live DOM FIRST.
-           selectQty() calls document.getElementById() — which only works on
+           selectQty() calls document.getElementById() - which only works on
            nodes that are in the document. Attaching before the card loop
            ensures every qty-{veg_id} hidden input is findable immediately. */
         gridWrap.appendChild(row);
@@ -1129,7 +1129,7 @@ function renderProducts(products) {
 ════════════════════════════════════════════════ */
 
 /**
- * selectQty — called by quick-select buttons.
+ * selectQty - called by quick-select buttons.
  * Stores grams in hidden input, highlights active button,
  * clears the custom input, updates the cost display.
  */
@@ -1146,7 +1146,7 @@ function selectQty(veg_id, grams, clickedBtn) {
 }
 
 /**
- * onCustomInput — called on every keystroke in the custom field.
+ * onCustomInput - called on every keystroke in the custom field.
  * Parses value, stores in hidden input, deselects quick buttons.
  */
 function onCustomInput(veg_id, val) {
@@ -1161,7 +1161,7 @@ function onCustomInput(veg_id, val) {
 }
 
 /**
- * updateQtyDisplay — shows "✓ 500g selected — ₹20.00".
+ * updateQtyDisplay - shows "✓ 500g selected - ₹20.00".
  * Cost = (grams / 1000) × price_per_1000g
  */
 function updateQtyDisplay(veg_id, grams) {
@@ -1173,7 +1173,7 @@ function updateQtyDisplay(veg_id, grams) {
         const cost = (grams / 1000) * product.price_per_1000g;
         displayEl.innerHTML =
             `<span style="color:var(--accent-light);">✓ ${grams}g selected</span>` +
-            `<span style="color:var(--text-muted); margin-left:0.4rem;">— ₹${cost.toFixed(2)}</span>`;
+            `<span style="color:var(--text-muted); margin-left:0.4rem;">- ₹${cost.toFixed(2)}</span>`;
     } else {
         displayEl.innerHTML = "";
     }
@@ -1247,7 +1247,7 @@ async function addToCart(veg_id, price_per_1000g) {
 
 {% raw %}
 /**
- * updateProgressBar — Shop page progress bar.
+ * updateProgressBar - Shop page progress bar.
  * Fill color: var(--accent) below ₹100, var(--success) at ₹100+.
  */
 function updateProgressBar() {
@@ -1268,7 +1268,7 @@ function updateProgressBar() {
         label.innerHTML =
             `<span style="color:var(--danger);">₹${cartTotal.toFixed(2)} / ₹100 needed</span>`;
     } else if (cartTotal < MIN_ORDER) {
-        /* ₹75–₹99: accent color, transitioning toward success */
+        /* ₹75-₹99: accent color, transitioning toward success */
         bar.style.backgroundColor = "var(--accent)";
         label.innerHTML =
             `<span style="color:var(--accent-light);">Almost there! ₹${cartTotal.toFixed(2)} / ₹100</span>`;
@@ -1276,7 +1276,7 @@ function updateProgressBar() {
         /* ₹100+: transition to success green */
         bar.style.backgroundColor = "var(--success)";
         label.innerHTML =
-            `<span style="color:var(--success);">✓ Ready to checkout — ₹${cartTotal.toFixed(2)}</span>`;
+            `<span style="color:var(--success);">✓ Ready to checkout - ₹${cartTotal.toFixed(2)}</span>`;
     }
 
     if (cartTotal > 0) {
@@ -1311,7 +1311,7 @@ function filterProducts() {
     renderProducts(filtered);
 }
 
-/** clearFilters — resets text search and category pill. */
+/** clearFilters - resets text search and category pill. */
 function clearFilters() {
     document.getElementById("searchInput").value = "";
     activeCategory = "";
@@ -1351,7 +1351,7 @@ function showToast(message, isSuccess) {
     _toastTimer = setTimeout(() => toast.classList.remove("toast-show"), 2800);
 }
 
-/** showError — shows the error banner, hides the loader. */
+/** showError - shows the error banner, hides the loader. */
 function showError(msg) {
     document.getElementById("loadingState").classList.add("d-none");
     document.getElementById("errorState").classList.remove("d-none");
@@ -1359,7 +1359,7 @@ function showError(msg) {
 }
 
 /**
- * escHtml — minimal XSS guard for API-supplied strings
+ * escHtml - minimal XSS guard for API-supplied strings
  * rendered via innerHTML (name, category, tag).
  */
 function escHtml(str) {
@@ -1372,7 +1372,7 @@ function escHtml(str) {
 </script>
 
 <script>
-/* ── ui-helpers.js — inlined (Category Grouping + Min-Order Bar) ── */
+/* ── ui-helpers.js - inlined (Category Grouping + Min-Order Bar) ── */
 
 function initCategoryGroups(containerSelector) {
     const container = document.querySelector(containerSelector);

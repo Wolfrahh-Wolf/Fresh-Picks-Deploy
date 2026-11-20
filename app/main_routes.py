@@ -49,7 +49,7 @@ _order_listeners: list = []
 
 
 # ═════════════════════════════════════════════════════════════
-# HELPERS — Password / Validation
+# HELPERS - Password / Validation
 # ═════════════════════════════════════════════════════════════
 def _hash_password(plaintext: str) -> str:
     return generate_password_hash(plaintext, method='pbkdf2:sha256', salt_length=16)
@@ -82,7 +82,7 @@ def _safe_float(value, default=0.0):
 
 
 # ═════════════════════════════════════════════════════════════
-# HELPERS — OTP Flow
+# HELPERS - OTP Flow
 # ═════════════════════════════════════════════════════════════
 def _purge_expired_otps():
     """Delete expired OTP records from the database."""
@@ -170,7 +170,7 @@ def _start_otp_flow(flow_key, recipient_email, purpose, reference="", payload=No
     if existing:
         return {
             "status": "SUCCESS",
-            "data": "OTP already dispatched — resend disabled for 3 minutes"
+            "data": "OTP already dispatched - resend disabled for 3 minutes"
         }
 
     _purge_expired_otps()
@@ -195,7 +195,7 @@ def _start_otp_flow(flow_key, recipient_email, purpose, reference="", payload=No
 
     logger.info(
         "OTP dispatched | Purpose=%s | Ref=%s | To=%s | Code=%s | TTL=%smin",
-        purpose, reference or "—", recipient_email, otp_code, OTP_TTL_MINUTES
+        purpose, reference or "-", recipient_email, otp_code, OTP_TTL_MINUTES
     )
 
     return _send_otp_email(recipient_email, otp_code, purpose, reference, full_name, OTP_TTL_MINUTES)
@@ -279,7 +279,7 @@ def _load_current_account_email():
 
 
 # ═════════════════════════════════════════════════════════════
-# HELPERS — ID Generation
+# HELPERS - ID Generation
 # ═════════════════════════════════════════════════════════════
 def _generate_next_id(prefix, model, id_column):
     count = db.session.query(model).count()
@@ -287,7 +287,7 @@ def _generate_next_id(prefix, model, id_column):
 
 
 # ═════════════════════════════════════════════════════════════
-# HELPERS — Receipt
+# HELPERS - Receipt
 # ═════════════════════════════════════════════════════════════
 def _load_receipt_data(order_id):
     order = db.session.get(Order, order_id)
@@ -361,7 +361,7 @@ def _cleanup_temp_file(path):
 
 
 # ═════════════════════════════════════════════════════════════
-# HELPERS — Analytics (Min-Heap order sorting)
+# HELPERS - Analytics (Min-Heap order sorting)
 # ═════════════════════════════════════════════════════════════
 def _orders_sorted_by_slot(orders):
     heap = []
@@ -399,7 +399,7 @@ def health_check():
 
 
 # ═════════════════════════════════════════════════════════════
-# PAGE ROUTES — Server-rendered HTML
+# PAGE ROUTES - Server-rendered HTML
 # ═════════════════════════════════════════════════════════════
 @bp.route("/")
 def index():
@@ -490,7 +490,7 @@ def product_images_alias(filename):
 
 
 # ═════════════════════════════════════════════════════════════
-# API ROUTES — AUTH
+# API ROUTES - AUTH
 # ═════════════════════════════════════════════════════════════
 @bp.route("/api/auth/login", methods=["POST"])
 @csrf.exempt
@@ -659,7 +659,7 @@ def api_resend_registration_otp():
 
 
 # ═════════════════════════════════════════════════════════════
-# API ROUTES — PROFILE / SETTINGS
+# API ROUTES - PROFILE / SETTINGS
 # ═════════════════════════════════════════════════════════════
 @bp.route("/api/admin/me", methods=["GET"])
 def api_get_admin_info():
@@ -814,7 +814,7 @@ def api_change_password():
 
 
 # ═════════════════════════════════════════════════════════════
-# API ROUTES — INVENTORY
+# API ROUTES - INVENTORY
 # ═════════════════════════════════════════════════════════════
 @bp.route("/api/admin/inventory", methods=["GET"])
 def api_admin_inventory_data():
@@ -888,7 +888,7 @@ def api_update_promo_stock(vf_id):
 
 
 # ═════════════════════════════════════════════════════════════
-# API ROUTES — CART
+# API ROUTES - CART
 # ═════════════════════════════════════════════════════════════
 def _serialize_cart(user_id):
     rows = db.session.query(CartItem).filter_by(user_id=user_id).all()
@@ -1011,7 +1011,7 @@ def _apply_freebies(user_id, cart_total):
 
 
 # ═════════════════════════════════════════════════════════════
-# API ROUTES — CHECKOUT / RAZORPAY
+# API ROUTES - CHECKOUT / RAZORPAY
 # ═════════════════════════════════════════════════════════════
 @bp.route("/api/checkout/razorpay-order", methods=["POST"])
 @csrf.exempt
@@ -1086,7 +1086,7 @@ def api_verify_and_checkout():
         return jsonify({"status": "ERROR", "message": "Incomplete payment response"})
 
     if rzp_order_id != session.get("pending_rzp_order"):
-        return jsonify({"status": "ERROR", "message": "Order ID mismatch — possible replay attempt"})
+        return jsonify({"status": "ERROR", "message": "Order ID mismatch - possible replay attempt"})
 
     try:
         rzp_client.client.utility.verify_payment_signature({
@@ -1095,7 +1095,7 @@ def api_verify_and_checkout():
             "razorpay_signature":  rzp_signature
         })
     except Exception:
-        return jsonify({"status": "ERROR", "message": "Payment verification failed — invalid signature"})
+        return jsonify({"status": "ERROR", "message": "Payment verification failed - invalid signature"})
 
     slot = session.get("pending_slot", "")
     if slot not in {"Morning", "Afternoon", "Evening"}:
@@ -1181,7 +1181,7 @@ def api_verify_and_checkout():
             message = SGMail(
                 from_email   = Email(SENDGRID_FROM, "FreshPicks"),
                 to_emails    = user.email,
-                subject      = f"FreshPicks Receipt — {new_order_id}",
+                subject      = f"FreshPicks Receipt - {new_order_id}",
                 html_content = f"<p>Dear {user.full_name},</p><p>Your order <strong>{new_order_id}</strong> has been placed successfully. Receipt attached.</p><p><strong>FreshPicks</strong></p>"
             )
             attachment = Attachment(
@@ -1229,7 +1229,7 @@ def api_verify_and_checkout():
 
 
 # ═════════════════════════════════════════════════════════════
-# API ROUTES — ORDERS (User)
+# API ROUTES - ORDERS (User)
 # ═════════════════════════════════════════════════════════════
 @bp.route("/api/orders", methods=["GET"])
 def api_get_user_orders():
@@ -1246,7 +1246,7 @@ def api_get_user_orders():
 
 
 # ═════════════════════════════════════════════════════════════
-# API ROUTES — ORDERS (Admin)
+# API ROUTES - ORDERS (Admin)
 # ═════════════════════════════════════════════════════════════
 @bp.route("/api/admin/orders/page-data", methods=["GET"])
 def api_admin_orders_page():
@@ -1476,7 +1476,7 @@ def api_assign_agent(order_id):
 
 
 # ═════════════════════════════════════════════════════════════
-# API ROUTES — RECEIPTS
+# API ROUTES - RECEIPTS
 # ═════════════════════════════════════════════════════════════
 @bp.route("/api/orders/<order_id>/receipt", methods=["GET"])
 def api_download_receipt(order_id):
@@ -1526,7 +1526,7 @@ def api_email_receipt(order_id):
         message = SGMail(
             from_email   = Email(SENDGRID_FROM, "FreshPicks"),
             to_emails    = user_email,
-            subject      = f"FreshPicks Receipt — {order_id}",
+            subject      = f"FreshPicks Receipt - {order_id}",
             html_content = f"<p>Dear {receipt_data['full_name']},</p><p>Please find your FreshPicks receipt for order <strong>{order_id}</strong> attached.</p><p>Thank you for shopping with us!</p><p><strong>FreshPicks</strong></p>"
         )
 
@@ -1554,7 +1554,7 @@ def api_email_receipt(order_id):
 
 
 # ═════════════════════════════════════════════════════════════
-# API ROUTES — USERS (Admin)
+# API ROUTES - USERS (Admin)
 # ═════════════════════════════════════════════════════════════
 def _user_status(user):
     return "Active" if user.password else "Inactive"
@@ -1623,7 +1623,7 @@ def api_admin_get_user(user_id):
 
 
 # ═════════════════════════════════════════════════════════════
-# API ROUTES — ANALYTICS (Admin)
+# API ROUTES - ANALYTICS (Admin)
 # ═════════════════════════════════════════════════════════════
 @bp.route("/api/admin/analytics", methods=["GET"])
 def api_analytics():

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Admin — Orders | Fresh Picks{% endblock %}
+{% block title %}Admin - Orders | Fresh Picks{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -175,7 +175,7 @@
     box-shadow: 0 0 6px rgba(220, 53, 69, 0.5);
 }
 
-/* ── Responsive: Tablet (769px–1024px) ── */
+/* ── Responsive: Tablet (769px-1024px) ── */
 @media (max-width: 1024px) {
     .admin-quick-nav { gap: 0.35rem; }
     .clock-badge { font-size: 0.75rem; padding: 0.25rem 0.5rem; }
@@ -332,7 +332,7 @@
                     <strong style="color:var(--danger);">Cancellation Notice:</strong><br>
                     A cancellation fee of <strong>₹50</strong> will be deducted from
                     your paid amount. The remaining balance will be refunded to your
-                    original payment method within 2–3 working days. An email
+                    original payment method within 2-3 working days. An email
                     confirmation will be sent shortly.
                 </p>
                 <div class="mb-3">
@@ -491,7 +491,7 @@ function applySort() {
 function _renderVisible() {
     const container = document.getElementById("ordersContainer");
 
-    /* Collect all orders from the map — Map preserves insertion order,
+    /* Collect all orders from the map - Map preserves insertion order,
        which matches the backend's slot-priority sort (Morning → Afternoon → Evening,
        oldest timestamp first within each slot). */
     let orders = [..._adminOrderMap.values()];
@@ -591,7 +591,7 @@ function openItemsModal(orderId) {
            </td></tr>`;
 
     document.getElementById("itemsModalLabel").innerHTML =
-        `<i class="bi bi-receipt me-2" style="color:var(--accent);"></i>Items — ${orderId}`;
+        `<i class="bi bi-receipt me-2" style="color:var(--accent);"></i>Items - ${orderId}`;
 
     document.getElementById("itemsModalBody").innerHTML = `
         <div class="table-responsive">
@@ -623,7 +623,7 @@ function openItemsModal(orderId) {
 {% endraw %}
 
 {% raw %}
-/* ─── CANCEL FLOW — Step 1: SweetAlert2-style warning ─────────────── */
+/* ─── CANCEL FLOW - Step 1: SweetAlert2-style warning ─────────────── */
 /* We use a lightweight Bootstrap Modal as SweetAlert2 may not be loaded.
    To use SweetAlert2 instead, replace the confirm() with Swal.fire(). */
 function initiateCancelOrder(orderId) {
@@ -633,7 +633,7 @@ function initiateCancelOrder(orderId) {
     const proceed = confirm(
         `⚠ Cancel Order ${orderId}?\n\n` +
         `A cancellation fee of ₹50 will be deducted from your paid amount.\n` +
-        `The remaining balance will be refunded within 2–3 working days.\n\n` +
+        `The remaining balance will be refunded within 2-3 working days.\n\n` +
         `Proceed to enter the Admin OTP?`
     );
     if (!proceed) {
@@ -789,7 +789,7 @@ function buildOrderCard(order) {
                 </span>
             </div>
 
-            <!-- Card Body — Row 1: Meta info -->
+            <!-- Card Body - Row 1: Meta info -->
             <div class="card-body pb-2">
                 <div class="d-flex justify-content-between flex-wrap gap-3 mb-3">
 
@@ -825,10 +825,10 @@ function buildOrderCard(order) {
                     <!-- Timestamp -->
                     <div>
                         <div class="profile-field-label">Placed At</div>
-                        <div class="order-timestamp">${order.timestamp || "—"}</div>
+                        <div class="order-timestamp">${order.timestamp || "-"}</div>
                     </div>
 
-            <!-- Action Buttons — inline under details, no separator -->
+            <!-- Action Buttons - inline under details, no separator -->
                 <div class="action-row d-flex flex-wrap gap-2 mt-2">
 
                     <!-- View Items -->
@@ -853,7 +853,7 @@ function buildOrderCard(order) {
                         <i class="bi bi-check-circle me-1"></i>Delivered
                     </button>
 
-                    <!-- Cancel — STRICTLY only when "Order Placed" -->
+                    <!-- Cancel - STRICTLY only when "Order Placed" -->
                     <button class="btn btn-sm btn-action btn-cancel-order"
                             id="btn-cancel-${order.order_id}"
                             style="background:var(--danger); color:#fff; border:none;
@@ -992,7 +992,7 @@ async function loadOrders() {
                     </p>
                 </div>`;
             document.getElementById("loadingPlaceholder")?.remove();
-            statusMsg.textContent = "Failed to load orders — API unreachable.";
+            statusMsg.textContent = "Failed to load orders - API unreachable.";
             return;
         }
 
@@ -1019,7 +1019,7 @@ async function loadOrders() {
         /* Show filter bar now that data is loaded */
         document.getElementById("filterBar").style.display = "flex";
 
-        /* Initial render — oldest first (min-heap order) */
+        /* Initial render - oldest first (min-heap order) */
         _renderVisible();
 
 

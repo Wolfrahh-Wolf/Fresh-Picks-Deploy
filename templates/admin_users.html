@@ -275,7 +275,7 @@
         .ud-details-btn { width: 100%; text-align: center; }
     }
 
-    /* ── Responsive: Tablet (769px–1024px) ── */
+    /* ── Responsive: Tablet (769px-1024px) ── */
     @media (max-width: 1024px) {
         .ud-toolbar { flex-wrap: wrap; gap: 0.5rem; }
         .ud-search-wrap { width: 100%; }
@@ -383,7 +383,7 @@
 
 
 {# ══════════════════════════════════════════════
-   USER DETAILS MODAL — styled like admin_orders.html
+   USER DETAILS MODAL - styled like admin_orders.html
    ══════════════════════════════════════════════ #}
 <div class="modal fade" id="ud-modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
@@ -393,9 +393,9 @@
                 <div class="d-flex align-items-center gap-3">
                     <div class="ud-modal-avatar" id="modal-avatar">?</div>
                     <div>
-                        <h5 class="modal-title mb-0 text-bright" id="modal-name">—</h5>
+                        <h5 class="modal-title mb-0 text-bright" id="modal-name">-</h5>
                         <small style="color:var(--accent); font-family:monospace;"
-                               id="modal-uid-sub">—</small>
+                               id="modal-uid-sub">-</small>
                     </div>
                 </div>
                 <button type="button" class="btn-close btn-close-white"
@@ -428,11 +428,11 @@
 <script>
 /*
  * ═══════════════════════════════════════════════════════════════
- * ADMIN USER DIRECTORY — Client-Side Logic (Session 3 Redesign)
+ * ADMIN USER DIRECTORY - Client-Side Logic (Session 3 Redesign)
  *
- * 1. SEARCH  — Live filter on #ud-search (debounced 300ms)
- * 2. FILTER  — Tab buttons (All / Active / Inactive)
- * 3. MODAL   — "View Details" → fetch GET /api/admin/users/<user_id> → render
+ * 1. SEARCH  - Live filter on #ud-search (debounced 300ms)
+ * 2. FILTER  - Tab buttons (All / Active / Inactive)
+ * 3. MODAL   - "View Details" → fetch GET /api/admin/users/<user_id> → render
  *              Address shown as single comma-separated line.
  * ═══════════════════════════════════════════════════════════════
  */
@@ -464,7 +464,7 @@
     }
 
     function formatAddress(raw) {
-        if (!raw) return "—";
+        if (!raw) return "-";
         return raw.split(/[\n\r|;,]+/).map(s => s.trim()).filter(Boolean).join("<br>");
     }
 
@@ -681,9 +681,9 @@
             } else if (row.mono) {
                 valHTML = `<span class="ud-profile-value mono">${escHtml(row.value)}</span>`;
             } else if (row.html) {
-                valHTML = `<span class="ud-profile-value">${row.value || "—"}</span>`;
+                valHTML = `<span class="ud-profile-value">${row.value || "-"}</span>`;
             } else {
-                valHTML = `<span class="ud-profile-value">${escHtml(row.value || "—")}</span>`;
+                valHTML = `<span class="ud-profile-value">${escHtml(row.value || "-")}</span>`;
             }
             html += `
                 <div class="ud-profile-row">
@@ -742,7 +742,7 @@
                 if (modalBody) modalBody.innerHTML = `
                     <div class="text-center py-3" style="color:var(--danger);">
                         <i class="bi bi-wifi-off me-1"></i>
-                        Data Load Failed — network error.
+                        Data Load Failed - network error.
                     </div>`;
                 console.error("User detail fetch error:", err);
             }

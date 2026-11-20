@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}My Cart — FreshPicks{% endblock %}
+{% block title %}My Cart - FreshPicks{% endblock %}
 
 {% block extra_head %}
 <style>
-/* ── Cart Progress Bar — Glassmorphism ──────────────────────── */
+/* ── Cart Progress Bar - Glassmorphism ──────────────────────── */
 .cart-progress-track {
     height: 8px;
     background: var(--bg-elevated);
@@ -436,7 +436,7 @@
     color: var(--text-primary) !important;
 }
 
-/* ── Responsive: Tablet (769px–1024px) ── */
+/* ── Responsive: Tablet (769px-1024px) ── */
 @media (max-width: 1024px) {
     .cart-summary-sticky { position: static; }
     .col-lg-8, .col-lg-4 { width: 100%; }
@@ -502,7 +502,7 @@
         <div class="step-pill"        id="step-5">4 · Receipt</div>
     </div>
 
-    {# ── Toast Container (VS Code–styled) ── #}
+    {# ── Toast Container (VS Code-styled) ── #}
     <div id="toastContainer" class="cart-toast-container" aria-live="polite"></div>
 
     {# ── Loading Spinner (initial page load + checkout API call) ── #}
@@ -513,7 +513,7 @@
 
 
     {# ══════════════════════════════════════════════════════════════
-       STATE 1 — CART VIEW
+       STATE 1 - CART VIEW
        User sees all DLL items, removes items, views running total.
        "Proceed to Checkout" → State 2. Disabled until total ≥ ₹100.
     ══════════════════════════════════════════════════════════════ #}
@@ -533,7 +533,7 @@
                     </div>
                 </div>
 
-                {# Freebie Banner — revealed when total ≥ ₹500 #}
+                {# Freebie Banner - revealed when total ≥ ₹500 #}
                 <div id="freebieNotice" class="d-none mt-3">
                     <div class="cart-freebie-banner">
                         <i class="bi bi-gift-fill me-2"></i>
@@ -589,7 +589,7 @@
                             <span id="freebieProgressText" class="text-muted"></span>
                         </div>
 
-                        {# Proceed Button — disabled until ₹100 minimum met #}
+                        {# Proceed Button - disabled until ₹100 minimum met #}
                         <button id="proceedBtn"
                                 onclick="goToState(2)"
                                 class="btn btn-primary btn-full mt-2"
@@ -611,7 +611,7 @@
 
 
     {# ══════════════════════════════════════════════════════════════
-       STATE 2 — DELIVERY SLOT SELECTION
+       STATE 2 - DELIVERY SLOT SELECTION
        Slot cards: Morning / Afternoon / Evening.
        "Review Order" → State 3. Disabled until a slot is selected.
     ══════════════════════════════════════════════════════════════ #}
@@ -640,7 +640,7 @@
                                     <div class="flex-grow-1">
                                         <div class="text-bright fw-bold">Morning</div>
                                         <div class="text-muted slot-time">
-                                            7:00 AM – 11:00 AM &nbsp;·&nbsp;
+                                            7:00 AM - 11:00 AM &nbsp;·&nbsp;
                                             <span class="text-success">Highest Priority</span>
                                         </div>
                                     </div>
@@ -658,7 +658,7 @@
                                     <div class="flex-grow-1">
                                         <div class="text-bright fw-bold">Afternoon</div>
                                         <div class="text-muted slot-time">
-                                            12:00 PM – 4:00 PM
+                                            12:00 PM - 4:00 PM
                                         </div>
                                     </div>
                                     <i class="bi bi-check-circle-fill slot-check d-none"
@@ -675,7 +675,7 @@
                                     <div class="flex-grow-1">
                                         <div class="text-bright fw-bold">Evening</div>
                                         <div class="text-muted slot-time">
-                                            5:00 PM – 8:00 PM
+                                            5:00 PM - 8:00 PM
                                         </div>
                                     </div>
                                     <i class="bi bi-check-circle-fill slot-check d-none"
@@ -709,7 +709,7 @@
 
 
     {# ══════════════════════════════════════════════════════════════
-       STATE 3 — INVOICE PREVIEW
+       STATE 3 - INVOICE PREVIEW
        Client-side preview: shop details + items + freebie estimate.
        "Confirm Payment" → fires /api/checkout → State 5 receipt.
     ══════════════════════════════════════════════════════════════ #}
@@ -730,7 +730,7 @@
                                 Fresh Picks
                             </div>
                             <div class="text-muted" style="font-size:0.82rem;">
-                                123, Thirumangalam Main Road, West Tambaram, Chennai – 600045<br>
+                                123, Thirumangalam Main Road, West Tambaram, Chennai - 600045<br>
                                 GSTIN: 22AAAAA0000A1Z5 &nbsp;|&nbsp; FSSAI: 10020042004971<br>
                                 📞 +91 98765 43210 &nbsp;|&nbsp; support@freshpicks.in
                             </div>
@@ -761,7 +761,7 @@
 
                         <hr>
 
-                        {# Freebie Estimate Box — shown if total ≥ ₹500 #}
+                        {# Freebie Estimate Box - shown if total ≥ ₹500 #}
                         <div id="prev-freebie-box" class="cart-freebie-preview-box d-none">
                             <i class="bi bi-gift-fill me-2 text-success"></i>
                             <span class="text-success" id="prev-freebie-text"></span>
@@ -803,7 +803,7 @@
 
 
     {# ══════════════════════════════════════════════════════════════
-       STATE 5 — RECEIPT DISPLAY
+       STATE 5 - RECEIPT DISPLAY
        Rendered from /api/checkout JSON response.
        #receiptPrintArea is the pdf2html capture target (white bg).
     ══════════════════════════════════════════════════════════════ #}
@@ -823,7 +823,7 @@
                 </div>
 
                 {# ── PDF Capture Area ────────────────────────────────────────
-                   IMPORTANT: White background, dark text — print-safe.
+                   IMPORTANT: White background, dark text - print-safe.
                    html2pdf targets this div only. Download button is outside.
                 ─────────────────────────────────────────────────────────── #}
                 <div id="receiptPrintArea" class="cart-receipt-print">
@@ -833,15 +833,15 @@
                         <div>
                             <div class="rcpt-brand">🧺 Fresh Picks</div>
                             <div class="rcpt-sub">
-                                123 Grocery Ave, Market City, Chennai – 600045<br>
+                                123 Grocery Ave, Market City, Chennai - 600045<br>
                                 GSTIN: 22AAAAA0000A1Z5 | FSSAI: 10020042004971<br>
                                 📞 +91 98765 43210 | support@freshpicks.in
                             </div>
                         </div>
                         <div class="text-end">
                             <div class="rcpt-label">Order Receipt</div>
-                            <div class="rcpt-order-chip" id="rcpt-order-id">—</div>
-                            <div class="rcpt-datetime" id="rcpt-datetime">—</div>
+                            <div class="rcpt-order-chip" id="rcpt-order-id">-</div>
+                            <div class="rcpt-datetime" id="rcpt-datetime">-</div>
                         </div>
                     </div>
 
@@ -851,11 +851,11 @@
                     <div class="rcpt-meta-grid">
                         <div>
                             <div class="rcpt-label">Bill To</div>
-                            <div class="rcpt-value" id="rcpt-customer">—</div>
+                            <div class="rcpt-value" id="rcpt-customer">-</div>
                         </div>
                         <div>
                             <div class="rcpt-label">Delivery Slot</div>
-                            <div class="rcpt-value" id="rcpt-slot">—</div>
+                            <div class="rcpt-value" id="rcpt-slot">-</div>
                         </div>
                         <div>
                             <div class="rcpt-label">Status</div>
@@ -868,8 +868,8 @@
                         <span class="rcpt-moto">🛵</span>
                         <div>
                             <div class="rcpt-label">Delivery Partner</div>
-                            <div class="rcpt-value fw-bold" id="rcpt-boy-name">—</div>
-                            <div class="rcpt-sub"         id="rcpt-boy-phone">—</div>
+                            <div class="rcpt-value fw-bold" id="rcpt-boy-name">-</div>
+                            <div class="rcpt-sub"         id="rcpt-boy-phone">-</div>
                         </div>
                     </div>
 
@@ -912,7 +912,7 @@
                 </div>
                 {# End #receiptPrintArea #}
 
-                {# Action Buttons — outside PDF area intentionally #}
+                {# Action Buttons - outside PDF area intentionally #}
                 <div class="d-flex gap-2 mt-4 flex-wrap">
                     <button onclick="downloadReceiptAsPDF()"
                             class="btn btn-primary"
@@ -971,7 +971,7 @@
                         <strong style="color:var(--danger);">Cancellation Notice</strong><br>
                         A fee of <strong>₹50</strong> will be deducted from your paid
                         amount. The remaining balance will be refunded within
-                        <strong>2–3 working days</strong>.
+                        <strong>2-3 working days</strong>.
                     </p>
                 </div>
                 <div>
@@ -1021,7 +1021,7 @@
 {% block extra_scripts %}
 <script>
 /*
- * CART PAGE — JAVASCRIPT STATE MACHINE  (Fixed Bundle)
+ * CART PAGE - JAVASCRIPT STATE MACHINE  (Fixed Bundle)
  * FreshPicks | SDP-1
  */
 
@@ -1059,7 +1059,7 @@ async function fetchCustomerProfile() {
             localStorage.setItem("fp_phone",     _profile.phone);
             localStorage.setItem("fp_address",   _profile.address);
         }
-    } catch (_) { /* silent fail — fallbacks already set */ }
+    } catch (_) { /* silent fail - fallbacks already set */ }
 }
 
 const MIN_ORDER         = 100;
@@ -1327,9 +1327,9 @@ function selectSlot(slot, clickedCard) {
 {% raw %}
 function renderInvoicePreview() {
     const slotLabels = {
-        Morning:   "🌅 Morning (7:00 AM – 11:00 AM)",
-        Afternoon: "☀️ Afternoon (12:00 PM – 4:00 PM)",
-        Evening:   "🌙 Evening (5:00 PM – 8:00 PM)"
+        Morning:   "🌅 Morning (7:00 AM - 11:00 AM)",
+        Afternoon: "☀️ Afternoon (12:00 PM - 4:00 PM)",
+        Evening:   "🌙 Evening (5:00 PM - 8:00 PM)"
     };
     document.getElementById("prev-slot").textContent     = slotLabels[selectedSlot] || selectedSlot;
     document.getElementById("prev-customer").textContent = _customerDisplay();
@@ -1349,7 +1349,7 @@ function renderInvoicePreview() {
     cartItems.forEach(item => {
         const qtyDisplay = item.qty_g >= 1000 ? `${(item.qty_g / 1000).toFixed(2)} kg` : `${item.qty_g} g`;
         const pricePerKg = parseFloat(item.price_per_1000g) || 0;
-        const rateDisplay = item.is_free ? "—" : `₹${pricePerKg.toFixed(2)}/kg`;
+        const rateDisplay = item.is_free ? "-" : `₹${pricePerKg.toFixed(2)}/kg`;
         const lineTotal   = (pricePerKg * item.qty_g) / 1000;
         const amtDisplay  = item.is_free ? "FREE" : `₹${lineTotal.toFixed(2)}`;
         container.insertAdjacentHTML("beforeend", `
@@ -1368,7 +1368,7 @@ function renderInvoicePreview() {
     const freebieText = document.getElementById("prev-freebie-text");
     if (cartTotal >= FREEBIE_THRESHOLD) {
         const multiplier = Math.floor(cartTotal / FREEBIE_THRESHOLD);
-        freebieText.innerHTML = `<span style="color:var(--success);">You've unlocked <strong>${multiplier * 50}g</strong> each of <strong>Curry Leaves</strong> &amp; <strong>Coriander</strong> — FREE! (₹${cartTotal.toFixed(0)} ÷ ₹500 = ×${multiplier})</span>`;
+        freebieText.innerHTML = `<span style="color:var(--success);">You've unlocked <strong>${multiplier * 50}g</strong> each of <strong>Curry Leaves</strong> &amp; <strong>Coriander</strong> - FREE! (₹${cartTotal.toFixed(0)} ÷ ₹500 = ×${multiplier})</span>`;
         freebieBox.classList.remove("d-none");
     } else {
         freebieBox.classList.add("d-none");
@@ -1406,7 +1406,7 @@ async function confirmPayment() {
         });
         
         /* ══════════════════════════════════════════════════════════════════
-           STEP A — Create Razorpay order on the server
+           STEP A - Create Razorpay order on the server
            ══════════════════════════════════════════════════════════════════ */
         const orderRes  = await fetch("/api/checkout/razorpay-order", {
             method:  "POST",
@@ -1420,7 +1420,7 @@ async function confirmPayment() {
         }
 
         /* ══════════════════════════════════════════════════════════════════
-           STEP B — Open Razorpay checkout modal
+           STEP B - Open Razorpay checkout modal
            ══════════════════════════════════════════════════════════════════ */
         await new Promise((resolve, reject) => {
 
@@ -1440,12 +1440,12 @@ async function confirmPayment() {
                 /* Pre-fill from session if you want (optional) */
                 // prefill: { name: "...", email: "...", contact: "..." },
 
-                /* Theme — match your site's accent colour */
+                /* Theme - match your site's accent colour */
                 theme: { color: "#2ecc71" },
 
                 /* ── Payment success handler ─────────────────────────────
                    Razorpay calls this with the three verification fields.
-                   We don't commit the order here — we send these to Flask
+                   We don't commit the order here - we send these to Flask
                    for server-side HMAC verification first.            ── */
                 handler: async function (response) {
                     try {
@@ -1455,7 +1455,7 @@ async function confirmPayment() {
                         }
 
                         /* ══════════════════════════════════════════════════
-                           STEP C — Verify signature + commit order
+                           STEP C - Verify signature + commit order
                            ══════════════════════════════════════════════════ */
                         const verifyRes  = await fetch("/api/checkout/verify", {
                             method:  "POST",
@@ -1473,7 +1473,7 @@ async function confirmPayment() {
                         }
 
                         /* ══════════════════════════════════════════════════
-                           STEP D — Render receipt (identical to old flow)
+                           STEP D - Render receipt (identical to old flow)
                            verifyData has the exact same shape as the old
                            /api/checkout response, so renderReceipt() works
                            without any modification.
@@ -1509,7 +1509,7 @@ async function confirmPayment() {
 
             rzp.open();
 
-            // Safety net — if modal gets stuck due to mixed-content blocking,
+            // Safety net - if modal gets stuck due to mixed-content blocking,
             // reject after 3 minutes so the button re-enables and user can retry
             const _safetyTimer = setTimeout(() => {
                 reject(new Error("Payment timed out. Please try again."));
@@ -1520,7 +1520,7 @@ async function confirmPayment() {
 
         });
 
-        /* If we reach here, everything succeeded — button stays disabled
+        /* If we reach here, everything succeeded - button stays disabled
            (the receipt state is already shown, no need to re-enable it). */
 
     } catch (err) {
@@ -1537,7 +1537,7 @@ async function confirmPayment() {
 
 {% raw %}
 /*
- * renderReceipt — FIX: uses in-memory cartItems for product names
+ * renderReceipt - FIX: uses in-memory cartItems for product names
  * since items_string from checkout is 3-part (veg_id:qty:price).
  * After recompiling order.c with 4-part format, the nameFromStr
  * path will also work automatically.
@@ -1547,11 +1547,11 @@ async function confirmPayment() {
  */
 function renderReceipt(result) {
     /* ── Order meta ── */
-    document.getElementById("rcpt-order-id").textContent  = result.order_id || "—";
-    document.getElementById("rcpt-slot").textContent      = result.slot      || "—";
-    document.getElementById("rcpt-boy-name").textContent  = result.boy_name  || "—";
+    document.getElementById("rcpt-order-id").textContent  = result.order_id || "-";
+    document.getElementById("rcpt-slot").textContent      = result.slot      || "-";
+    document.getElementById("rcpt-boy-name").textContent  = result.boy_name  || "-";
     document.getElementById("rcpt-boy-phone").textContent =
-        result.boy_phone ? `📞 ${result.boy_phone}` : "—";
+        result.boy_phone ? `📞 ${result.boy_phone}` : "-";
 
     /* ── FIX: Customer = Full Name ── */
     document.getElementById("rcpt-customer").textContent = _customerDisplay();
@@ -1616,7 +1616,7 @@ function renderReceipt(result) {
         const pricePerKg = parseFloat(it.price_at_order) || 0;
         const isFree     = !!it.is_free;
         const qtyDisplay  = grams >= 1000 ? `${(grams / 1000).toFixed(2)} kg` : `${grams} g`;
-        const rateDisplay = isFree ? "—" : `₹${pricePerKg.toFixed(2)}/kg`;
+        const rateDisplay = isFree ? "-" : `₹${pricePerKg.toFixed(2)}/kg`;
 
         let lineAmount = "FREE";
         if (!isFree) {
@@ -1651,8 +1651,8 @@ function renderReceipt(result) {
 
 
 /* ─────────────────────────────────────────────────────────────────
-   FIX 4: CANCEL FLOW — in-page modal instead of confirm()
-   (For cart page — there's no cancel button here normally,
+   FIX 4: CANCEL FLOW - in-page modal instead of confirm()
+   (For cart page - there's no cancel button here normally,
     but keeping the pattern consistent if you add one)
 ───────────────────────────────────────────────────────────────── */
 let _cartPendingCancelId = null;
@@ -1785,7 +1785,7 @@ function showToast(message, type = "info", duration = 4000) {
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   downloadReceiptAsPDF — server-side receipt PDF download.
+   downloadReceiptAsPDF - server-side receipt PDF download.
    GET /api/orders/<order_id>/receipt
 ───────────────────────────────────────────────────────────────── */
 {% raw %}
@@ -1821,15 +1821,15 @@ async function requestReceiptEmail(orderId) {
         if (data.status === "SUCCESS") {
             showToast("📧 Receipt emailed to " + sentTo, "success", 5000);
         } else {
-            /* Silent-ish failure — don't alarm the user, just log it */
+            /* Silent-ish failure - don't alarm the user, just log it */
             console.warn("[requestReceiptEmail] Mailer error:", data.message);
-            showToast("Could not email receipt — you can still download it.", "warning", 5000);
+            showToast("Could not email receipt - you can still download it.", "warning", 5000);
         }
 
     } catch (err) {
-        /* Network-level error — same quiet treatment */
+        /* Network-level error - same quiet treatment */
         console.error("[requestReceiptEmail] Fetch error:", err);
-        showToast("Could not email receipt — you can still download it.", "warning", 5000);
+        showToast("Could not email receipt - you can still download it.", "warning", 5000);
     }
 }
 
@@ -1850,7 +1850,7 @@ function _autoEmailReceipt() {
         return;
     }
 
-    /* Fire-and-forget async work — never await this at the call site */
+    /* Fire-and-forget async work - never await this at the call site */
     (async () => {
         await requestReceiptEmail(orderId);
     })();
@@ -1859,7 +1859,7 @@ function _autoEmailReceipt() {
 </script>
 
 <script>
-/* ── ui-helpers.js — inlined (Category Grouping + Min-Order Bar) ── */
+/* ── ui-helpers.js - inlined (Category Grouping + Min-Order Bar) ── */
 
 function initCategoryGroups(containerSelector) {
     const container = document.querySelector(containerSelector);

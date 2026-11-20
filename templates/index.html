@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Fresh Picks — Online Grocery Delivery{% endblock %}
+{% block title %}Fresh Picks - Online Grocery Delivery{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -145,7 +145,7 @@
     margin-bottom: 1.5rem;
 }
 
-/* Portal cards — match admin dash stat-card aesthetic */
+/* Portal cards - match admin dash stat-card aesthetic */
 .portal-card {
     cursor: pointer;
     border: 2px solid var(--border-color) !important;
@@ -391,7 +391,7 @@
             </a>
         </div>
 
-        {# Down chevron — smooth scroll hint #}
+        {# Down chevron - smooth scroll hint #}
         <a href="#portals" class="lp-scroll-hint" aria-hidden="true">
             <i class="bi bi-chevron-double-down"></i>
         </a>
@@ -402,7 +402,7 @@
 
     {# ══════════════════════════════════════════════════════════════
        PORTAL CARDS
-       Admin Portal and User Portal — entry point for both roles.
+       Admin Portal and User Portal - entry point for both roles.
        ══════════════════════════════════════════════════════════════ #}
     
 
@@ -464,7 +464,7 @@
             </div>
         </div>
 
-        {# ── Portal Cards — equal width and height ── #}
+        {# ── Portal Cards - equal width and height ── #}
         <div class="row justify-content-center g-4 pb-3">
 
             {# ── Admin Portal Card ── #}
@@ -603,7 +603,7 @@
     {# ══════════════════════════════════════════════════════════════
        ALGORITHMIC CORE
        Only Min-Heap (dispatch) and Round-Robin (agent assignment).
-       Singly LL, Doubly LL, and Hash Table removed —
+       Singly LL, Doubly LL, and Hash Table removed -
        data persistence now handled by PostgreSQL.
        ══════════════════════════════════════════════════════════════ #}
     <div class="lp-section">
@@ -643,7 +643,7 @@
 
     {# ══════════════════════════════════════════════════════════════
        CLOUD INFRASTRUCTURE & STACK
-       New section — replaces the old Intranet / local-deployment content.
+       New section - replaces the old Intranet / local-deployment content.
        Covers the production deployment setup on Render + Supabase.
        ══════════════════════════════════════════════════════════════ #}
     <div class="lp-section">
@@ -671,7 +671,7 @@
                         <h3 class="lp-eng-card-title">PostgreSQL · Supabase</h3>
                     </div>
                     <div class="lp-eng-badge">Cloud RDBMS</div>
-                    <p>Cloud-hosted relational database. Stores users, orders, inventory, and transactions — queried via SQL through Supabase's managed Postgres instance.</p>
+                    <p>Cloud-hosted relational database. Stores users, orders, inventory, and transactions - queried via SQL through Supabase's managed Postgres instance.</p>
                 </div>
             </div>
 
@@ -737,7 +737,7 @@
                         <h3 class="lp-eng-card-title">OTP Verification</h3>
                     </div>
                     <div class="lp-eng-badge">Time-To-Live Logic</div>
-                    <p>Secure, time-limited One-Time Passwords guard critical operations — account registration, password changes, and order cancellations — with email-based 2-step verification.</p>
+                    <p>Secure, time-limited One-Time Passwords guard critical operations - account registration, password changes, and order cancellations - with email-based 2-step verification.</p>
                 </div>
             </div>
 
@@ -754,7 +754,7 @@
                         <h3 class="lp-eng-card-title">Receipt Dispatch</h3>
                     </div>
                     <div class="lp-eng-badge">SendGrid SMTP</div>
-                    <p>Instantly packages the generated PDF invoice and emails it directly to the customer's inbox upon a successful checkout — fully automated, zero manual steps.</p>
+                    <p>Instantly packages the generated PDF invoice and emails it directly to the customer's inbox upon a successful checkout - fully automated, zero manual steps.</p>
                 </div>
             </div>
 

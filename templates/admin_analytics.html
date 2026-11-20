@@ -166,7 +166,7 @@
     }
 
     /* ══════════════════════════════════════════════════════════════
-       §3 · MIDDLE ROW — B (Orders) + D (Fleet)
+       §3 · MIDDLE ROW - B (Orders) + D (Fleet)
        ══════════════════════════════════════════════════════════════ */
     .an-mid-grid {
         display: grid;
@@ -360,7 +360,7 @@
     }
 
     /* ══════════════════════════════════════════════════════════════
-       §4 · INVENTORY PANEL (Row C) — full-width, danger glow on alert
+       §4 · INVENTORY PANEL (Row C) - full-width, danger glow on alert
        ══════════════════════════════════════════════════════════════ */
     .inv-panel {
         background: var(--bg-surface);
@@ -574,7 +574,7 @@
         font-weight: 700;
     }
 
-    /* Status badges — reuse pattern from admin_users */
+    /* Status badges - reuse pattern from admin_users */
     .an-badge {
         display: inline-block;
         font-size: 0.65rem;
@@ -641,7 +641,7 @@
         font-size: 0.9rem;
     }
 
-    /* ── Responsive: Tablet (769px–1024px) ── */
+    /* ── Responsive: Tablet (769px-1024px) ── */
     @media (max-width: 1024px) {
         .an-header { flex-direction: column; align-items: flex-start !important; gap: 0.75rem; }
         .an-tbl-wrap { overflow-x: auto; }
@@ -674,7 +674,7 @@
             <h1 class="an-header-title">
                 <i class="bi bi-bar-chart-line me-2" style="color: var(--accent)"></i>Analytics Dashboard
             </h1>
-            <p class="an-header-sub">Live Platform Metrics — all-time view</p>
+            <p class="an-header-sub">Live Platform Metrics - all-time view</p>
         </div>
         <button class="an-refresh-btn" id="an-refresh-btn">
             <i class="bi bi-arrow-clockwise"></i> Refresh
@@ -762,7 +762,7 @@
                 <div class="an-bar-section">
                     <div class="an-bar-label-row">
                         <span class="an-bar-label">✅ Delivered</span>
-                        <span class="an-bar-count" id="bar-delivered-count">—</span>
+                        <span class="an-bar-count" id="bar-delivered-count">-</span>
                     </div>
                     <div class="an-bar-track">
                         <div class="an-bar-fill" id="bar-delivered" style="--fill-color: #28a745"></div>
@@ -772,7 +772,7 @@
                 <div class="an-bar-section">
                     <div class="an-bar-label-row">
                         <span class="an-bar-label">🚚 Out for Delivery</span>
-                        <span class="an-bar-count" id="bar-ofd-count">—</span>
+                        <span class="an-bar-count" id="bar-ofd-count">-</span>
                     </div>
                     <div class="an-bar-track">
                         <div class="an-bar-fill" id="bar-ofd" style="--fill-color: #cca700"></div>
@@ -782,7 +782,7 @@
                 <div class="an-bar-section">
                     <div class="an-bar-label-row">
                         <span class="an-bar-label">🕐 Order Placed</span>
-                        <span class="an-bar-count" id="bar-placed-count">—</span>
+                        <span class="an-bar-count" id="bar-placed-count">-</span>
                     </div>
                     <div class="an-bar-track">
                         <div class="an-bar-fill" id="bar-placed" style="--fill-color: var(--accent)"></div>
@@ -792,7 +792,7 @@
                 <div class="an-bar-section">
                     <div class="an-bar-label-row">
                         <span class="an-bar-label">❌ Cancelled</span>
-                        <span class="an-bar-count" id="bar-cancelled-count">—</span>
+                        <span class="an-bar-count" id="bar-cancelled-count">-</span>
                     </div>
                     <div class="an-bar-track">
                         <div class="an-bar-fill" id="bar-cancelled" style="--fill-color: #f44747"></div>
@@ -807,7 +807,7 @@
                 <div class="an-bar-section">
                     <div class="an-bar-label-row">
                         <span class="an-bar-label">🌅 Morning</span>
-                        <span class="an-bar-count" id="bar-morning-count">—</span>
+                        <span class="an-bar-count" id="bar-morning-count">-</span>
                     </div>
                     <div class="an-bar-track">
                         <div class="an-bar-fill" id="bar-morning" style="--fill-color: #4ec9b0"></div>
@@ -817,7 +817,7 @@
                 <div class="an-bar-section">
                     <div class="an-bar-label-row">
                         <span class="an-bar-label">☀️ Afternoon</span>
-                        <span class="an-bar-count" id="bar-afternoon-count">—</span>
+                        <span class="an-bar-count" id="bar-afternoon-count">-</span>
                     </div>
                     <div class="an-bar-track">
                         <div class="an-bar-fill" id="bar-afternoon" style="--fill-color: #cca700"></div>
@@ -827,7 +827,7 @@
                 <div class="an-bar-section">
                     <div class="an-bar-label-row">
                         <span class="an-bar-label">🌙 Evening</span>
-                        <span class="an-bar-count" id="bar-evening-count">—</span>
+                        <span class="an-bar-count" id="bar-evening-count">-</span>
                     </div>
                     <div class="an-bar-track">
                         <div class="an-bar-fill" id="bar-evening" style="--fill-color: #c586c0"></div>
@@ -851,17 +851,17 @@
                     <div class="fleet-row">
                         <span class="fleet-dot fleet-dot--total"></span>
                         <span class="fleet-label">Total Delivery Boys</span>
-                        <span class="fleet-val" id="fleet-total">—</span>
+                        <span class="fleet-val" id="fleet-total">-</span>
                     </div>
                     <div class="fleet-row">
                         <span class="fleet-dot fleet-dot--active"></span>
                         <span class="fleet-label">Active</span>
-                        <span class="fleet-val" id="fleet-active" style="color: var(--success)">—</span>
+                        <span class="fleet-val" id="fleet-active" style="color: var(--success)">-</span>
                     </div>
                     <div class="fleet-row">
                         <span class="fleet-dot fleet-dot--inactive"></span>
                         <span class="fleet-label">Inactive</span>
-                        <span class="fleet-val" id="fleet-inactive" style="color: var(--danger)">—</span>
+                        <span class="fleet-val" id="fleet-inactive" style="color: var(--danger)">-</span>
                     </div>
                 </div>
 
@@ -872,11 +872,11 @@
                 <div class="fleet-stat-group">
                     <div class="fleet-meta-row">
                         <span class="fleet-meta-label">Orders Placed</span>
-                        <span class="fleet-meta-val" id="fleet-pending" style="color: var(--accent)">—</span>
+                        <span class="fleet-meta-val" id="fleet-pending" style="color: var(--accent)">-</span>
                     </div>
                     <div class="fleet-meta-row">
                         <span class="fleet-meta-label">Active Drivers Available</span>
-                        <span class="fleet-meta-val" id="fleet-avail" style="color: var(--success)">—</span>
+                        <span class="fleet-meta-val" id="fleet-avail" style="color: var(--success)">-</span>
                     </div>
                 </div>
 
@@ -962,7 +962,7 @@
                 <button class="an-status-chip" data-filter="Delivered">Delivered</button>
                 <button class="an-status-chip" data-filter="Cancelled">Cancelled</button>
             </div>
-            <span id="an-tbl-shown">— orders</span>
+            <span id="an-tbl-shown">- orders</span>
         </div>
 
         <!-- Table -->
@@ -1009,8 +1009,8 @@
 
         /* ────────────────────────────────────────────────────────────
            IN-MEMORY STATE
-           allOrders  — master copy from API (never mutated)
-           viewOrders — filtered+searched subset (re-built on each change)
+           allOrders  - master copy from API (never mutated)
+           viewOrders - filtered+searched subset (re-built on each change)
         ────────────────────────────────────────────────────────────── */
         let allOrders = [];
         let currentFilter = "all";
@@ -1084,7 +1084,7 @@
         }
 
         /* ════════════════════════════════════════════════════════════
-           TABLE RENDERING — in-memory filter + search
+           TABLE RENDERING - in-memory filter + search
         ════════════════════════════════════════════════════════════ */
 
         function buildOrderRow(o) {
@@ -1219,7 +1219,7 @@
                     invLowBadge.innerHTML = `<span class="inv-ok-badge"><i class="bi bi-check-circle-fill"></i> All stocked</span>`;
             }
 
-            /* Cancellation loss (computed from orders data) — show in third cell */
+            /* Cancellation loss (computed from orders data) - show in third cell */
             /* Note: C doesn't emit this directly; we surface AOV × cancelled as proxy */
             const cancelLoss =
                 (stats.orders_cancelled || 0) * (stats.avg_order_value || 0);
@@ -1238,7 +1238,7 @@
         }
 
         /* ════════════════════════════════════════════════════════════
-           MAIN LOAD FUNCTION — called on DOMContentLoaded + Refresh btn
+           MAIN LOAD FUNCTION - called on DOMContentLoaded + Refresh btn
         ════════════════════════════════════════════════════════════ */
 
         async function loadAnalytics() {
@@ -1339,7 +1339,7 @@
         }
 
         /* ════════════════════════════════════════════════════════════
-           EVENT LISTENERS — filter chips + search
+           EVENT LISTENERS - filter chips + search
         ════════════════════════════════════════════════════════════ */
 
         /* Status chip filter */

@@ -22,7 +22,7 @@
 | User  | `User`   | `User@123`  |
 | Admin | `Admin`  | `Admin@123` |
 
-> OTP emails may land in spam on first receipt — mark as "Not Spam" to receive future emails correctly.
+> OTP emails may land in spam on first receipt - mark as "Not Spam" to receive future emails correctly.
 
 ---
 
@@ -37,7 +37,7 @@ Fresh Picks is a full-stack grocery e-commerce web application with separate cus
 ### User Portal
 - OTP-verified registration and login
 - Browse full vegetable catalogue with live stock and pricing
-- Cart management — add, update quantity, remove items
+- Cart management - add, update quantity, remove items
 - 5-step checkout with Razorpay payment gateway
 - Automatic PDF receipt emailed on successful order
 - Order history with status tracking and receipt download
@@ -45,9 +45,9 @@ Fresh Picks is a full-stack grocery e-commerce web application with separate cus
 
 ### Admin Portal
 - Live admin dashboard
-- Inventory management — update stock, price, validity, and promo items
-- Order management — slot-priority sorted dispatch view, status updates, agent assignment
-- Batch slot promotion — flip all pending morning/afternoon/evening orders to "Out for Delivery"
+- Inventory management - update stock, price, validity, and promo items
+- Order management - slot-priority sorted dispatch view, status updates, agent assignment
+- Batch slot promotion - flip all pending morning/afternoon/evening orders to "Out for Delivery"
 - Real-time new order toast notification via Server-Sent Events (SSE)
 - Customer directory with search and filter
 - Revenue, slot distribution, inventory health, and staffing analytics
@@ -80,17 +80,17 @@ Flask serves both the rendered HTML pages (Jinja2 SSR) and a JSON REST API consu
 
 ### Key Design Decisions
 
-**Session-based auth** — Flask server-side sessions with werkzeug.pbkdf2:sha256 hashed passwords. Plaintext credentials never touch the database.
+**Session-based auth** - Flask server-side sessions with werkzeug.pbkdf2:sha256 hashed passwords. Plaintext credentials never touch the database.
 
-**OTP flows** — Time-limited SQLite-backed OTP store with TTL expiry guards registration, password change, and order cancellation.
+**OTP flows** - Time-limited SQLite-backed OTP store with TTL expiry guards registration, password change, and order cancellation.
 
-**Server-Sent Events** — Admin dashboard maintains a persistent SSE connection. New orders push instant toast notifications to all connected admins without polling.
+**Server-Sent Events** - Admin dashboard maintains a persistent SSE connection. New orders push instant toast notifications to all connected admins without polling.
 
-**Min-Heap dispatch** — Admin order view uses Python's `heapq` to sort orders by slot priority (Morning=1, Afternoon=2, Evening=3) on every load.
+**Min-Heap dispatch** - Admin order view uses Python's `heapq` to sort orders by slot priority (Morning=1, Afternoon=2, Evening=3) on every load.
 
-**Round-Robin delivery assignment** — Delivery agent assignment uses a `last_assigned` DateTime column. On each new order, the agent with the oldest assignment timestamp is selected — equitable distribution with zero in-memory state.
+**Round-Robin delivery assignment** - Delivery agent assignment uses a `last_assigned` DateTime column. On each new order, the agent with the oldest assignment timestamp is selected - equitable distribution with zero in-memory state.
 
-**Razorpay HMAC-SHA256** — Payment signatures are verified server-side before any order is committed. Client-side cart values are never trusted.
+**Razorpay HMAC-SHA256** - Payment signatures are verified server-side before any order is committed. Client-side cart values are never trusted.
 
 ---
 
@@ -137,7 +137,7 @@ python seed.py
 python app.py
 ```
 
-The live version is deployed at [fresh-picks-deploy.onrender.com](https://fresh-picks-deploy.onrender.com) — no local setup needed to explore the app.
+The live version is deployed at [fresh-picks-deploy.onrender.com](https://fresh-picks-deploy.onrender.com) - no local setup needed to explore the app.
 
 ---
 

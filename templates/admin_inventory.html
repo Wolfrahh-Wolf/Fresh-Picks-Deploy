@@ -5,7 +5,7 @@
 {% block extra_head %}
 <style>
 /* ══════════════════════════════════════════════════════════════════
-   ADMIN INVENTORY — Shop-style layout
+   ADMIN INVENTORY - Shop-style layout
    Two-column: sidebar (categories) + main content (cards)
    ══════════════════════════════════════════════════════════════════ */
 
@@ -501,7 +501,7 @@
                 <i class="bi bi-boxes me-2 text-accent"></i>Inventory Manager
             </h4>
             <p class="text-muted mb-0" style="font-size: 0.82rem;">
-                Edit stock, prices, and validity — changes sync instantly.
+                Edit stock, prices, and validity - changes sync instantly.
             </p>
         </div>
         <span class="text-muted" style="font-size: 0.78rem;" id="pageTimestamp"></span>
@@ -550,7 +550,7 @@
                 <i class="bi bi-gift text-accent"></i>
                 <h5>Promotional Freebies</h5>
                 <span class="count-pill" id="promo-count">…</span>
-                <span class="section-note">Stock updates only — trigger &amp; qty set by business team</span>
+                <span class="section-note">Stock updates only - trigger &amp; qty set by business team</span>
             </div>
 
             <div id="promoContainer" class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 mb-5">
@@ -575,24 +575,24 @@
 {# ══════════════════════════════════════════════════════════════
    INVENTORY JS BLOCK
    Placed in extra_scripts so it lands after Bootstrap's bundle
-   (already loaded by base.html) — guarantees no load-order issues.
+   (already loaded by base.html) - guarantees no load-order issues.
    ══════════════════════════════════════════════════════════════ #}
 {% block extra_scripts %}
 
 <script>
 /* ════════════════════════════════════════════════════════════════
-   FRESH PICKS — Admin Inventory JS
+   FRESH PICKS - Admin Inventory JS
    ─────────────────────────────────────────────────────────────
    Functions:
-   1. scheduleUpdate()  — debounced save on field change (800ms)
-   2. doRefill()        — instant +5000g, fires PATCH immediately
-   3. setValidity()     — quick-select 3 / 5 / 7 days
-   4. postUpdate()      — fetch() PATCH to /api/products/<veg_id> or
+   1. scheduleUpdate()  - debounced save on field change (800ms)
+   2. doRefill()        - instant +5000g, fires PATCH immediately
+   3. setValidity()     - quick-select 3 / 5 / 7 days
+   4. postUpdate()      - fetch() PATCH to /api/products/<veg_id> or
                           /api/promo-items/<vf_id>
-   5. updateStockBar()  — re-renders progress bar after save
-   6. showDot()         — shows/hides pulsing saving indicator
-   7. showToast()       — bottom-right notification
-   8. toggleInvCat()    — collapses/expands a category section
+   5. updateStockBar()  - re-renders progress bar after save
+   6. showDot()         - shows/hides pulsing saving indicator
+   7. showToast()       - bottom-right notification
+   8. toggleInvCat()    - collapses/expands a category section
    ════════════════════════════════════════════════════════════════ */
 
 /* ── Timestamps ── */
@@ -704,7 +704,7 @@ window.onload = async function loadInventoryData() {
         const msg = `
             <div class="empty-state mb-5" style="color:var(--danger);">
                 <i class="bi bi-exclamation-triangle"></i>
-                Data Load Failed — could not reach inventory API.
+                Data Load Failed - could not reach inventory API.
             </div>`;
         document.getElementById('vegContainer').innerHTML   = msg;
         document.getElementById('promoContainer').innerHTML = `<div class="col">${msg}</div>`;
@@ -721,7 +721,7 @@ function escapeHtml(str) {
 }
 
 /* ════════════════════════════════════════════════════════════════
-   SIDEBAR — Category population + filter
+   SIDEBAR - Category population + filter
    Called after loadInventoryData() renders cards.
    ════════════════════════════════════════════════════════════════ */
 
@@ -1025,7 +1025,7 @@ async function postUpdate(itemId, type) {
             showToast(`Error: ${data.message}`, 'error');
         }
     } catch (err) {
-        showToast('Save failed — check server', 'error');
+        showToast('Save failed - check server', 'error');
         console.error('postUpdate error:', err);
     } finally {
         showDot(itemId, false);
@@ -1036,7 +1036,7 @@ async function postUpdate(itemId, type) {
 /* ════════════════════════════════════════════════════════════════
    doRefill(itemId, type)
    Instantly adds 5000g (+5 Kg) to current stock.
-   Bypasses debounce — fires PATCH immediately.
+   Bypasses debounce - fires PATCH immediately.
    ════════════════════════════════════════════════════════════════ */
 async function doRefill(itemId, type) {
     const stockInput = document.getElementById(`stock-${itemId}`);
@@ -1089,7 +1089,7 @@ async function doRefill(itemId, type) {
             showToast(`Refill error: ${data.message}`, 'error');
         }
     } catch (err) {
-        showToast('Refill failed — check server', 'error');
+        showToast('Refill failed - check server', 'error');
         console.error('doRefill error:', err);
     } finally {
         showDot(itemId, false);
@@ -1143,7 +1143,7 @@ function updateStockBar(itemId, newStockG, type) {
 
 
 /* ════════════════════════════════════════════════════════════════
-   showDot / showToast — UI helpers
+   showDot / showToast - UI helpers
    ════════════════════════════════════════════════════════════════ */
 
 /** Show or hide the pulsing saving dot on a card */
@@ -1209,7 +1209,7 @@ document.getElementById("invLogoutLink")?.addEventListener("click", async functi
     }
 });
 
-/* ── ui-helpers.js — inlined (Category Grouping + Min-Order Bar) ── */
+/* ── ui-helpers.js - inlined (Category Grouping + Min-Order Bar) ── */
 
 function initCategoryGroups(containerSelector) {
     const container = document.querySelector(containerSelector);

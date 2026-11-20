@@ -25,7 +25,7 @@
 </div>
 
 {# ════════════════════════════════════════════════════════════════
-   VIEW ITEMS MODAL — Invoice format: PRODUCT | RATE | QTY | AMOUNT
+   VIEW ITEMS MODAL - Invoice format: PRODUCT | RATE | QTY | AMOUNT
 ════════════════════════════════════════════════════════════════ #}
 <div class="modal fade" id="userItemsModal" tabindex="-1"
      aria-labelledby="userItemsModalLabel" aria-hidden="true">
@@ -80,7 +80,7 @@
                         <strong style="color:var(--danger);">Cancellation Notice</strong><br>
                         A cancellation fee of <strong>₹50</strong> will be deducted from your
                         paid amount. The remaining balance will be refunded to your original
-                        payment method within <strong>2–3 working days</strong>. An email
+                        payment method within <strong>2-3 working days</strong>. An email
                         confirmation will be sent shortly.
                     </p>
                 </div>
@@ -232,7 +232,7 @@
     color: #ffffff;
 }
 
-/* ── "Delivered" final step when fully done — green glow + radiating pulse ──
+/* ── "Delivered" final step when fully done - green glow + radiating pulse ──
    The checkmark icon (bi-check-lg) is injected by buildTracker() in JS. */
 .tracker-step.done.step-delivered .tracker-dot {
     background: #28a745 !important;
@@ -339,7 +339,7 @@
     box-shadow: none !important;
 }
 
-/* ── Responsive: Tablet (769px–1024px) ── */
+/* ── Responsive: Tablet (769px-1024px) ── */
 @media (max-width: 1024px) {
     .col-lg-4.col-md-6 { width: 50%; }
 }
@@ -462,7 +462,7 @@ function parseItemsInvoice(itemsArray) {
 }
 
 /* ────────────────────────────────────────────────────────────────────
-   Cancel flow — visible ONLY when status === "Order Placed"
+   Cancel flow - visible ONLY when status === "Order Placed"
    Step 1: open in-app OTP modal with cancellation notice
    Step 2: send OTP to registered email
    Step 3: POST /api/orders/<order_id>/cancel/verify
@@ -678,7 +678,7 @@ function buildOrderCard(order) {
                     </div>
                 </div>
 
-                <!-- ── Action Buttons — flex-row, directly below Grand Total ── -->
+                <!-- ── Action Buttons - flex-row, directly below Grand Total ── -->
                 <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;">
 
                     <!-- View Items -->
@@ -696,7 +696,7 @@ function buildOrderCard(order) {
                         <i class="bi bi-download me-1"></i>Receipt
                     </button>
 
-                    <!-- Cancel — ONLY for "Order Placed" -->
+                    <!-- Cancel - ONLY for "Order Placed" -->
                     ${canCancel ? `
                     <button class="btn btn-sm btn-user-cancel"
                             style="background:var(--danger); color:#fff; border:none;
@@ -718,7 +718,7 @@ function buildOrderCard(order) {
 
         </div>
 
-        <!-- Footer — kept for CSS spacing; buttons moved to .track-middle above -->
+        <!-- Footer - kept for CSS spacing; buttons moved to .track-middle above -->
         <div class="order-track-footer" style="display:none;"></div>`;
 
     return card;
@@ -726,14 +726,14 @@ function buildOrderCard(order) {
 
 
 /* ────────────────────────────────────────────────────────────────────
-   loadUserOrders — fetches from GET /api/orders and renders cards
+   loadUserOrders - fetches from GET /api/orders and renders cards
    ────────────────────────────────────────────────────────────────────  */
 
-/* ── Safe order data store — avoids inline JS object literals ── */
+/* ── Safe order data store - avoids inline JS object literals ── */
 const _orderDataMap = new Map();
 
 async function loadUserOrders() {
-    /* Fetch profile AND orders in parallel — eliminates sequential-delay flicker */
+    /* Fetch profile AND orders in parallel - eliminates sequential-delay flicker */
     let data;
     try {
         const [pr, res] = await Promise.all([
@@ -788,7 +788,7 @@ async function loadUserOrders() {
 
 
 
-/* View Items — also reads safely from Map */
+/* View Items - also reads safely from Map */
 function openUserItemsModal(orderId) {
     const order = _orderDataMap.get(orderId);
     if (!order) return;
@@ -807,7 +807,7 @@ function openUserItemsModal(orderId) {
         : `<tr><td colspan="4" class="text-center text-muted py-3">No items found.</td></tr>`;
 
     document.getElementById("userItemsModalLabel").innerHTML =
-        `<i class="bi bi-receipt me-2" style="color:var(--accent);"></i>Items — ${orderId}`;
+        `<i class="bi bi-receipt me-2" style="color:var(--accent);"></i>Items - ${orderId}`;
     document.getElementById("userItemsModalBody").innerHTML = `
         <div class="table-responsive">
             <table class="fp-invoice-table">
@@ -828,7 +828,7 @@ function openUserItemsModal(orderId) {
     new bootstrap.Modal(document.getElementById("userItemsModal")).show();
 }
 
-/* Safe receipt download — reads from Map, no inline object literals */
+/* Safe receipt download - reads from Map, no inline object literals */
 function downloadOrderReceipt(orderId) {
     if (!orderId) {
         alert("No order ID provided.");

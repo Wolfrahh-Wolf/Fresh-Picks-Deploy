@@ -99,7 +99,7 @@
                                placeholder="Choose a username">
                     </div>
 
-                    <!-- Address — split into 4 sub-fields -->
+                    <!-- Address - split into 4 sub-fields -->
                     
                     <div class="col-12">
                         <label class="form-label">
@@ -137,7 +137,7 @@
                                placeholder="Min. 8 chars"
                                oninput="updateStrengthBar(this.value)">
                         <!--
-                            Password strength bar — updates in real time as user types.
+                            Password strength bar - updates in real time as user types.
                             4 segments: Upper, Lower, Digit, Special.
                         -->
                         <div class="mt-2 d-flex gap-1" id="strengthBar">
@@ -284,7 +284,7 @@
      *   - OTP Modal display and verification
      */
 
-    /* Bootstrap Modal instance — initialized after DOM loads */
+    /* Bootstrap Modal instance - initialized after DOM loads */
     let otpModal;
 
     /* Initialize Bootstrap modal object when the page is ready */
@@ -361,13 +361,13 @@
      * HOW IT WORKS:
      *   addEventListener('input', ...) fires on every keystroke AND paste.
      *   this.value.replace(/,/g, "") replaces ALL commas globally (the /g flag)
-     *   with an empty string — effectively deleting them as the user types.
+     *   with an empty string - effectively deleting them as the user types.
      */
 
     function sanitizeAddress(id) {
         const field = document.getElementById(id);
         field.addEventListener('input', function() {
-            /* Replace every comma (globally) with nothing — deletes it silently */
+            /* Replace every comma (globally) with nothing - deletes it silently */
             this.value = this.value.replace(/,/g, "");
         });
     }
@@ -429,7 +429,7 @@
         btn.innerHTML = '<span class="spinner-sm"></span> Processing...';
 
         try {
-            /* Step 3: POST to Flask — C binary does complexity check server-side */
+            /* Step 3: POST to Flask - C binary does complexity check server-side */
             const response = await fetch("/api/auth/register", {
                 method:  "POST",
                 headers: { "Content-Type": "application/json" },

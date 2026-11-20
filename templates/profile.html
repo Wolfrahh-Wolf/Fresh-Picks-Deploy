@@ -56,7 +56,7 @@
     margin-left: 4px;
 }
 
-/* ── Responsive: Tablet (769px–1024px) ── */
+/* ── Responsive: Tablet (769px-1024px) ── */
 @media (max-width: 1024px) {
     .pf-inline-edit { flex-wrap: wrap; }
     .col-lg-6 { width: 100%; }
@@ -107,25 +107,25 @@
                     </div>
                     <div class="card-body">
 
-                        <!-- User ID — read-only, never editable -->
+                        <!-- User ID - read-only, never editable -->
                         <div class="profile-field">
                             <span class="profile-field-label">User ID</span>
                             <span class="profile-field-value">
-                                <span class="id-badge" id="pf-user-id">—</span>
+                                <span class="id-badge" id="pf-user-id">-</span>
                             </span>
                         </div>
 
-                        <!-- Username — read-only per requirement -->
+                        <!-- Username - read-only per requirement -->
                         <div class="profile-field">
                             <span class="profile-field-label">Username</span>
-                            <span class="profile-field-value" id="pf-username">—</span>
+                            <span class="profile-field-value" id="pf-username">-</span>
                         </div>
 
-                        <!-- Full Name — editable -->
+                        <!-- Full Name - editable -->
                         <div class="profile-field" id="row-full_name">
                             <span class="profile-field-label">Full Name</span>
                             <span class="profile-field-value d-flex align-items-center gap-2">
-                                <span id="pf-full-name">—</span>
+                                <span id="pf-full-name">-</span>
                                 <button class="pf-edit-btn" onclick="startEdit('full_name','text')"
                                         title="Edit Full Name">
                                     <i class="bi bi-pencil-fill"></i>
@@ -133,11 +133,11 @@
                             </span>
                         </div>
 
-                        <!-- Email — editable -->
+                        <!-- Email - editable -->
                         <div class="profile-field" id="row-email">
                             <span class="profile-field-label">Email</span>
                             <span class="profile-field-value d-flex align-items-center gap-2">
-                                <span id="pf-email">—</span>
+                                <span id="pf-email">-</span>
                                 <button class="pf-edit-btn" onclick="startEdit('email','email')"
                                         title="Edit Email">
                                     <i class="bi bi-pencil-fill"></i>
@@ -145,11 +145,11 @@
                             </span>
                         </div>
 
-                        <!-- Phone — editable -->
+                        <!-- Phone - editable -->
                         <div class="profile-field" id="row-phone">
                             <span class="profile-field-label">Phone Number</span>
                             <span class="profile-field-value d-flex align-items-center gap-2">
-                                <span id="pf-phone">—</span>
+                                <span id="pf-phone">-</span>
                                 <button class="pf-edit-btn" onclick="startEdit('phone','tel')"
                                         title="Edit Phone">
                                     <i class="bi bi-pencil-fill"></i>
@@ -157,11 +157,11 @@
                             </span>
                         </div>
 
-                        <!-- Address — editable (4 sub-fields inline) -->
+                        <!-- Address - editable (4 sub-fields inline) -->
                         <div class="profile-field" id="row-address">
                             <span class="profile-field-label">Address</span>
                             <span class="profile-field-value d-flex align-items-center gap-2">
-                                <span id="pf-address">—</span>
+                                <span id="pf-address">-</span>
                                 <button class="pf-edit-btn" onclick="startAddressEdit()"
                                         title="Edit Address">
                                     <i class="bi bi-pencil-fill"></i>
@@ -282,7 +282,7 @@
      *           Flask uses the session's user_id to look them up in users.txt.
      *
      * STEPS:
-     *   1. GET /api/users/me — Flask uses session
+     *   1. GET /api/users/me - Flask uses session
      *   2. On success: populate all the profile fields on the page
      *   3. On error: show error state
      */
@@ -294,11 +294,11 @@
 
             if (result.status === "SUCCESS") {
                 /* Populate each field from the returned data */
-                document.getElementById("pf-user-id").textContent   = result.user_id   || "—";
-                document.getElementById("pf-username").textContent  = result.username   || "—";
-                document.getElementById("pf-full-name").textContent = result.full_name  || "—";
-                document.getElementById("pf-email").textContent     = result.email      || "—";
-                document.getElementById("pf-phone").textContent     = result.phone      || "—";
+                document.getElementById("pf-user-id").textContent   = result.user_id   || "-";
+                document.getElementById("pf-username").textContent  = result.username   || "-";
+                document.getElementById("pf-full-name").textContent = result.full_name  || "-";
+                document.getElementById("pf-email").textContent     = result.email      || "-";
+                document.getElementById("pf-phone").textContent     = result.phone      || "-";
 
                 /*
                  * Address is stored as "Door,Street,Area,PIN" (CSV within the field).
