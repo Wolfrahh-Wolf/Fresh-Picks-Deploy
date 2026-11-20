@@ -42,6 +42,7 @@ class Config:
 
     # ── OTP ──────────────────────────────────────────────────────────────
     OTP_TTL_MINUTES = int(os.environ.get("OTP_TTL_MINUTES", 10))
+    FAVICON_VERSION = os.environ.get("FAVICON_VERSION", "2")
 
 
 class DevelopmentConfig(Config):

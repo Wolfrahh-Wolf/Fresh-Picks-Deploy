@@ -18,8 +18,8 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dark-theme.css') }}">
 
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') + '?v=' + config.FAVICON_VERSION }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') + '?v=' + config.FAVICON_VERSION }}">
 
     <style>
         /* ── Navbar link colour corrections ─────────────────────────── */
