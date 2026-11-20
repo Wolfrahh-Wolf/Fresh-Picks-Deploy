@@ -85,3 +85,6 @@ def create_app(config_class=None):
         return {"status": "ERROR", "message": "Internal server error"}, 500
 
     return app
+
+
+app = create_app()
