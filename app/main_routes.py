@@ -26,13 +26,7 @@ from flask_mail import Message
 from sendgrid.helpers.mail import Email, Attachment, FileContent, FileName, FileType, Disposition, Mail as SGMail
 from sendgrid import SendGridAPIClient
 
-SENDGRID_FROM_EMAIL = os.environ.get("SENDGRID_FROM_EMAIL", "")
-SENDGRID_FROM_NAME = os.environ.get("SENDGRID_FROM_NAME", "FreshPicks")
-if not SENDGRID_FROM_EMAIL:
-    SENDGRID_FROM_EMAIL = os.environ.get("SMTP_EMAIL", "")
-if not SENDGRID_FROM_EMAIL:
-    SENDGRID_FROM_EMAIL = "noreply@freshpicks.in"
-SENDGRID_FROM = SENDGRID_FROM_EMAIL
+SENDGRID_FROM = os.environ.get("SENDGRID_FROM_EMAIL", os.environ.get("SMTP_EMAIL", "noreply@freshpicks.in"))
 from sqlalchemy.orm import joinedload
 
 from .extensions import db, rzp_client
@@ -157,16 +151,19 @@ def _send_otp_email(recipient_email, otp_code, purpose, reference="", full_name=
     try:
         subject, text_body, html_body = _otp_email_html(purpose, otp_code, reference, full_name, ttl_minutes)
         message = SGMail(
-            from_email   = Email(SENDGRID_FROM, "FreshPicks"),
+            from_email   = SENDGRID_FROM,
             to_emails    = recipient_email,
             subject      = subject,
             html_content = html_body
         )
         sg = SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
-        sg.client.mail.send.post(request_body=message.get())
+        result = sg.client.mail.send.post(request_body=message.get())
+        logger.info("SENDGRID RESPONSE | status=%s | to=%s", result.status_code, recipient_email)
         return {"status": "SUCCESS", "data": "Email sent"}
     except Exception as e:
-        logger.error("MAIL ERROR: %s: %s", type(e).__name__, e)
+        logger.error("MAIL ERROR: %s: %s | to=%s | from=%s | api_key_set=%s",
+                     type(e).__name__, e, recipient_email, SENDGRID_FROM,
+                     bool(os.environ.get("SENDGRID_API_KEY")))
         return {"status": "ERROR", "data": str(e)}
 
 
@@ -1185,7 +1182,7 @@ def api_verify_and_checkout():
             user = db.session.get(User, user_id)
             pdf_data = base64.b64encode(open(tmp_path, "rb").read()).decode()
             message = SGMail(
-                from_email   = Email(SENDGRID_FROM, "FreshPicks"),
+                from_email   = SENDGRID_FROM,
                 to_emails    = user.email,
                 subject      = f"FreshPicks Receipt - {new_order_id}",
                 html_content = f"<p>Dear {user.full_name},</p><p>Your order <strong>{new_order_id}</strong> has been placed successfully. Receipt attached.</p><p><strong>FreshPicks</strong></p>"
@@ -1197,10 +1194,13 @@ def api_verify_and_checkout():
                 disposition  = Disposition("attachment")
             )
             message.attachment = attachment
-            SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY")).client.mail.send.post(request_body=message.get())
+            sg = SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
+            resp = sg.client.mail.send.post(request_body=message.get())
+            logger.info("RECEIPT SENDGRID | status=%s | to=%s | order=%s", resp.status_code, user.email, new_order_id)
             _cleanup_temp_file(tmp_path)
     except Exception as e:
-        logger.error("RECEIPT MAIL ERROR: %s", e)
+        logger.error("RECEIPT MAIL ERROR: %s: %s | to=%s | from=%s",
+                     type(e).__name__, e, user.email if 'user' in dir() else 'unknown', SENDGRID_FROM)
 
     session.pop("pending_slot",      None)
     session.pop("pending_rzp_order", None)
@@ -1530,7 +1530,7 @@ def api_email_receipt(order_id):
             pdf_data = base64.b64encode(f.read()).decode()
 
         message = SGMail(
-            from_email   = Email(SENDGRID_FROM, "FreshPicks"),
+            from_email   = SENDGRID_FROM,
             to_emails    = user_email,
             subject      = f"FreshPicks Receipt - {order_id}",
             html_content = f"<p>Dear {receipt_data['full_name']},</p><p>Please find your FreshPicks receipt for order <strong>{order_id}</strong> attached.</p><p>Thank you for shopping with us!</p><p><strong>FreshPicks</strong></p>"
@@ -1545,12 +1545,13 @@ def api_email_receipt(order_id):
         message.attachment = attachment
 
         sg = SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
-        sg.client.mail.send.post(request_body=message.get())
+        resp = sg.client.mail.send.post(request_body=message.get())
+        logger.info("RESEND RECEIPT SENDGRID | status=%s | to=%s | order=%s", resp.status_code, user_email, order_id)
 
     except Exception as e:
-        logger.error("RECEIPT MAIL ERROR: %s: %s", type(e).__name__, e)
-        if hasattr(e, 'body'):
-            logger.error("SENDGRID BODY: %s", e.body)
+        logger.error("RESEND RECEIPT MAIL ERROR: %s: %s | to=%s | from=%s | body=%s",
+                     type(e).__name__, e, user_email, SENDGRID_FROM,
+                     e.body if hasattr(e, 'body') else 'N/A')
         return jsonify({"status": "ERROR", "message": str(e)})
     finally:
         if tmp_path:
