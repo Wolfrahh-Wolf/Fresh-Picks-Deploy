@@ -3,10 +3,8 @@ services:
     name: fresh-picks
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --timeout 120 --workers 2 --worker-class gthread --threads 4
+    startCommand: gunicorn -c gunicorn.conf.py app:app
     envVars:
-      - key: FLASK_DEBUG
-        value: false
       - key: APP_SECRET_KEY
         sync: false
       - key: DATABASE_URL
@@ -21,11 +19,7 @@ services:
         sync: false
       - key: SMTP_APP_PASSWORD
         sync: false
-      - key: SMTP_HOST
-        value: smtp.gmail.com
-      - key: SMTP_PORT
-        value: "465"
-      - key: SENDER_NAME
-        value: FreshPicks
-      - key: OTP_TTL_MINUTES
-        value: "10"
+      - key: SENDGRID_API_KEY
+        sync: false
+      - key: FLASK_DEBUG
+        value: "false"

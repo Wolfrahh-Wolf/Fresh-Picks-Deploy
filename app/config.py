@@ -15,6 +15,8 @@ load_dotenv()
 
 
 class Config:
+    """Base configuration — shared across all environments."""
+
     # ── Flask Core ──────────────────────────────────────────────────────
     SECRET_KEY = os.environ.get("APP_SECRET_KEY")
 
@@ -40,6 +42,38 @@ class Config:
 
     # ── OTP ──────────────────────────────────────────────────────────────
     OTP_TTL_MINUTES = int(os.environ.get("OTP_TTL_MINUTES", 10))
+
+
+class DevelopmentConfig(Config):
+    """Development-specific overrides."""
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY", "dev-key")
+
+
+class TestingConfig(Config):
+    """Testing-specific overrides."""
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URL", "sqlite:///:memory:")
+    WTF_CSRF_ENABLED = False
+    SENDGRID_API_KEY = "test-key"
+    OTP_TTL_MINUTES = 10
+
+
+class ProductionConfig(Config):
+    """Production-specific overrides."""
+    DEBUG = False
+    # Ensure production secrets are present
+    SECRET_KEY = os.environ.get("APP_SECRET_KEY")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+
+
+# Config lookup by environment name
+config_by_name = {
+    "development": DevelopmentConfig,
+    "testing": TestingConfig,
+    "production": ProductionConfig,
+}
 
 
 def validate_config(app):

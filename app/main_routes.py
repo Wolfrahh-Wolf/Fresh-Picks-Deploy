@@ -175,6 +175,13 @@ def _send_otp_email(recipient_email, otp_code, purpose, reference=""):
 
 
 def _start_otp_flow(flow_key, recipient_email, purpose, reference="", payload=None):
+    existing = _get_otp_flow(flow_key)
+    if existing:
+        return {
+            "status": "SUCCESS",
+            "data": "OTP already dispatched — resend disabled for 3 minutes"
+        }
+
     _purge_expired_otps()
     otp_code = _generate_otp_code()
     OTP_STORE[_otp_store_key(flow_key)] = {
@@ -182,7 +189,8 @@ def _start_otp_flow(flow_key, recipient_email, purpose, reference="", payload=No
         "recipient_email": recipient_email,
         "purpose": purpose,
         "reference": reference,
-        "expires_at": (datetime.utcnow() + timedelta(minutes=OTP_TTL_MINUTES)).timestamp()
+        "expires_at": (datetime.utcnow() + timedelta(minutes=OTP_TTL_MINUTES)).timestamp(),
+        "created_at": datetime.utcnow().timestamp()
     }
     if payload is not None:
         OTP_STORE[_otp_store_key(flow_key)]["payload"] = payload

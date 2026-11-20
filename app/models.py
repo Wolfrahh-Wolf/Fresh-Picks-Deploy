@@ -1,3 +1,10 @@
+"""
+models.py - Fresh Picks: Database Models
+
+All models use SQLAlchemy ORM. Primary keys use custom prefixed IDs (e.g., U1001)
+for backward compatibility with existing data.
+"""
+
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
@@ -9,11 +16,16 @@ class User(db.Model):
 
     user_id   = db.Column(db.String(20),  primary_key=True)   # "U1001"
     username  = db.Column(db.String(128), unique=True, nullable=False)
-    password  = db.Column(db.String(128), nullable=False)      # SHA-256 hex
+    password  = db.Column(db.String(256), nullable=False)      # werkzeug pbkdf2 hash
     full_name = db.Column(db.String(128), nullable=False)
     email     = db.Column(db.String(128), nullable=False)
     phone     = db.Column(db.String(128), nullable=False)
     address   = db.Column(db.String(256), nullable=False)
+
+    __table_args__ = (
+        db.Index("ix_users_username", "username"),
+        db.Index("ix_users_email", "email"),
+    )
 
     orders      = db.relationship("Order",     backref="user", lazy=True)
     cart_items  = db.relationship("CartItem",  backref="user", lazy=True)
@@ -34,9 +46,13 @@ class Admin(db.Model):
 
     admin_id   = db.Column(db.String(20),  primary_key=True)   # "A1001"
     username   = db.Column(db.String(128), unique=True, nullable=False)
-    password   = db.Column(db.String(128), nullable=False)      # SHA-256 hex
+    password   = db.Column(db.String(256), nullable=False)      # werkzeug pbkdf2 hash
     admin_name = db.Column(db.String(128), nullable=False)
     email      = db.Column(db.String(128), nullable=False)
+
+    __table_args__ = (
+        db.Index("ix_admins_username", "username"),
+    )
 
     def to_dict(self):
         return {
@@ -57,6 +73,11 @@ class Product(db.Model):
     price_per_1000g = db.Column(db.Float,       nullable=False)
     tag             = db.Column(db.String(128), nullable=True)
     validity_days   = db.Column(db.Integer,     nullable=False, default=1)
+
+    __table_args__ = (
+        db.Index("ix_products_category", "category"),
+        db.Index("ix_products_stock", "stock_g"),
+    )
 
     def to_dict(self):
         return {
@@ -100,6 +121,10 @@ class DeliveryBoy(db.Model):
     is_active     = db.Column(db.Boolean,     nullable=False, default=True)
     last_assigned = db.Column(db.DateTime,    nullable=True)   # NULL = never assigned
 
+    __table_args__ = (
+        db.Index("ix_delivery_boys_phone", "phone"),
+    )
+
     orders = db.relationship("Order", backref="delivery_boy", lazy=True)
 
     def to_dict(self):
@@ -123,6 +148,12 @@ class Order(db.Model):
     delivery_boy_id = db.Column(db.String(20),  db.ForeignKey("delivery_boys.boy_id"), nullable=True)
     status          = db.Column(db.String(128), nullable=False, default="Order Placed")
     timestamp       = db.Column(db.DateTime,    nullable=False, default=datetime.utcnow)
+
+    __table_args__ = (
+        db.Index("ix_orders_user_id", "user_id"),
+        db.Index("ix_orders_status", "status"),
+        db.Index("ix_orders_timestamp", "timestamp"),
+    )
 
     items = db.relationship("OrderItem", backref="order",
                             lazy=True, cascade="all, delete-orphan")
@@ -150,6 +181,10 @@ class OrderItem(db.Model):
     qty_g           = db.Column(db.Integer,     nullable=False)
     price_at_order  = db.Column(db.Float,       nullable=False)   # snapshot price
     is_free         = db.Column(db.Boolean,     nullable=False, default=False)
+
+    __table_args__ = (
+        db.Index("ix_order_items_order_id", "order_id"),
+    )
 
     def to_dict(self):
         return {
