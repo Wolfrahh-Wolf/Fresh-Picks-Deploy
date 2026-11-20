@@ -4,6 +4,7 @@ flask-mail
 flask-limiter
 flask-wtf
 psycopg2-binary
+psycopg>=3.0
 python-dotenv
 razorpay
 fpdf2
