@@ -156,7 +156,7 @@ def _send_otp_email(recipient_email, otp_code, purpose, reference="", full_name=
             to_emails=To(recipient_email),
             subject=subject,
             html_content=html_body,
-            text_content=text_body,
+            plain_text_content=text_body,
         )
         sg = SendGridAPIClient(api_key=os.environ.get("SENDGRID_API_KEY"))
         response = sg.send(message)
@@ -1540,7 +1540,7 @@ def api_email_receipt(order_id):
             to_emails=To(user_email),
             subject=f"FreshPicks Receipt - {order_id}",
             html_content=f"<p>Dear {receipt_data['full_name']},</p><p>Please find your FreshPicks receipt for order <strong>{order_id}</strong> attached.</p><p>Thank you for shopping with us!</p><p><strong>FreshPicks</strong></p>",
-            text_content=f"Dear {receipt_data['full_name']}, Please find your FreshPicks receipt for order {order_id} attached."
+            plain_text_content=f"Dear {receipt_data['full_name']}, Please find your FreshPicks receipt for order {order_id} attached."
         )
 
         attachment = Attachment(
