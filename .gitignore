@@ -1,12 +1,87 @@
-*.exe
-*.out
-*.o
-*.obj
-*.log
-*.pyc
-*.pem
-*.env
+# Python
 __pycache__/
-.DS_Store
-.vscode/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.spec
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# Environment variables
 .env
+.env.local
+.env.production
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs/
+*.log
+log/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Distribution / packaging
+.Python
+manifest.txt
+pip-log.txt
+pip-delete-this-directory.txt
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Coverage
+.coverage*
+*.cover
+*.cover.json
+.nyc_output
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.cache
+
+# Flask
+instance/
+.webassets-cache
+
+# Alembic (keep migrations, ignore data)
+# alembic.ini is committed for configuration
+
+# Render
+render.yaml
