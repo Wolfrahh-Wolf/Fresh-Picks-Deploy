@@ -106,60 +106,46 @@ def _generate_otp_code():
     return f"{secrets.randbelow(10000):04d}"
 
 
-def _otp_email_html(purpose, otp_code, reference=""):
+def _otp_email_html(purpose, otp_code, reference="", full_name="", ttl_minutes=10):
     display_ref = reference or "your order"
 
     if purpose == "register":
-        return (
-            "FreshPicks Registration OTP",
-            f"Your verification OTP is: {otp_code}\n\nValid for {OTP_TTL_MINUTES} minutes.",
-            f"""<html><body style="font-family:Arial,sans-serif;color:#333;">
-            <p>Dear Customer,</p>
-            <p>Thank you for registering with <strong>FreshPicks</strong>.</p>
-            <p>Your verification OTP is:</p>
-            <div style="display:inline-block;padding:12px 18px;border-radius:8px;
-            background:#f4f8fb;border:1px solid #d4e4f2;font-size:28px;
-            letter-spacing:0.25em;font-weight:700;color:#007acc;">{otp_code}</div>
-            <p>This OTP is valid for <strong>{OTP_TTL_MINUTES} minutes</strong>.</p>
-            <p>Regards,<br><strong>FreshPicks</strong></p></body></html>"""
-        )
+        subject = "FreshPicks Registration OTP"
+        text_body = f"Your verification OTP is: {otp_code}\n\nValid for {ttl_minutes} minutes."
+        html_body = _render_email_template("otp_register.html", {
+            "otp_code": otp_code, "full_name": full_name, "ttl_minutes": ttl_minutes
+        })
 
-    if purpose == "cancel_order":
-        return (
-            f"FreshPicks Cancellation OTP - {display_ref}",
-            f"Cancellation OTP for {display_ref}: {otp_code}",
-            f"""<html><body style="font-family:Arial,sans-serif;color:#333;">
-            <p>Dear Customer,</p>
-            <p>We received a request to cancel <strong>{display_ref}</strong>.</p>
-            <p>Your cancellation OTP is:</p>
-            <div style="display:inline-block;padding:12px 18px;border-radius:8px;
-            background:#fff5f5;border:1px solid #f0c2c2;font-size:28px;
-            letter-spacing:0.25em;font-weight:700;color:#dc3545;">{otp_code}</div>
-            <p>This OTP is valid for <strong>{OTP_TTL_MINUTES} minutes</strong>.</p>
-            <p>Regards,<br><strong>FreshPicks</strong></p></body></html>"""
-        )
+    elif purpose == "cancel_order":
+        subject = f"FreshPicks Cancellation OTP - {display_ref}"
+        text_body = f"Cancellation OTP for {display_ref}: {otp_code}"
+        html_body = _render_email_template("otp_cancel_order.html", {
+            "otp_code": otp_code, "full_name": full_name, "ttl_minutes": ttl_minutes, "reference": display_ref
+        })
 
-    if purpose == "password_change":
-        return (
-            "FreshPicks Password Change OTP",
-            f"Password change OTP: {otp_code}",
-            f"""<html><body style="font-family:Arial,sans-serif;color:#333;">
-            <p>Dear Customer,</p>
-            <p>We received a request to change your <strong>FreshPicks</strong> account password.</p>
-            <p>Your password-change OTP is:</p>
-            <div style="display:inline-block;padding:12px 18px;border-radius:8px;
-            background:#f7f2ff;border:1px solid #d7c4ff;font-size:28px;
-            letter-spacing:0.25em;font-weight:700;color:#7b4dff;">{otp_code}</div>
-            <p>This OTP is valid for <strong>{OTP_TTL_MINUTES} minutes</strong>.</p>
-            <p>Regards,<br><strong>FreshPicks</strong></p></body></html>"""
-        )
+    elif purpose == "password_change":
+        subject = "FreshPicks Password Change OTP"
+        text_body = f"Password change OTP: {otp_code}"
+        html_body = _render_email_template("otp_password_change.html", {
+            "otp_code": otp_code, "full_name": full_name, "ttl_minutes": ttl_minutes
+        })
 
-    return ("FreshPicks OTP", f"Your OTP: {otp_code}", f"<p>Your OTP: {otp_code}</p>")
+    else:
+        subject = "FreshPicks OTP"
+        text_body = f"Your OTP: {otp_code}"
+        html_body = f"<p>Your OTP: {otp_code}</p>"
+
+    return subject, text_body, html_body
 
 
-def _send_otp_email(recipient_email, otp_code, purpose, reference=""):
+def _render_email_template(template_name, context):
+    """Render an email template from the emails subdirectory."""
+    return render_template(f"emails/{template_name}", **context)
+
+
+def _send_otp_email(recipient_email, otp_code, purpose, reference="", full_name="", ttl_minutes=10):
     try:
-        subject, text_body, html_body = _otp_email_html(purpose, otp_code, reference)
+        subject, text_body, html_body = _otp_email_html(purpose, otp_code, reference, full_name, ttl_minutes)
         message = SGMail(
             from_email   = Email(os.environ.get("SMTP_EMAIL", ""), "FreshPicks"),
             to_emails    = recipient_email,
@@ -174,7 +160,7 @@ def _send_otp_email(recipient_email, otp_code, purpose, reference=""):
         return {"status": "ERROR", "data": str(e)}
 
 
-def _start_otp_flow(flow_key, recipient_email, purpose, reference="", payload=None):
+def _start_otp_flow(flow_key, recipient_email, purpose, reference="", payload=None, full_name=""):
     existing = _get_otp_flow(flow_key)
     if existing:
         return {
@@ -200,7 +186,7 @@ def _start_otp_flow(flow_key, recipient_email, purpose, reference="", payload=No
         purpose, reference or "—", recipient_email, otp_code, OTP_TTL_MINUTES
     )
 
-    return _send_otp_email(recipient_email, otp_code, purpose, reference)
+    return _send_otp_email(recipient_email, otp_code, purpose, reference, full_name, OTP_TTL_MINUTES)
 
 
 def _restart_otp_flow(flow_key, otp_state):
@@ -554,7 +540,8 @@ def api_register():
         "address": address,
     }
     otp_result = _start_otp_flow("register", email, "register", username,
-                                 payload=pending_registration)
+                                  payload=pending_registration,
+                                  full_name=pending_registration.get("full_name", ""))
 
     return jsonify({
         "status":   "SUCCESS",
@@ -698,11 +685,26 @@ def api_update_profile():
 
 @bp.route("/api/users/me/password/send-otp", methods=["POST"])
 def api_send_password_change_otp():
+    if "user_id" not in session:
+        return jsonify({"status": "ERROR", "message": "Not logged in"})
+
+    role = session.get("role", "user")
+    user_id = session.get("user_id")
     email, error = _load_current_account_email()
     if error:
         return error
 
-    otp_result = _start_otp_flow(_password_change_flow_key(), email, "password_change")
+    full_name = ""
+    if role == "admin":
+        admin = db.session.get(Admin, user_id)
+        if admin:
+            full_name = admin.admin_name
+    else:
+        user = db.session.get(User, user_id)
+        if user:
+            full_name = user.full_name
+
+    otp_result = _start_otp_flow(_password_change_flow_key(), email, "password_change", full_name=full_name)
     return jsonify({
         "status": "SUCCESS",
         "otp_sent": otp_result["status"] == "SUCCESS",
@@ -1318,7 +1320,8 @@ def api_send_cancel_order_otp(order_id):
                             "message": "No valid email found for this order"}), 400
 
     flow_key   = _cancel_order_flow_key(order_id)
-    otp_result = _start_otp_flow(flow_key, recipient_email, "cancel_order", order_id)
+    otp_result = _start_otp_flow(flow_key, recipient_email, "cancel_order", order_id,
+                                  full_name=receipt_data.get("full_name", ""))
 
     if otp_result["status"] != "SUCCESS":
         return jsonify({

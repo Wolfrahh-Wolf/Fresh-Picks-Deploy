@@ -1,0 +1,7 @@
+<h1 style="margin:0 0 16px 0;color:#dc3545;font-family:Arial,sans-serif;">FreshPicks</h1>
+<p style="margin:0 0 16px 0;font-family:Arial,sans-serif;color:#333;">Dear {{ full_name or 'Customer' }},</p>
+<p style="margin:0 0 16px 0;font-family:Arial,sans-serif;color:#333;">We received a request to cancel <strong>{{ reference }}</strong>.</p>
+<p style="margin:0 0 16px 0;font-family:Arial,sans-serif;color:#333;">Your cancellation OTP is:</p>
+<div style="display:inline-block;padding:12px 18px;border-radius:8px;background:#fff5f5;border:1px solid #f0c2c2;font-size:28px;letter-spacing:0.25em;font-weight:700;color:#dc3545;font-family:monospace;">{{ otp_code }}</div>
+<p style="margin:16px 0 0;font-family:Arial,sans-serif;color:#333;">This OTP is valid for <strong>{{ ttl_minutes }} minutes</strong>.</p>
+<p style="margin:16px 0 0;font-family:Arial,sans-serif;color:#333;">Regards,<br><strong>FreshPicks</strong></p>

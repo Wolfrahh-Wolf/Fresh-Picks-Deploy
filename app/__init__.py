@@ -57,4 +57,26 @@ def create_app(config_class=None):
     from . import main_routes
     app.register_blueprint(main_routes.bp)
 
+    # ── Error Handlers ──────────────────────────────────────────────────
+    @app.errorhandler(400)
+    def bad_request(e):
+        return {"status": "ERROR", "message": "Bad request"}, 400
+
+    @app.errorhandler(404)
+    def not_found(e):
+        return {"status": "ERROR", "message": "Resource not found"}, 404
+
+    @app.errorhandler(405)
+    def method_not_allowed(e):
+        return {"status": "ERROR", "message": "Method not allowed"}, 405
+
+    @app.errorhandler(429)
+    def rate_limit_exceeded(e):
+        return {"status": "ERROR", "message": "Rate limit exceeded. Please try again later."}, 429
+
+    @app.errorhandler(500)
+    def internal_error(e):
+        app.logger.error("Unhandled server error: %s", e)
+        return {"status": "ERROR", "message": "Internal server error"}, 500
+
     return app
