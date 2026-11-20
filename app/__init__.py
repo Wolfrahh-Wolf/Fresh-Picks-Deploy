@@ -3,14 +3,9 @@ __init__.py - Fresh Picks: Application Factory
 """
 import os
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_mail import Mail
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from flask_wtf.csrf import CSRFProtect
 
 from .config import Config
-from .extensions import db, mail, rzp_client
+from .extensions import db, mail, rzp_client, limiter, csrf
 from .logging_setup import setup_logging
 
 
@@ -30,15 +25,10 @@ def create_app(config_class=None):
     rzp_client.init(app.config.get("RAZORPAY_KEY_ID"), app.config.get("RAZORPAY_KEY_SECRET"))
 
     # Rate limiting (memory backend, no Redis required)
-    Limiter(
-        app=app,
-        key_func=get_remote_address,
-        default_limits=["200 per day", "50 per hour"],
-        storage_uri="memory://",
-    )
+    limiter.init_app(app)
 
     # CSRF protection for all POST/PATCH/PUT/DELETE requests
-    CSRFProtect(app)
+    csrf.init_app(app)
 
     # Mail config
     app.config["MAIL_DEFAULT_SENDER"] = (

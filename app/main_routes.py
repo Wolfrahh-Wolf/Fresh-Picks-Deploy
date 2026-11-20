@@ -28,6 +28,7 @@ from sendgrid import SendGridAPIClient
 from sqlalchemy.orm import joinedload
 
 from .extensions import db, rzp_client
+from .extensions import csrf
 from .constants import (
     SLOT_PRIORITY, VALID_ORDER_STATUSES, FREEBIE_THRESHOLD,
     FREEBIE_MULTIPLIER_50G, PRICE_DIVISOR_G, MINIMUM_ORDER_AMOUNT,
@@ -490,6 +491,7 @@ def product_images_alias(filename):
 # API ROUTES — AUTH
 # ═════════════════════════════════════════════════════════════
 @bp.route("/api/auth/login", methods=["POST"])
+@csrf.exempt
 def api_login():
     data     = request.get_json() or {}
     username = data.get("username", "").strip()
@@ -527,12 +529,14 @@ def api_login():
 
 
 @bp.route("/api/auth/logout", methods=["POST"])
+@csrf.exempt
 def api_logout():
     session.clear()
     return jsonify({"status": "SUCCESS", "redirect": "/"})
 
 
 @bp.route("/api/auth/register", methods=["POST"])
+@csrf.exempt
 def api_register():
     data = request.get_json() or {}
 
@@ -588,6 +592,7 @@ def api_register():
 
 
 @bp.route("/api/auth/register/verify", methods=["POST"])
+@csrf.exempt
 def api_verify_registration_otp():
     data = request.get_json(silent=True) or {}
     otp  = data.get("otp", "").strip()
@@ -633,6 +638,7 @@ def api_verify_registration_otp():
 
 
 @bp.route("/api/auth/register/resend-otp", methods=["POST"])
+@csrf.exempt
 def api_resend_registration_otp():
     otp_state = _get_otp_flow("register")
     if not otp_state:
@@ -715,6 +721,7 @@ def api_update_profile():
 
 
 @bp.route("/api/users/me/password/send-otp", methods=["POST"])
+@csrf.exempt
 def api_send_password_change_otp():
     if "user_id" not in session:
         return jsonify({"status": "ERROR", "message": "Not logged in"})
@@ -748,6 +755,7 @@ def api_send_password_change_otp():
 
 
 @bp.route("/api/users/me/password/resend-otp", methods=["POST"])
+@csrf.exempt
 def api_resend_password_change_otp():
     flow_key = _password_change_flow_key()
     otp_state = _get_otp_flow(flow_key)
@@ -887,6 +895,7 @@ def _serialize_cart(user_id):
 
 
 @bp.route("/api/cart/items", methods=["POST"])
+@csrf.exempt
 def api_add_to_cart():
     if "user_id" not in session:
         return jsonify({"status": "ERROR", "message": "Not logged in"})
@@ -1002,6 +1011,7 @@ def _apply_freebies(user_id, cart_total):
 # API ROUTES — CHECKOUT / RAZORPAY
 # ═════════════════════════════════════════════════════════════
 @bp.route("/api/checkout/razorpay-order", methods=["POST"])
+@csrf.exempt
 def api_create_razorpay_order():
     if "user_id" not in session:
         return jsonify({"status": "ERROR", "message": "Not logged in"}), 401
@@ -1059,6 +1069,7 @@ def _assign_delivery_boy():
 
 
 @bp.route("/api/checkout/verify", methods=["POST"])
+@csrf.exempt
 def api_verify_and_checkout():
     if "user_id" not in session:
         return jsonify({"status": "ERROR", "message": "Not logged in"}), 401
@@ -1303,6 +1314,7 @@ def api_update_order_status(order_id):
 
 
 @bp.route("/api/admin/orders/promote-slot", methods=["POST"])
+@csrf.exempt
 def api_promote_slot_orders():
     if session.get("role") != "admin":
         return jsonify({"status": "ERROR", "message": "Admin only"})
@@ -1323,6 +1335,7 @@ def api_promote_slot_orders():
 
 
 @bp.route("/api/orders/<order_id>/cancel/send-otp", methods=["POST"])
+@csrf.exempt
 def api_send_cancel_order_otp(order_id):
     if session.get("role") not in {"user", "admin"}:
         return jsonify({"status": "ERROR", "message": "Login required"}), 403
@@ -1368,6 +1381,7 @@ def api_send_cancel_order_otp(order_id):
 
 
 @bp.route("/api/orders/<order_id>/cancel/verify", methods=["POST"])
+@csrf.exempt
 def api_cancel_order_with_otp(order_id):
     if session.get("role") not in {"user", "admin"}:
         return jsonify({"status": "ERROR", "message": "Login required"}), 403
@@ -1482,6 +1496,7 @@ def api_download_receipt(order_id):
 
 
 @bp.route("/api/orders/<order_id>/receipt/email", methods=["POST"])
+@csrf.exempt
 def api_email_receipt(order_id):
     logger.info("RECEIPT: role=%s uid=%s order=%s", session.get('role'), session.get('user_id'), order_id)
 
