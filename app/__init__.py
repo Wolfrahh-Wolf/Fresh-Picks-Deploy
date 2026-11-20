@@ -57,6 +57,11 @@ def create_app(config_class=None):
     from . import main_routes
     app.register_blueprint(main_routes.bp)
 
+    # ── Database Table Initialization ───────────────────────────────
+    with app.app_context():
+        from .models import OTPVerification
+        db.create_all()
+
     # ── Error Handlers ──────────────────────────────────────────────────
     @app.errorhandler(400)
     def bad_request(e):
