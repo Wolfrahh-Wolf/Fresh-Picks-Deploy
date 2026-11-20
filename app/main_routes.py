@@ -693,6 +693,7 @@ def api_get_profile():
 
 
 @bp.route("/api/users/me", methods=["PATCH"])
+@csrf.exempt
 def api_update_profile():
     if "user_id" not in session:
         return jsonify({"status": "ERROR", "message": "Not logged in"})
