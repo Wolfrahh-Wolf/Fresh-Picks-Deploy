@@ -55,10 +55,10 @@ def create_app(config_class=None):
     from . import main_routes
     app.register_blueprint(main_routes.bp)
 
-    # ── Favicon Route (redirects browsers looking for /favicon.ico) ─
+    # ── Favicon Route (serves favicon.ico so browsers find it at root) ─
     @app.route("/favicon.ico")
     def favicon():
-        return app.send_static_file("favicon.svg")
+        return app.send_static_file("favicon.ico")
 
     # ── Database Table Initialization ───────────────────────────────
     with app.app_context():
