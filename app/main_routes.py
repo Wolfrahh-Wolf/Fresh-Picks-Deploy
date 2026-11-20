@@ -5,7 +5,7 @@ import os
 import re
 import json
 import secrets
-import hashlib
+from werkzeug.security import generate_password_hash, check_password_hash
 import heapq
 import tempfile
 import base64
@@ -50,7 +50,11 @@ _order_listeners: list = []
 # HELPERS — Password / Validation
 # ═════════════════════════════════════════════════════════════
 def _hash_password(plaintext: str) -> str:
-    return hashlib.sha256(plaintext.encode("utf-8")).hexdigest()
+    return generate_password_hash(plaintext, method='pbkdf2:sha256', salt_length=16)
+
+
+def _verify_password(plaintext: str, hashed: str) -> bool:
+    return check_password_hash(hashed, plaintext)
 
 
 def _is_valid_email(value):
@@ -473,18 +477,12 @@ def api_login():
     if role not in ("user", "admin"):
         return jsonify({"status": "ERROR", "message": "Invalid role"})
 
-    hashed = _hash_password(password)
-
     if role == "admin":
-        account = db.session.query(Admin).filter_by(
-            username=username, password=hashed
-        ).first()
+        account = db.session.query(Admin).filter_by(username=username).first()
     else:
-        account = db.session.query(User).filter_by(
-            username=username, password=hashed
-        ).first()
+        account = db.session.query(User).filter_by(username=username).first()
 
-    if not account:
+    if not account or not _verify_password(password, account.password):
         return jsonify({"status": "ERROR", "message": "Invalid username or password"})
 
     session["role"]     = role
@@ -745,9 +743,6 @@ def api_change_password():
         return jsonify({"status": "ERROR", "message": message})
 
     role = session.get("role", "user")
-    old_hashed = _hash_password(old_password)
-    new_hashed = _hash_password(new_password)
-
     if role == "admin":
         account = db.session.get(Admin, session["user_id"])
     else:
@@ -756,10 +751,10 @@ def api_change_password():
     if not account:
         return jsonify({"status": "ERROR", "message": "Account not found"})
 
-    if account.password != old_hashed:
+    if not _verify_password(old_password, account.password):
         return jsonify({"status": "ERROR", "message": "Old password is incorrect"})
 
-    account.password = new_hashed
+    account.password = _hash_password(new_password)
     db.session.commit()
     _clear_otp_flow(_password_change_flow_key())
 

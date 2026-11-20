@@ -5,6 +5,9 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_wtf.csrf import CSRFProtect
 
 from .config import Config
 from .extensions import db, mail, rzp_client
@@ -24,14 +27,20 @@ def create_app(config_class=None):
     # Initialize extensions
     db.init_app(app)
     mail.init_app(app)
+    rzp_client.init(app.config.get("RAZORPAY_KEY_ID"), app.config.get("RAZORPAY_KEY_SECRET"))
 
-    # Razorpay client
-    rzp_client.init(
-        app.config.get("RAZORPAY_KEY_ID"),
-        app.config.get("RAZORPAY_KEY_SECRET")
+    # Rate limiting (memory backend, no Redis required)
+    Limiter(
+        app=app,
+        key_func=get_remote_address,
+        default_limits=["200 per day", "50 per hour"],
+        storage_uri="memory://",
     )
 
-    # Mail config (Flask-Mail handles this, but explicit for clarity)
+    # CSRF protection for all POST/PATCH/PUT/DELETE requests
+    CSRFProtect(app)
+
+    # Mail config
     app.config["MAIL_DEFAULT_SENDER"] = (
         app.config.get("SENDER_NAME", "FreshPicks"),
         app.config.get("SMTP_EMAIL")

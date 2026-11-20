@@ -26,21 +26,21 @@ def seed_admins():
         {
             "admin_id":   "A1001",
             "username":   "Admin",
-            "password":   "e86f78a8a3caf0b60d8e74e5942aa6d86dc150cd3c03338aef25b7d2d7e3acc7",
+            "password":   "pbkdf2:sha256:1000000$waqY8tGYxT3dS9GX$fdc2dd708caee6503b193fb74fcfb4af9c878e063f4244043b5ad59392beaabc",
             "admin_name": "Admin",
             "email":      "yashwanth2025offl@gmail.com",
         },
         {
             "admin_id":   "A1002",
             "username":   "Wolf",
-            "password":   "906b2363800bba2bf3fda1d8353421a0a42de6cd23a3353168eacfde9d32465f",
+            "password":   "pbkdf2:sha256:1000000$ZAkt5ydwtixpMwZe$3c2e2e5561aa894961f41a0d4134c27d60be489cb881b8b9c6a5c7376c01dee8",
             "admin_name": "Wolfrahh",
             "email":      "wolfrahh@gmail.com",
         },
         {
             "admin_id":   "A1003",
             "username":   "Yashwanth",
-            "password":   "6e0e73aea15235b63faf3fb1ab9dffe4ebc518c89cbea4df68ec6422af5420be",
+            "password":   "pbkdf2:sha256:1000000$waqY8tGYxT3dS9GX$fdc2dd708caee6503b193fb74fcfb4af9c878e063f4244043b5ad59392beaabc",
             "admin_name": "Yashwanth",
             "email":      "yashwanth2025offl@gmail.com",
         },
@@ -62,7 +62,7 @@ def seed_users():
         {
             "user_id":   "U1001",
             "username":  "Yashwanth",
-            "password":  "6e0e73aea15235b63faf3fb1ab9dffe4ebc518c89cbea4df68ec6422af5420be",
+            "password":  "pbkdf2:sha256:1000000$waqY8tGYxT3dS9GX$fdc2dd708caee6503b193fb74fcfb4af9c878e063f4244043b5ad59392beaabc",
             "full_name": "Yashwanth A",
             "email":     "yashwantharumugam2007@gmail.com",
             "phone":     "6382717541",
@@ -71,7 +71,7 @@ def seed_users():
         {
             "user_id":   "U1002",
             "username":  "User",
-            "password":  "3e7c19576488862816f13b512cacf3e4ba97dd97243ea0bd6a2ad1642d86ba72",
+            "password":  "pbkdf2:sha256:1000000$3YwEr1zGsbBJ4tvO$b692ad473339f675b4581f3a2150351f639d86491d97c55d8517040b8a02f890",
             "full_name": "User",
             "email":     "yashwanth2025offl@gmail.com",
             "phone":     "6382717541",
@@ -80,7 +80,7 @@ def seed_users():
         {
             "user_id":   "U1003",
             "username":  "Wolf",
-            "password":  "906b2363800bba2bf3fda1d8353421a0a42de6cd23a3353168eacfde9d32465f",
+            "password":  "pbkdf2:sha256:1000000$ZAkt5ydwtixpMwZe$3c2e2e5561aa894961f41a0d4134c27d60be489cb881b8b9c6a5c7376c01dee8",
             "full_name": "Wolf",
             "email":     "wolf@gmail.com",
             "phone":     "6363636363",
@@ -89,7 +89,7 @@ def seed_users():
         {
             "user_id":   "U1004",
             "username":  "Tejaavarshini",
-            "password":  "cc50b83d751b34a5b7f31c6bbb39fc23b1f420a91cfbd65e2c6787b8aeb54395",
+            "password":  "pbkdf2:sha256:1000000$6Hg2bAkXixB9RN6B$eab348f70ca000f39b6777f8bd8289113a99310f25146b3246d8734c3ccd446d",
             "full_name": "Tejaavarshini E",
             "email":     "tejaavarshini2510619@ssn.edu.in",
             "phone":     "8754826094",
@@ -98,7 +98,7 @@ def seed_users():
         {
             "user_id":   "U1005",
             "username":  "Tarrun",
-            "password":  "ae8dfe36afafe365e96efc23d918d14ef7b22943388eed0264e204f5e6859c7a",
+            "password":  "pbkdf2:sha256:1000000$p1f87TouBelmaXQQ$7b5c853fb40bceeea606260147b2761516c9887b472ee2e21ce6a98e1d04c5d9",
             "full_name": "Tarrun",
             "email":     "tarrun2022007@gmail.com",
             "phone":     "9843450507",
