@@ -26,7 +26,13 @@ from flask_mail import Message
 from sendgrid.helpers.mail import Email, Attachment, FileContent, FileName, FileType, Disposition
 from sendgrid import SendGridAPIClient
 
-SENDGRID_FROM = os.environ.get("SENDGRID_FROM_EMAIL", os.environ.get("SMTP_EMAIL", "noreply@freshpicks.in"))
+SENDGRID_FROM_EMAIL = os.environ.get("SENDGRID_FROM_EMAIL", "")
+SENDGRID_FROM_NAME = os.environ.get("SENDGRID_FROM_NAME", "FreshPicks")
+if not SENDGRID_FROM_EMAIL:
+    SENDGRID_FROM_EMAIL = os.environ.get("SMTP_EMAIL", "")
+if not SENDGRID_FROM_EMAIL:
+    SENDGRID_FROM_EMAIL = "noreply@freshpicks.in"
+SENDGRID_FROM = SENDGRID_FROM_EMAIL
 from sqlalchemy.orm import joinedload
 
 from .extensions import db, rzp_client
