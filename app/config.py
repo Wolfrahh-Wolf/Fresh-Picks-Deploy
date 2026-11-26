@@ -101,7 +101,6 @@ def validate_config(app):
         "RAZORPAY_KEY_SECRET",
         "SMTP_EMAIL",
         "SMTP_APP_PASSWORD",
-        "REDIS_URL",
     ]
     missing = [key for key in required if not app.config.get(key)]
     if missing:

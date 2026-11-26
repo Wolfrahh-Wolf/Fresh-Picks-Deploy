@@ -2,7 +2,7 @@
 cache.py - Fresh Picks: Redis Cache Module
 
 Provides Flask-Caching instance backed by Redis.
-Falls back to SimpleCache for testing (no Redis required).
+Falls back to SimpleCache (in-memory) when Redis is not available.
 """
 from flask_caching import Cache
 
@@ -26,8 +26,11 @@ def init_cache(app):
         )
         app.logger.info("CACHE: Redis initialized (RedisCache backend)")
 
-    elif app.config.get("TESTING"):
-        # Test environment: use in-memory cache (no Redis needed)
+    else:
+        # Fallback: SimpleCache (in-memory) for testing or when Redis is unavailable
+        # Note: SimpleCache is per-process and lost on restart.
+        # Not suitable for multi-worker production without Redis.
+        is_test = app.config.get("TESTING")
         cache.init_app(
             app,
             config={
@@ -35,9 +38,10 @@ def init_cache(app):
                 "CACHE_DEFAULT_TIMEOUT": 300,
             },
         )
-        app.logger.info("CACHE: SimpleCache initialized (testing mode)")
-
-    else:
-        raise RuntimeError(
-            "REDIS_URL is not set. Redis caching is required for production."
-        )
+        if is_test:
+            app.logger.info("CACHE: SimpleCache initialized (testing mode)")
+        else:
+            app.logger.warning(
+                "CACHE: REDIS_URL not set — using SimpleCache (in-memory). "
+                "Not suitable for multi-worker production. Set REDIS_URL for Redis."
+            )
