@@ -44,6 +44,13 @@ class Config:
     OTP_TTL_MINUTES = int(os.environ.get("OTP_TTL_MINUTES", 10))
     FAVICON_VERSION = os.environ.get("FAVICON_VERSION", "2")
 
+    # ── Mailer Provider ────────────────────────────────────────────────
+    # "smtp"    = Flask-Mail (Gmail SMTP)  – development
+    # "resend"  = Resend API               – production
+    MAILER_PROVIDER = os.environ.get("MAILER_PROVIDER", "smtp")
+    RESEND_API_KEY  = os.environ.get("RESEND_API_KEY", "")
+    RESEND_FROM     = os.environ.get("RESEND_FROM", "")
+
 
 class DevelopmentConfig(Config):
     """Development-specific overrides."""
