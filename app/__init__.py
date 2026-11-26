@@ -39,10 +39,17 @@ def create_app(config_class=None):
     csrf.init_app(app)
 
     # Mail config
-    app.config["MAIL_DEFAULT_SENDER"] = (
-        app.config.get("SENDER_NAME", "FreshPicks"),
-        app.config.get("SMTP_EMAIL")
-    )
+    mail_configured = os.environ.get("MAILER_PROVIDER", "smtp") == "resend" and os.environ.get("RESEND_API_KEY")
+    if mail_configured:
+        app.logger.info("MAILER: Using Resend API for email delivery")
+    else:
+        app.config["MAIL_DEFAULT_SENDER"] = (
+            app.config.get("SENDER_NAME", "FreshPicks"),
+            app.config.get("SMTP_EMAIL")
+        )
+        app.logger.info("MAILER: Using SMTP (%s:%s) for email delivery",
+                        app.config.get("SMTP_HOST", "smtp.gmail.com"),
+                        app.config.get("SMTP_PORT", 465))
 
     # Validate config
     from .config import validate_config

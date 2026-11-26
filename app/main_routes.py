@@ -27,6 +27,7 @@ from sqlalchemy.orm import joinedload
 
 from .extensions import db, mail, rzp_client
 from .extensions import csrf
+from .mail_service import send_otp_email
 from .constants import (
     SLOT_PRIORITY, VALID_ORDER_STATUSES, FREEBIE_THRESHOLD,
     FREEBIE_MULTIPLIER_50G, PRICE_DIVISOR_G, MINIMUM_ORDER_AMOUNT,
@@ -144,22 +145,8 @@ def _render_email_template(template_name, context):
 
 
 def _send_otp_email(recipient_email, otp_code, purpose, reference="", full_name="", ttl_minutes=10):
-    try:
-        subject, text_body, html_body = _otp_email_html(purpose, otp_code, reference, full_name, ttl_minutes)
-        msg = Message(
-            subject=subject,
-            sender=(app.config.get("SENDER_NAME", "FreshPicks"), app.config.get("SMTP_EMAIL")),
-            recipients=[recipient_email],
-            body=text_body,
-            html=html_body
-        )
-        mail.send(msg)
-        logger.info("MAIL SUCCESS | status=SENT | to=%s | from=%s", recipient_email, app.config.get("SMTP_EMAIL"))
-        return {"status": "SUCCESS", "data": "Email sent"}
-    except Exception as e:
-        logger.error("MAIL ERROR: %s: %s | to=%s | from=%s",
-                     type(e).__name__, e, recipient_email, app.config.get("SMTP_EMAIL"))
-        return {"status": "ERROR", "data": str(e)}
+    """Send OTP email via configured mailer (SMTP or Resend)."""
+    return send_otp_email(recipient_email, otp_code, purpose, reference, full_name, ttl_minutes)
 
 
 def _start_otp_flow(flow_key, recipient_email, purpose, reference="", payload=None, full_name=""):
