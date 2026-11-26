@@ -27,6 +27,7 @@ from sqlalchemy.orm import joinedload
 
 from .extensions import db, mail, rzp_client
 from .extensions import csrf
+from .cache import cache
 from .mail_service import send_otp_email
 from .constants import (
     SLOT_PRIORITY, VALID_ORDER_STATUSES, FREEBIE_THRESHOLD,
@@ -43,6 +44,24 @@ bp = Blueprint('main', __name__, url_prefix='')
 # ── Global State ─────────────────────────────────────────────────────
 OTP_TTL_MINUTES = 10  # Loaded from config in app factory
 _order_listeners: list = []
+
+
+# ═════════════════════════════════════════════════════════════
+# HELPERS - Cache
+# ═════════════════════════════════════════════════════════════
+def _invalidate_cache(*keys):
+    """Delete one or more cache keys (silently ignores missing keys)."""
+    for key in keys:
+        cache.delete(key)
+
+
+def _invalidate_cache_all():
+    """Invalidate all application cache keys."""
+    for key in [
+        "/api/products", "/api/admin/inventory",
+        "/api/admin/orders/active", "/api/admin/analytics",
+    ]:
+        cache.delete(key)
 
 
 # ═════════════════════════════════════════════════════════════
@@ -802,6 +821,7 @@ def api_change_password():
 # API ROUTES - INVENTORY
 # ═════════════════════════════════════════════════════════════
 @bp.route("/api/admin/inventory", methods=["GET"])
+@cache.cached(timeout=60)
 def api_admin_inventory_data():
     if session.get("role") != "admin":
         return jsonify({"status": "ERROR", "message": "Admin only"}), 403
@@ -817,6 +837,7 @@ def api_admin_inventory_data():
 
 
 @bp.route("/api/products", methods=["GET"])
+@cache.cached(timeout=60, query_string=True)
 def api_list_products():
     products = [p.to_dict() for p in db.session.query(Product).all()]
     return jsonify({"status": "SUCCESS", "products": products})
@@ -848,6 +869,7 @@ def api_update_stock(veg_id):
     product.validity_days   = validity
     db.session.commit()
 
+    _invalidate_cache("/api/products", "/api/admin/inventory")
     return jsonify({"status": "SUCCESS", "message": "Stock updated successfully"})
 
 
@@ -869,6 +891,7 @@ def api_update_promo_stock(vf_id):
     free_item.stock_g = stock_g
     db.session.commit()
 
+    _invalidate_cache("/api/admin/inventory")
     return jsonify({"status": "SUCCESS", "message": "Promo stock updated successfully"})
 
 
@@ -1202,6 +1225,7 @@ def api_verify_and_checkout():
             "slot":     slot
         })
 
+    _invalidate_cache("/api/admin/orders/active", "/api/admin/analytics")
     return jsonify({
         "status":    "SUCCESS",
         "order_id":  new_order_id,
@@ -1210,7 +1234,7 @@ def api_verify_and_checkout():
         "boy_name":  boy.name  if boy else "Unknown",
         "boy_phone": boy.phone if boy else "N/A",
         "items":     items_summary
-    })
+    }), 200, {"X-Cache": "MISS"}
 
 
 # ═════════════════════════════════════════════════════════════
@@ -1298,6 +1322,7 @@ def api_update_order_status(order_id):
     order.status = new_status
     db.session.commit()
 
+    _invalidate_cache("/api/admin/orders/active", "/api/admin/analytics")
     return jsonify({"status": "SUCCESS", "message": "Status updated"})
 
 
@@ -1319,6 +1344,7 @@ def api_promote_slot_orders():
         order.status = "Out for Delivery"
 
     db.session.commit()
+    _invalidate_cache("/api/admin/orders/active", "/api/admin/analytics")
     return jsonify({"status": "SUCCESS", "promoted": len(orders)})
 
 
@@ -1401,6 +1427,7 @@ def api_cancel_order_with_otp(order_id):
     db.session.commit()
     _clear_otp_flow(flow_key)
 
+    _invalidate_cache("/api/admin/orders/active", "/api/admin/analytics")
     return jsonify({"status": "SUCCESS", "message": "Order cancelled"})
 
 
@@ -1420,10 +1447,12 @@ def api_admin_cancel_order(order_id):
     order.status = "Cancelled"
     db.session.commit()
 
+    _invalidate_cache("/api/admin/orders/active", "/api/admin/analytics")
     return jsonify({"status": "SUCCESS", "message": "Order cancelled"})
 
 
 @bp.route("/api/admin/orders/active", methods=["GET"])
+@cache.cached(timeout=30)
 def api_get_active_orders():
     if session.get("role") != "admin":
         return jsonify({"status": "ERROR", "message": "Admin only"}), 403
@@ -1435,6 +1464,17 @@ def api_get_active_orders():
     ).all()
 
     return jsonify({"status": "SUCCESS", "orders": [_enrich_order(o) for o in orders]})
+
+
+@bp.route("/api/admin/cache/clear", methods=["POST"])
+@csrf.exempt
+def api_clear_cache():
+    """Manually invalidate all cached data. Admin only."""
+    if session.get("role") != "admin":
+        return jsonify({"status": "ERROR", "message": "Admin only"}), 403
+
+    _invalidate_cache_all()
+    return jsonify({"status": "SUCCESS", "message": "Cache cleared"})
 
 
 @bp.route("/api/admin/orders/<order_id>/agent", methods=["PATCH"])
@@ -1600,6 +1640,7 @@ def api_admin_get_user(user_id):
 # API ROUTES - ANALYTICS (Admin)
 # ═════════════════════════════════════════════════════════════
 @bp.route("/api/admin/analytics", methods=["GET"])
+@cache.cached(timeout=120)
 def api_analytics():
     if session.get("role") != "admin":
         return jsonify({"status": "ERROR", "message": "Admin only"}), 403

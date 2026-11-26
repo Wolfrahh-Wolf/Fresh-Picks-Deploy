@@ -11,6 +11,8 @@ services:
         sync: false
       - key: DIRECT_URL
         sync: false
+      - key: REDIS_URL
+        sync: false
       - key: RAZORPAY_KEY_ID
         sync: false
       - key: RAZORPAY_KEY_SECRET
@@ -23,3 +25,8 @@ services:
         sync: false
       - key: FLASK_DEBUG
         value: "false"
+
+  - type: redis
+    name: fresh-picks-redis
+    ipAllowList: []
+    plan: free

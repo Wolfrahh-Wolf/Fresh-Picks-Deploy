@@ -3,6 +3,7 @@ flask-sqlalchemy
 flask-mail
 flask-limiter
 flask-wtf
+flask-caching
 psycopg2-binary
 psycopg>=3.0
 python-dotenv
@@ -10,3 +11,4 @@ razorpay
 fpdf2
 gunicorn
 sendgrid
+redis

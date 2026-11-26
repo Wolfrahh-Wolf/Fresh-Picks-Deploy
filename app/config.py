@@ -44,6 +44,11 @@ class Config:
     OTP_TTL_MINUTES = int(os.environ.get("OTP_TTL_MINUTES", 10))
     FAVICON_VERSION = os.environ.get("FAVICON_VERSION", "2")
 
+    # ── Cache (Redis) ──────────────────────────────────────────────────
+    REDIS_URL          = os.environ.get("REDIS_URL")
+    CACHE_DEFAULT_TIMEOUT = 60       # seconds – default cache TTL
+    CACHE_KEY_PREFIX   = "fp"        # prefix for all cache keys
+
     # ── Mailer Provider ────────────────────────────────────────────────
     # "smtp"    = Flask-Mail (Gmail SMTP)  – development
     # "resend"  = Resend API               – production
@@ -96,6 +101,7 @@ def validate_config(app):
         "RAZORPAY_KEY_SECRET",
         "SMTP_EMAIL",
         "SMTP_APP_PASSWORD",
+        "REDIS_URL",
     ]
     missing = [key for key in required if not app.config.get(key)]
     if missing:
