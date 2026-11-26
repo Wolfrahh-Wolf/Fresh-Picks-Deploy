@@ -5,7 +5,7 @@ import os
 import mimetypes
 mimetypes.add_type("image/svg+xml", ".svg")
 
-from flask import Flask
+from flask import Flask, send_from_directory
 
 from .config import Config
 from .extensions import db, mail, rzp_client, limiter, csrf
@@ -55,10 +55,18 @@ def create_app(config_class=None):
     from . import main_routes
     app.register_blueprint(main_routes.bp)
 
-    # ── Favicon Route (serves favicon.ico so browsers find it at root) ─
+    # ── Favicon Routes ────────────────────────────────────────────────
     @app.route("/favicon.ico")
-    def favicon():
+    def favicon_ico():
         return app.send_static_file("favicon.ico")
+
+    @app.route("/favicon.svg")
+    def favicon_svg():
+        return send_from_directory(
+            app.static_folder,
+            "favicon.svg",
+            mimetype="image/svg+xml"
+        )
 
     # ── Database Table Initialization ───────────────────────────────
     with app.app_context():
