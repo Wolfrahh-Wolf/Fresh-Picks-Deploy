@@ -1,0 +1,29 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "orchestrator",
+  "permissions": [
+    { "action": "external_directory", "resource": "*", "effect": "ask" },
+    { "action": "shell", "resource": "git push *", "effect": "ask" }
+  ],
+  "agents": {
+    // The built-in explorer has shell access by default; keep it read-only.
+    "explore": {
+      "permissions": [{ "action": "shell", "resource": "*", "effect": "deny" }]
+    }
+  },
+  "mcp": {
+    "servers": {
+      "context7": { "type": "remote", "url": "https://mcp.context7.com/mcp", "codemode": false },
+      "gh_grep": { "type": "remote", "url": "https://mcp.grep.app", "codemode": false },
+      "playwright": { "type": "local", "command": ["npx", "-y", "@playwright/mcp@latest"], "codemode": false },
+      // Enable only for deployment work. Set GITHUB_MCP_TOKEN in your environment.
+      "github": {
+        "type": "remote",
+        "url": "https://api.githubcopilot.com/mcp/",
+        "oauth": false,
+        "headers": { "Authorization": "Bearer {env:GITHUB_MCP_TOKEN}" },
+        "disabled": true
+      }
+    }
+  }
+}

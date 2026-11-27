@@ -1,0 +1,1128 @@
+{
+  "files": {
+    ".agents/agents/architect.md": {
+      "owner": "antigravity",
+      "hash": "45d700cd014c27af8e1a1eb5bd76b7f055a4c001c754f2383b1b492b8219b5a8"
+    },
+    ".agents/agents/debugger.md": {
+      "owner": "antigravity",
+      "hash": "dec8aef3ec4318891c891b865e7246d16aa35fbd16bf3fc292fe9de033516e12"
+    },
+    ".agents/agents/implementer.md": {
+      "owner": "antigravity",
+      "hash": "db58044ad93052144018f5760795cc9ac54c848b16ad2d67ebc8154c1308a5f4"
+    },
+    ".agents/agents/reviewer.md": {
+      "owner": "antigravity",
+      "hash": "a9a798d4205f012ad7c7ce0e75d14f6832b47e8f120aabf854f3811f81d564d7"
+    },
+    ".agents/agents/security-auditor.md": {
+      "owner": "antigravity",
+      "hash": "72c098475027a74563fccadb3c263d49e3f0ca6d6645df57c523efdc252a7d9d"
+    },
+    ".agents/agents/tester.md": {
+      "owner": "antigravity",
+      "hash": "eb51a4d6d89c36519c3788c4af29c157779c00d3715ab709ddb6b765446c99f3"
+    },
+    ".agents/skills/api-engineering/SKILL.md": {
+      "owner": "shared",
+      "hash": "08436ceaf9835631e592d6830c9790c0ef47021c7880279bbe787d38e6672787"
+    },
+    ".agents/skills/api-engineering/references/api-contracts.md": {
+      "owner": "shared",
+      "hash": "b5fc98618afced8b9252b4fa17f9727192c23cc775edc40ebce8651d145b4e42"
+    },
+    ".agents/skills/api-engineering/references/graphql.md": {
+      "owner": "shared",
+      "hash": "9d72843de5368ce4841947cb7a8b214c9d03e9d8394f156c5354825b2dcae38f"
+    },
+    ".agents/skills/api-engineering/references/openapi.md": {
+      "owner": "shared",
+      "hash": "7c47678ab1690f3730af9a969e324d0361a88dcd3ad33a4307f9b2b0b7ba2417"
+    },
+    ".agents/skills/api-engineering/references/rate-limiting.md": {
+      "owner": "shared",
+      "hash": "ca5d49416a3afa7cb3d3b71b112dcee1b9a26146d7acc75d7b16bfb3ee7374ed"
+    },
+    ".agents/skills/api-engineering/references/rest.md": {
+      "owner": "shared",
+      "hash": "ed775c81a6cb68a90561bf934cae3137ddfddc07a0be16cc08c06d51470b7f98"
+    },
+    ".agents/skills/api-engineering/references/validation.md": {
+      "owner": "shared",
+      "hash": "c8ff50e632bde4736ab2aea961340a411afa9f59d066fc6595087986ca790be6"
+    },
+    ".agents/skills/api-engineering/references/versioning.md": {
+      "owner": "shared",
+      "hash": "af184967f2dcdf1e2079d483be8d7e161b6ce1adab7b8c3e7317bf3f23b41417"
+    },
+    ".agents/skills/backend-engineering/SKILL.md": {
+      "owner": "shared",
+      "hash": "913b00bcf3f4b2ed8bfb103282b9d40108095bd5aaf4de582e99fb88b652bf4a"
+    },
+    ".agents/skills/backend-engineering/references/authentication.md": {
+      "owner": "shared",
+      "hash": "e91a7ac130b6bff33a6c26a64cc48e4134255a31bc464d3cb5047ae4d6f6e4a0"
+    },
+    ".agents/skills/backend-engineering/references/authorization.md": {
+      "owner": "shared",
+      "hash": "f58e1cfb813726ca51b6255d24fed5c93e01dbabaa793b9e93b86f847dec6c39"
+    },
+    ".agents/skills/backend-engineering/references/backend-performance.md": {
+      "owner": "shared",
+      "hash": "2220c9534a89d731376d9f8654c74b2b38ceb93ae1af41e75ad442ae4246f3c2"
+    },
+    ".agents/skills/backend-engineering/references/caching.md": {
+      "owner": "shared",
+      "hash": "7879dbbdc49da1038be9671e23963366605cdcce2245cc2c53b31dda494ca314"
+    },
+    ".agents/skills/backend-engineering/references/error-handling.md": {
+      "owner": "shared",
+      "hash": "a29d67d9c1ed3a1b1a7747e88ab9a85d4139dcadadf3a18d250593e8f1da5811"
+    },
+    ".agents/skills/backend-engineering/references/express.md": {
+      "owner": "shared",
+      "hash": "1179f60782d99bf9c32d27ce6c660c423427c0908087edda2b8f8c6865780e9e"
+    },
+    ".agents/skills/backend-engineering/references/nodejs.md": {
+      "owner": "shared",
+      "hash": "82b5e4ca0ede5a06b7fd04b906cb92ef31cfcaf693ee79e10a6e6b8e86bd644d"
+    },
+    ".agents/skills/backend-engineering/references/python-backend.md": {
+      "owner": "shared",
+      "hash": "2c3e23904741179864f7e0a0bcc86b8d3e924b2e7342308cd452484af687ec4a"
+    },
+    ".agents/skills/code-review/SKILL.md": {
+      "owner": "shared",
+      "hash": "0ae7b1378e819583adf2bc7b7ca289febcbe5b24199a8ccd3d8fd569791b253e"
+    },
+    ".agents/skills/code-review/references/architecture-review.md": {
+      "owner": "shared",
+      "hash": "65c75efa16ed1f6eea71e92a37d708fcee481fb83707751fc5fb4027ecef39d2"
+    },
+    ".agents/skills/code-review/references/correctness.md": {
+      "owner": "shared",
+      "hash": "b59b0aeb6a302fc9b143a90f3cc80bc3fabc597455ad18ebd36d49c1cfa19e7b"
+    },
+    ".agents/skills/code-review/references/maintainability.md": {
+      "owner": "shared",
+      "hash": "4df19438e25c1aac63a165491d3d0a8071089c56649cf7d127b94a586cef28e4"
+    },
+    ".agents/skills/code-review/references/performance-review.md": {
+      "owner": "shared",
+      "hash": "9fab46c7efafa098781f1a60be7de42b0313ab494b6371aae4823e8c16e7f4d5"
+    },
+    ".agents/skills/code-review/references/review-checklist.md": {
+      "owner": "shared",
+      "hash": "cad1041c12ba26e068cfbce946375ad5011c1a4274a10b5d5c8d95d9fa4d3b2a"
+    },
+    ".agents/skills/database-engineering/SKILL.md": {
+      "owner": "shared",
+      "hash": "489ee52d006f792eb11fcc0390729027c434867cf2572c5f1b27df204d0ff58d"
+    },
+    ".agents/skills/database-engineering/references/indexing.md": {
+      "owner": "shared",
+      "hash": "ea312e2de965084715eac0edf4babcf5adda286dfef958421479ebf082eca187"
+    },
+    ".agents/skills/database-engineering/references/migrations.md": {
+      "owner": "shared",
+      "hash": "9663bc27790c944ab1e4442c3449d5f25d3b343900b6c2e3ffa4c875ff62a95b"
+    },
+    ".agents/skills/database-engineering/references/mongodb.md": {
+      "owner": "shared",
+      "hash": "08b2ebd7c3502a4748101432ba970c7f2be7cc7d8cff1a80119444fdd265aef8"
+    },
+    ".agents/skills/database-engineering/references/orms.md": {
+      "owner": "shared",
+      "hash": "b354bf33ba0f0d7f6289beaf5b236def0b319479d3d590f8a8d67dbe5386183c"
+    },
+    ".agents/skills/database-engineering/references/postgresql.md": {
+      "owner": "shared",
+      "hash": "4cf7dc2f1b12bd221522264c56806c2dbf7cd2bbb842bed373a8dcae1bf88cb8"
+    },
+    ".agents/skills/database-engineering/references/query-optimization.md": {
+      "owner": "shared",
+      "hash": "fa476b71c7987bc9ab69924a2f39380047ec5da1cabc15987d8e8e459dda192a"
+    },
+    ".agents/skills/database-engineering/references/relational-design.md": {
+      "owner": "shared",
+      "hash": "6123e9d1bf16831a139e7cd5606ac317f46ef5b83b9a7a5f495e8cfd581c745e"
+    },
+    ".agents/skills/database-engineering/references/sql.md": {
+      "owner": "shared",
+      "hash": "e412e5fbef57d6613a6cf80ca4397d853dafefb2c13655e45fba3c7520ede528"
+    },
+    ".agents/skills/database-engineering/references/transactions.md": {
+      "owner": "shared",
+      "hash": "1498bfb4c91588f518e47cfdcd87ae48b6e699e9302b3f6c4d71c0d005fe3ddb"
+    },
+    ".agents/skills/debugging/SKILL.md": {
+      "owner": "shared",
+      "hash": "07b711e5e0a560de53b38ccebc4a3367a92d555670fbc62aa25b45e59a636e74"
+    },
+    ".agents/skills/debugging/references/bug-reproduction.md": {
+      "owner": "shared",
+      "hash": "33e177e7a40f0afec718aeb0ea6e4275cb6d3cba66b076dd5fece37ecf4be6e8"
+    },
+    ".agents/skills/debugging/references/fault-isolation.md": {
+      "owner": "shared",
+      "hash": "736fb8cdf59c22e4f7eb191b9d2e04103f42d3ce56aaca9cd21a0b86427b6b06"
+    },
+    ".agents/skills/debugging/references/logging-tracing.md": {
+      "owner": "shared",
+      "hash": "a3fa1427436bb77a68da227684007003e704cb1bb1c224010386d7974d95a21c"
+    },
+    ".agents/skills/debugging/references/regression-prevention.md": {
+      "owner": "shared",
+      "hash": "3449f43c7b7d6ef72092391e7514d4de5107108dedc25e12694f7e50bc895b7b"
+    },
+    ".agents/skills/debugging/references/root-cause-analysis.md": {
+      "owner": "shared",
+      "hash": "9e20e07228b41b627f72a03721ae59afbacbef51a1447c1a0e322dfe3018c4be"
+    },
+    ".agents/skills/devops-deployment/SKILL.md": {
+      "owner": "shared",
+      "hash": "d5d4faca0671f030b5f831a88d15e053c0dbdb1062318531cf9e4bcb968c5a47"
+    },
+    ".agents/skills/devops-deployment/references/ci-cd.md": {
+      "owner": "shared",
+      "hash": "fe65a5d1c715060536e4033418087431bb3717d25fd980b8b94e545465ff0e41"
+    },
+    ".agents/skills/devops-deployment/references/docker-compose.md": {
+      "owner": "shared",
+      "hash": "4563d206200b3ccd9ad2af54d801eef97c691286e17b54d49cfeca8e1860dc01"
+    },
+    ".agents/skills/devops-deployment/references/docker.md": {
+      "owner": "shared",
+      "hash": "880fcad08f016f703796191b02d53305c451bb1fa9084a6dc4b4ebf86032d31d"
+    },
+    ".agents/skills/devops-deployment/references/environment-management.md": {
+      "owner": "shared",
+      "hash": "25a7b161c7e41452c18afa500d0d51a215ffedf1a19768768d28e419594a2113"
+    },
+    ".agents/skills/devops-deployment/references/hosting.md": {
+      "owner": "shared",
+      "hash": "f081ad1c5fc4e22c550e7df8d1799da1a08138c6f2267a473a24210e09ac3120"
+    },
+    ".agents/skills/devops-deployment/references/monitoring.md": {
+      "owner": "shared",
+      "hash": "daca945d11e6f7972572173543968c8bcbb14ae62127a6bf6f99d0dfb1574248"
+    },
+    ".agents/skills/devops-deployment/references/release-management.md": {
+      "owner": "shared",
+      "hash": "84eb03500a29a87065823d50b92a40a310bfd1fd5f768643bfc77ac1eb58bed5"
+    },
+    ".agents/skills/devops-deployment/references/rollback.md": {
+      "owner": "shared",
+      "hash": "4d4f5726a2cad0aab4e1469fa8ed586bcf9519d2d22735493cc5cd6180c2e177"
+    },
+    ".agents/skills/frontend-engineering/SKILL.md": {
+      "owner": "shared",
+      "hash": "ab0b4780c737faeb2f3fcc5adeaade3d802579522fa60e528bece84e58254b9a"
+    },
+    ".agents/skills/frontend-engineering/references/accessibility.md": {
+      "owner": "shared",
+      "hash": "adda033227999fc560b5a83ce4fb36ec723cc766cb2fdc8d42f2a5a1a3458cd2"
+    },
+    ".agents/skills/frontend-engineering/references/frontend-performance.md": {
+      "owner": "shared",
+      "hash": "de3b33e79152077cad74dbb4428ba4d04000a1e179787c8adc10d63ad536c278"
+    },
+    ".agents/skills/frontend-engineering/references/nextjs.md": {
+      "owner": "shared",
+      "hash": "d9f6477db71bae61cf5d555cf12f14e4809a016aff6eaa76b2b2a7b9eaae09cc"
+    },
+    ".agents/skills/frontend-engineering/references/react.md": {
+      "owner": "shared",
+      "hash": "5a4c623d5a163b6b155b5fd508ef575b9c02e9f9c6ab94b11dedb9d008f61a51"
+    },
+    ".agents/skills/frontend-engineering/references/state-management.md": {
+      "owner": "shared",
+      "hash": "350920bb8b85fdfa5a9fe0f940c0c7c41ba786f176895ac2ed16123099bdff22"
+    },
+    ".agents/skills/frontend-engineering/references/ui-ux.md": {
+      "owner": "shared",
+      "hash": "10ace1a6b6532ee88c8a76ed178d2838a7e6b4f1985d35a1e351a90ae99c37b4"
+    },
+    ".agents/skills/git-version-control/SKILL.md": {
+      "owner": "shared",
+      "hash": "ea8a0f3e303cdb3172a0fa04b70a38831e81fabbca7a87818c0a37bfe5258de5"
+    },
+    ".agents/skills/git-version-control/references/branching.md": {
+      "owner": "shared",
+      "hash": "f6569272e0015a2ac430b473d08ae04bef5475a1b7cc71f8a60c4cb1ab02a94a"
+    },
+    ".agents/skills/git-version-control/references/conventional-commits.md": {
+      "owner": "shared",
+      "hash": "e57fce39a418b9fba8c4db36a3e3bc747a4a0f0e1e5198d8b7fafcdf8af9d468"
+    },
+    ".agents/skills/git-version-control/references/github-cli.md": {
+      "owner": "shared",
+      "hash": "eeb5d46d1cadf19ffc01b3abdbda7ed30ba5b87d8f6765e291c70b01c6e33d44"
+    },
+    ".agents/skills/git-version-control/references/merge-rebase.md": {
+      "owner": "shared",
+      "hash": "0037eb295f87fb21604ddfb84320db0b1ab061e7f8ce9c7720b2965a87390121"
+    },
+    ".agents/skills/git-version-control/references/pull-requests.md": {
+      "owner": "shared",
+      "hash": "d34bdfc9d609b33078e9ad15bf1c599a737f87d44c9c786c651c4e17b251948f"
+    },
+    ".agents/skills/languages-clean-code/SKILL.md": {
+      "owner": "shared",
+      "hash": "372698536ce7a732800272070e7ad4749695d5006291aad42fe146f1987c5d9e"
+    },
+    ".agents/skills/languages-clean-code/references/cpp.md": {
+      "owner": "shared",
+      "hash": "9315c14c6a6c401a0913a2eaa0af3cc5efbc63af7ca6eeb63896d33bc628c030"
+    },
+    ".agents/skills/languages-clean-code/references/dependency-management.md": {
+      "owner": "shared",
+      "hash": "6760e6982c368fc961f5a90b17af71fedbdc6ca03f459e43a8d2c50b4ff939d1"
+    },
+    ".agents/skills/languages-clean-code/references/java.md": {
+      "owner": "shared",
+      "hash": "074f42c32d77e79005dae6b232592388d21a025601319b517bd8b376538f8f2d"
+    },
+    ".agents/skills/languages-clean-code/references/javascript.md": {
+      "owner": "shared",
+      "hash": "c2877686caaf3a5b587948f249a39fe008bc3814db8757231393c94f813502d7"
+    },
+    ".agents/skills/languages-clean-code/references/python.md": {
+      "owner": "shared",
+      "hash": "af6c94915a7a353e72985e5d3afee3e740e1d9674ecea7b9519bc5a194c11dfa"
+    },
+    ".agents/skills/languages-clean-code/references/refactoring.md": {
+      "owner": "shared",
+      "hash": "174343e248fd37fefbabad7cd355cb7e7e52ef1433ab30d8110d1fdbb91e96e2"
+    },
+    ".agents/skills/languages-clean-code/references/solid.md": {
+      "owner": "shared",
+      "hash": "76ab1b3f67c4d300cdcc394ebfc404b349049b240597521f8598ada0e2b89fb3"
+    },
+    ".agents/skills/languages-clean-code/references/typescript.md": {
+      "owner": "shared",
+      "hash": "80a71d415dea473591a5d12047cd03a33e9b14268b946adc622933af756b49dc"
+    },
+    ".agents/skills/product-technical-planning/SKILL.md": {
+      "owner": "shared",
+      "hash": "28eef571e11807931c95659cdb1377da81adb035228c7b29972e99795d21b661"
+    },
+    ".agents/skills/product-technical-planning/references/estimation.md": {
+      "owner": "shared",
+      "hash": "0a466bf3d2dfc43ffeaeeebc3dda882d4fedeb7ffda156f96702a40a06f2e298"
+    },
+    ".agents/skills/product-technical-planning/references/prd.md": {
+      "owner": "shared",
+      "hash": "7663e18e2c790e33dfec867e1e30334060c2ad38842337744aad39985768747d"
+    },
+    ".agents/skills/product-technical-planning/references/task-breakdown.md": {
+      "owner": "shared",
+      "hash": "c82be1690086ab6ddd1c982c5990fd8c3948d967a3cf7702f0a362696cd525bc"
+    },
+    ".agents/skills/product-technical-planning/references/user-stories.md": {
+      "owner": "shared",
+      "hash": "ecf4f053d621c1c7ba80c4f7ba5db7f26c47b46f5454f0468298fea0441019e2"
+    },
+    ".agents/skills/project-memory/SKILL.md": {
+      "owner": "shared",
+      "hash": "80b725664e310d829c3dce4e51cafec9beb885689a2a27961ce2fa0add843d86"
+    },
+    ".agents/skills/project-memory/references/memory-management.md": {
+      "owner": "shared",
+      "hash": "ffb7944b5cea09189c94a01687f428066f78c84f95c38a752b1ceab6078f842a"
+    },
+    ".agents/skills/project-memory/references/task-tracking.md": {
+      "owner": "shared",
+      "hash": "97d070848ac01f6b5afd303621cb2e7c1da7d15f35bea2ead20525079e67bb3f"
+    },
+    ".agents/skills/requirements-engineering/SKILL.md": {
+      "owner": "shared",
+      "hash": "567431933dc5fade53f49cc8adb5017e191eee3eeaba458517fb6956ff23c642"
+    },
+    ".agents/skills/requirements-engineering/references/acceptance-criteria.md": {
+      "owner": "shared",
+      "hash": "6c9dc9fa2338972f1faaef9823498b0367a3bdebad132ca6ffbfbe775d9e5ddc"
+    },
+    ".agents/skills/requirements-engineering/references/functional-nonfunctional-requirements.md": {
+      "owner": "shared",
+      "hash": "c80d579639d5dc76bfa45908556295d512b49fcf41bd0ad15297436c2af2178a"
+    },
+    ".agents/skills/requirements-engineering/references/requirement-elicitation.md": {
+      "owner": "shared",
+      "hash": "b97c2ecb314605e1b1204ec2493aee2046fe745643a953a8754a6b9227d66896"
+    },
+    ".agents/skills/sdlc-workflows/SKILL.md": {
+      "owner": "shared",
+      "hash": "8317c8eb299bd4bca74b4907b98915f8ee8d010c91aeb52a2dc735c949d42052"
+    },
+    ".agents/skills/sdlc-workflows/references/bug-fixing.md": {
+      "owner": "shared",
+      "hash": "cf6d41302c63664d5d4882e8856ce9438578333ed7518f42934f979ba0fd7702"
+    },
+    ".agents/skills/sdlc-workflows/references/codebase-refactoring.md": {
+      "owner": "shared",
+      "hash": "60d2f08274059cac6ddcd593fd6281313386b3756d441d29eddcef07f8edd502"
+    },
+    ".agents/skills/sdlc-workflows/references/feature-development.md": {
+      "owner": "shared",
+      "hash": "d9e8ac4601de455e1fc29574e22a6408c932b1a2f3e2813232d3ca3f5cf3f52c"
+    },
+    ".agents/skills/sdlc-workflows/references/project-onboarding.md": {
+      "owner": "shared",
+      "hash": "1d1f79e65c7691d02d1638ddfa0ca26773d8d325dc06283e7002964bc6880deb"
+    },
+    ".agents/skills/security-engineering/SKILL.md": {
+      "owner": "shared",
+      "hash": "b6efcd8b00cf2123e3c822580bdac8ef8a297d50bb6459c5e25725596b33b1b8"
+    },
+    ".agents/skills/security-engineering/references/api-security.md": {
+      "owner": "shared",
+      "hash": "848ce7da67de5306856ed1a3c5bf2b03c51009c772f73827f9ac44963806a085"
+    },
+    ".agents/skills/security-engineering/references/application-security.md": {
+      "owner": "shared",
+      "hash": "0047cce2cec7f8fe0e63b44e9ffb472265ced79cdf60856dba78f8e616a2c570"
+    },
+    ".agents/skills/security-engineering/references/audit-reporting.md": {
+      "owner": "shared",
+      "hash": "9a507d0d40459595f3c748295d812a40779abb4703986baba0a4616e84776778"
+    },
+    ".agents/skills/security-engineering/references/authentication-security.md": {
+      "owner": "shared",
+      "hash": "c95cac25251701454d6ce16cd720c58f52311cbcabe90f1d57c6ba952c759f16"
+    },
+    ".agents/skills/security-engineering/references/authorization-security.md": {
+      "owner": "shared",
+      "hash": "c9eb407b161e1a85dff20fc61c1078b2465e82bc3d30e368c5b1f9c37a5a061c"
+    },
+    ".agents/skills/security-engineering/references/data-protection.md": {
+      "owner": "shared",
+      "hash": "6fea31a07521674914a2fe1a036ca886fc01ed1d15d3b82b0ff5ddede164549c"
+    },
+    ".agents/skills/security-engineering/references/dependency-security.md": {
+      "owner": "shared",
+      "hash": "e09837106864515539522e766c6a427d0bb06a83fbe01a7f9eec10970ce223a3"
+    },
+    ".agents/skills/security-engineering/references/infrastructure-security.md": {
+      "owner": "shared",
+      "hash": "bffadf6e6470d64fc9a8f15dc104356ab69251495ca08bc05e5b83cb43b2097d"
+    },
+    ".agents/skills/security-engineering/references/owasp-top-10.md": {
+      "owner": "shared",
+      "hash": "c4d78e56a4c0fe48609deb4c409a459fce1d44519ddf6595b8c89c8702e2e0f9"
+    },
+    ".agents/skills/security-engineering/references/secrets-management.md": {
+      "owner": "shared",
+      "hash": "a4950ef4a49307afcef3784a8e7d168e8c4da5bddf9f78f8dbf2e236f948893e"
+    },
+    ".agents/skills/security-engineering/references/threat-modelling.md": {
+      "owner": "shared",
+      "hash": "2e75878c2a2ba1f7dc6a3ba7c2c6ad7916b94e750cd97f0ed74965a142f39864"
+    },
+    ".agents/skills/system-architecture/SKILL.md": {
+      "owner": "shared",
+      "hash": "bbcb4ad9cb28e9bb5ad7f08476808fa9b60b82356a676d2027889a88a8cf691a"
+    },
+    ".agents/skills/system-architecture/references/adr.md": {
+      "owner": "shared",
+      "hash": "0385787cbd9cf211c407c53b9f557b577a7ba780611fe9ec907876446d3b8fc7"
+    },
+    ".agents/skills/system-architecture/references/architecture-patterns.md": {
+      "owner": "shared",
+      "hash": "609e1b9078c8b4e3913dea1824e2bb529258bd50cf0064d19f6e9a29bca5b88f"
+    },
+    ".agents/skills/system-architecture/references/design-patterns.md": {
+      "owner": "shared",
+      "hash": "49491bc2e38b2fe60a042782640f25dd7c27f79bae735855d235a4571dfd41c0"
+    },
+    ".agents/skills/system-architecture/references/scalability.md": {
+      "owner": "shared",
+      "hash": "d2a2ee2aa1b2942bb4c22d8d2c5cae5abc3bc53ab622e9a9e26c935b0a673af3"
+    },
+    ".agents/skills/system-architecture/references/system-design.md": {
+      "owner": "shared",
+      "hash": "5cba43347700fa4453f80f560243530355a54ab53165de7f664bdaca3551f4f3"
+    },
+    ".agents/skills/technical-documentation/SKILL.md": {
+      "owner": "shared",
+      "hash": "07be1a47c1401f97e55e06e919dca9a2c403a040282eb648f9e1b856eccb924b"
+    },
+    ".agents/skills/technical-documentation/references/api-documentation.md": {
+      "owner": "shared",
+      "hash": "6104cd580b4abd636082ad8becc70c52c50829f3a041c110815e9b5d50851e04"
+    },
+    ".agents/skills/technical-documentation/references/architecture-documentation.md": {
+      "owner": "shared",
+      "hash": "17cc429fff4d10884d913543653fea23004123fef4cd4faaf97dd39aa3ae8d51"
+    },
+    ".agents/skills/technical-documentation/references/changelog.md": {
+      "owner": "shared",
+      "hash": "7ffbdd2a3fd15498a6b3aa34422c6893c51f5427fbb0616865999c1db90f69c3"
+    },
+    ".agents/skills/technical-documentation/references/docs-sync.md": {
+      "owner": "shared",
+      "hash": "7d59d68eb2663a192a596a8468e127ae3ddd46f5b4130cb3cb293b772d6c90d0"
+    },
+    ".agents/skills/technical-documentation/references/readme.md": {
+      "owner": "shared",
+      "hash": "298cf0d7cf27737b7de67b43d2e867d619870349c09537c8d309d57a6443a4e0"
+    },
+    ".agents/skills/technical-research/SKILL.md": {
+      "owner": "shared",
+      "hash": "447a03f7b38645003f9db8bca103721624ce3faa01e79322d9fbf3fa8f049257"
+    },
+    ".agents/skills/technical-research/references/context7.md": {
+      "owner": "shared",
+      "hash": "ca826e4c8d723171a3990287597583c9e9d401faefd3a77d1250272727c133e9"
+    },
+    ".agents/skills/technical-research/references/documentation-research.md": {
+      "owner": "shared",
+      "hash": "f0f4c77e5cd6a81f0590b48abd7071ee90884d77478fe3e0af77749cb367f1e9"
+    },
+    ".agents/skills/technical-research/references/feasibility-analysis.md": {
+      "owner": "shared",
+      "hash": "1fea8c101f3e66c06db5ede5e00c754b3bcff63c45a3f76d09066ea248af7dde"
+    },
+    ".agents/skills/technical-research/references/gh-grep.md": {
+      "owner": "shared",
+      "hash": "a4d5a7608d4f224b24fcfc535d4713b3ebebd47a3c56bf65c90a06a227a18913"
+    },
+    ".agents/skills/technical-research/references/source-evaluation.md": {
+      "owner": "shared",
+      "hash": "3a5253952df1e1063cbf42247e931634eae5065c23a2f2175750d4e99411ccda"
+    },
+    ".agents/skills/technical-research/references/technology-evaluation.md": {
+      "owner": "shared",
+      "hash": "57bd75783038d5bf7f314d582f6f8458e5a1395516428e36f9995499eaaa12f1"
+    },
+    ".agents/skills/test-driven-development/SKILL.md": {
+      "owner": "shared",
+      "hash": "dba9961672a3f9fc9ae4b47c86419410d46837162fb0b45a510487047fec3039"
+    },
+    ".agents/skills/test-driven-development/references/mocking-fixtures.md": {
+      "owner": "shared",
+      "hash": "038c82d1b29153bfac9a984c671b7577627cba51271c6504d9b957c6b5245c5f"
+    },
+    ".agents/skills/test-driven-development/references/red-green-refactor.md": {
+      "owner": "shared",
+      "hash": "50e4f9e31366ecaf6cd56cea56d73a61d1ca9af9f4b96330d0e43f8e6d8583e5"
+    },
+    ".agents/skills/test-driven-development/references/tdd-workflow.md": {
+      "owner": "shared",
+      "hash": "dfd240e3f237ad8cd16c6ef6b23609f51469c5c241092735396e382c1b2d3291"
+    },
+    ".agents/skills/test-driven-development/references/test-design.md": {
+      "owner": "shared",
+      "hash": "51bbc46f8683e64b98cbf50162b790324a5f57d9ec06e0e7bb24abe61101446a"
+    },
+    ".agents/skills/testing-strategy/SKILL.md": {
+      "owner": "shared",
+      "hash": "e616ab15abac89f9e675603b7b9c988ef62a0ea7c91c81aad9374901515b56be"
+    },
+    ".agents/skills/testing-strategy/references/e2e-testing.md": {
+      "owner": "shared",
+      "hash": "e54802d21c7ccd76ffe3177a69270cd1198eacb757f4d2a4e58ce90fe7de2756"
+    },
+    ".agents/skills/testing-strategy/references/integration-testing.md": {
+      "owner": "shared",
+      "hash": "4fe73dd3c8447ffffb0186e33b44f5868cb9fac311a5c1501b891e6499fc453c"
+    },
+    ".agents/skills/testing-strategy/references/playwright.md": {
+      "owner": "shared",
+      "hash": "5e1948bc58b33c35663ebeb49b9325daba60cf8bd79c46f98ce9ecc5d01b3550"
+    },
+    ".agents/skills/testing-strategy/references/regression-testing.md": {
+      "owner": "shared",
+      "hash": "227d52256aecbddce7ff795678dff35f3874484b9ef2f6813a709970dc5df5df"
+    },
+    ".agents/skills/testing-strategy/references/test-coverage.md": {
+      "owner": "shared",
+      "hash": "dcd7aed3a930faeda20e5fefda8e5f6564ef6013de86fa8da3773d7ed77637d4"
+    },
+    ".agents/skills/testing-strategy/references/test-pyramid.md": {
+      "owner": "shared",
+      "hash": "133b9038288cd05ba49a2f8f3ba8c694e439d9bdbbcdbf45cd6b24b5cae7a9a0"
+    },
+    ".agents/skills/testing-strategy/references/unit-testing.md": {
+      "owner": "shared",
+      "hash": "fbce47985ef27c138ebbd217b666a2497bcd04a9acef8332d69c7a1c2fa0006b"
+    },
+    ".claude/agents/architect.md": {
+      "owner": "claude",
+      "hash": "fa7625849257f9132ed9bed9c1f848f9d44f647214b2ef0cc9ab4ef85680d279"
+    },
+    ".claude/agents/debugger.md": {
+      "owner": "claude",
+      "hash": "e9d19467e80f70d250b1eb48f765548cd867edf11906a3d3d33d471e5df886c7"
+    },
+    ".claude/agents/implementer.md": {
+      "owner": "claude",
+      "hash": "d6aac5e7cee246caff8b172db2a0260e0b55f86df5990d838ee1a0347b42d188"
+    },
+    ".claude/agents/reviewer.md": {
+      "owner": "claude",
+      "hash": "22d82ce0066d130ff36541a54a22a22b73f2a83791a11d78c92814c309e292d2"
+    },
+    ".claude/agents/security-auditor.md": {
+      "owner": "claude",
+      "hash": "d12ec638cd62833b3edc10ad14eab90306fc46b0aee733858f7b142865a1a158"
+    },
+    ".claude/agents/tester.md": {
+      "owner": "claude",
+      "hash": "ba2be6a481afb233a457cd742d724ddbba95292e0e47c975dc54ca21b631a69e"
+    },
+    ".claude/skills/api-engineering/SKILL.md": {
+      "owner": "claude",
+      "hash": "08436ceaf9835631e592d6830c9790c0ef47021c7880279bbe787d38e6672787"
+    },
+    ".claude/skills/api-engineering/references/api-contracts.md": {
+      "owner": "claude",
+      "hash": "b5fc98618afced8b9252b4fa17f9727192c23cc775edc40ebce8651d145b4e42"
+    },
+    ".claude/skills/api-engineering/references/graphql.md": {
+      "owner": "claude",
+      "hash": "9d72843de5368ce4841947cb7a8b214c9d03e9d8394f156c5354825b2dcae38f"
+    },
+    ".claude/skills/api-engineering/references/openapi.md": {
+      "owner": "claude",
+      "hash": "7c47678ab1690f3730af9a969e324d0361a88dcd3ad33a4307f9b2b0b7ba2417"
+    },
+    ".claude/skills/api-engineering/references/rate-limiting.md": {
+      "owner": "claude",
+      "hash": "ca5d49416a3afa7cb3d3b71b112dcee1b9a26146d7acc75d7b16bfb3ee7374ed"
+    },
+    ".claude/skills/api-engineering/references/rest.md": {
+      "owner": "claude",
+      "hash": "ed775c81a6cb68a90561bf934cae3137ddfddc07a0be16cc08c06d51470b7f98"
+    },
+    ".claude/skills/api-engineering/references/validation.md": {
+      "owner": "claude",
+      "hash": "c8ff50e632bde4736ab2aea961340a411afa9f59d066fc6595087986ca790be6"
+    },
+    ".claude/skills/api-engineering/references/versioning.md": {
+      "owner": "claude",
+      "hash": "af184967f2dcdf1e2079d483be8d7e161b6ce1adab7b8c3e7317bf3f23b41417"
+    },
+    ".claude/skills/backend-engineering/SKILL.md": {
+      "owner": "claude",
+      "hash": "913b00bcf3f4b2ed8bfb103282b9d40108095bd5aaf4de582e99fb88b652bf4a"
+    },
+    ".claude/skills/backend-engineering/references/authentication.md": {
+      "owner": "claude",
+      "hash": "e91a7ac130b6bff33a6c26a64cc48e4134255a31bc464d3cb5047ae4d6f6e4a0"
+    },
+    ".claude/skills/backend-engineering/references/authorization.md": {
+      "owner": "claude",
+      "hash": "f58e1cfb813726ca51b6255d24fed5c93e01dbabaa793b9e93b86f847dec6c39"
+    },
+    ".claude/skills/backend-engineering/references/backend-performance.md": {
+      "owner": "claude",
+      "hash": "2220c9534a89d731376d9f8654c74b2b38ceb93ae1af41e75ad442ae4246f3c2"
+    },
+    ".claude/skills/backend-engineering/references/caching.md": {
+      "owner": "claude",
+      "hash": "7879dbbdc49da1038be9671e23963366605cdcce2245cc2c53b31dda494ca314"
+    },
+    ".claude/skills/backend-engineering/references/error-handling.md": {
+      "owner": "claude",
+      "hash": "a29d67d9c1ed3a1b1a7747e88ab9a85d4139dcadadf3a18d250593e8f1da5811"
+    },
+    ".claude/skills/backend-engineering/references/express.md": {
+      "owner": "claude",
+      "hash": "1179f60782d99bf9c32d27ce6c660c423427c0908087edda2b8f8c6865780e9e"
+    },
+    ".claude/skills/backend-engineering/references/nodejs.md": {
+      "owner": "claude",
+      "hash": "82b5e4ca0ede5a06b7fd04b906cb92ef31cfcaf693ee79e10a6e6b8e86bd644d"
+    },
+    ".claude/skills/backend-engineering/references/python-backend.md": {
+      "owner": "claude",
+      "hash": "2c3e23904741179864f7e0a0bcc86b8d3e924b2e7342308cd452484af687ec4a"
+    },
+    ".claude/skills/code-review/SKILL.md": {
+      "owner": "claude",
+      "hash": "0ae7b1378e819583adf2bc7b7ca289febcbe5b24199a8ccd3d8fd569791b253e"
+    },
+    ".claude/skills/code-review/references/architecture-review.md": {
+      "owner": "claude",
+      "hash": "65c75efa16ed1f6eea71e92a37d708fcee481fb83707751fc5fb4027ecef39d2"
+    },
+    ".claude/skills/code-review/references/correctness.md": {
+      "owner": "claude",
+      "hash": "b59b0aeb6a302fc9b143a90f3cc80bc3fabc597455ad18ebd36d49c1cfa19e7b"
+    },
+    ".claude/skills/code-review/references/maintainability.md": {
+      "owner": "claude",
+      "hash": "4df19438e25c1aac63a165491d3d0a8071089c56649cf7d127b94a586cef28e4"
+    },
+    ".claude/skills/code-review/references/performance-review.md": {
+      "owner": "claude",
+      "hash": "9fab46c7efafa098781f1a60be7de42b0313ab494b6371aae4823e8c16e7f4d5"
+    },
+    ".claude/skills/code-review/references/review-checklist.md": {
+      "owner": "claude",
+      "hash": "cad1041c12ba26e068cfbce946375ad5011c1a4274a10b5d5c8d95d9fa4d3b2a"
+    },
+    ".claude/skills/database-engineering/SKILL.md": {
+      "owner": "claude",
+      "hash": "489ee52d006f792eb11fcc0390729027c434867cf2572c5f1b27df204d0ff58d"
+    },
+    ".claude/skills/database-engineering/references/indexing.md": {
+      "owner": "claude",
+      "hash": "ea312e2de965084715eac0edf4babcf5adda286dfef958421479ebf082eca187"
+    },
+    ".claude/skills/database-engineering/references/migrations.md": {
+      "owner": "claude",
+      "hash": "9663bc27790c944ab1e4442c3449d5f25d3b343900b6c2e3ffa4c875ff62a95b"
+    },
+    ".claude/skills/database-engineering/references/mongodb.md": {
+      "owner": "claude",
+      "hash": "08b2ebd7c3502a4748101432ba970c7f2be7cc7d8cff1a80119444fdd265aef8"
+    },
+    ".claude/skills/database-engineering/references/orms.md": {
+      "owner": "claude",
+      "hash": "b354bf33ba0f0d7f6289beaf5b236def0b319479d3d590f8a8d67dbe5386183c"
+    },
+    ".claude/skills/database-engineering/references/postgresql.md": {
+      "owner": "claude",
+      "hash": "4cf7dc2f1b12bd221522264c56806c2dbf7cd2bbb842bed373a8dcae1bf88cb8"
+    },
+    ".claude/skills/database-engineering/references/query-optimization.md": {
+      "owner": "claude",
+      "hash": "fa476b71c7987bc9ab69924a2f39380047ec5da1cabc15987d8e8e459dda192a"
+    },
+    ".claude/skills/database-engineering/references/relational-design.md": {
+      "owner": "claude",
+      "hash": "6123e9d1bf16831a139e7cd5606ac317f46ef5b83b9a7a5f495e8cfd581c745e"
+    },
+    ".claude/skills/database-engineering/references/sql.md": {
+      "owner": "claude",
+      "hash": "e412e5fbef57d6613a6cf80ca4397d853dafefb2c13655e45fba3c7520ede528"
+    },
+    ".claude/skills/database-engineering/references/transactions.md": {
+      "owner": "claude",
+      "hash": "1498bfb4c91588f518e47cfdcd87ae48b6e699e9302b3f6c4d71c0d005fe3ddb"
+    },
+    ".claude/skills/debugging/SKILL.md": {
+      "owner": "claude",
+      "hash": "07b711e5e0a560de53b38ccebc4a3367a92d555670fbc62aa25b45e59a636e74"
+    },
+    ".claude/skills/debugging/references/bug-reproduction.md": {
+      "owner": "claude",
+      "hash": "33e177e7a40f0afec718aeb0ea6e4275cb6d3cba66b076dd5fece37ecf4be6e8"
+    },
+    ".claude/skills/debugging/references/fault-isolation.md": {
+      "owner": "claude",
+      "hash": "736fb8cdf59c22e4f7eb191b9d2e04103f42d3ce56aaca9cd21a0b86427b6b06"
+    },
+    ".claude/skills/debugging/references/logging-tracing.md": {
+      "owner": "claude",
+      "hash": "a3fa1427436bb77a68da227684007003e704cb1bb1c224010386d7974d95a21c"
+    },
+    ".claude/skills/debugging/references/regression-prevention.md": {
+      "owner": "claude",
+      "hash": "3449f43c7b7d6ef72092391e7514d4de5107108dedc25e12694f7e50bc895b7b"
+    },
+    ".claude/skills/debugging/references/root-cause-analysis.md": {
+      "owner": "claude",
+      "hash": "9e20e07228b41b627f72a03721ae59afbacbef51a1447c1a0e322dfe3018c4be"
+    },
+    ".claude/skills/devops-deployment/SKILL.md": {
+      "owner": "claude",
+      "hash": "d5d4faca0671f030b5f831a88d15e053c0dbdb1062318531cf9e4bcb968c5a47"
+    },
+    ".claude/skills/devops-deployment/references/ci-cd.md": {
+      "owner": "claude",
+      "hash": "fe65a5d1c715060536e4033418087431bb3717d25fd980b8b94e545465ff0e41"
+    },
+    ".claude/skills/devops-deployment/references/docker-compose.md": {
+      "owner": "claude",
+      "hash": "4563d206200b3ccd9ad2af54d801eef97c691286e17b54d49cfeca8e1860dc01"
+    },
+    ".claude/skills/devops-deployment/references/docker.md": {
+      "owner": "claude",
+      "hash": "880fcad08f016f703796191b02d53305c451bb1fa9084a6dc4b4ebf86032d31d"
+    },
+    ".claude/skills/devops-deployment/references/environment-management.md": {
+      "owner": "claude",
+      "hash": "25a7b161c7e41452c18afa500d0d51a215ffedf1a19768768d28e419594a2113"
+    },
+    ".claude/skills/devops-deployment/references/hosting.md": {
+      "owner": "claude",
+      "hash": "f081ad1c5fc4e22c550e7df8d1799da1a08138c6f2267a473a24210e09ac3120"
+    },
+    ".claude/skills/devops-deployment/references/monitoring.md": {
+      "owner": "claude",
+      "hash": "daca945d11e6f7972572173543968c8bcbb14ae62127a6bf6f99d0dfb1574248"
+    },
+    ".claude/skills/devops-deployment/references/release-management.md": {
+      "owner": "claude",
+      "hash": "84eb03500a29a87065823d50b92a40a310bfd1fd5f768643bfc77ac1eb58bed5"
+    },
+    ".claude/skills/devops-deployment/references/rollback.md": {
+      "owner": "claude",
+      "hash": "4d4f5726a2cad0aab4e1469fa8ed586bcf9519d2d22735493cc5cd6180c2e177"
+    },
+    ".claude/skills/frontend-engineering/SKILL.md": {
+      "owner": "claude",
+      "hash": "ab0b4780c737faeb2f3fcc5adeaade3d802579522fa60e528bece84e58254b9a"
+    },
+    ".claude/skills/frontend-engineering/references/accessibility.md": {
+      "owner": "claude",
+      "hash": "adda033227999fc560b5a83ce4fb36ec723cc766cb2fdc8d42f2a5a1a3458cd2"
+    },
+    ".claude/skills/frontend-engineering/references/frontend-performance.md": {
+      "owner": "claude",
+      "hash": "de3b33e79152077cad74dbb4428ba4d04000a1e179787c8adc10d63ad536c278"
+    },
+    ".claude/skills/frontend-engineering/references/nextjs.md": {
+      "owner": "claude",
+      "hash": "d9f6477db71bae61cf5d555cf12f14e4809a016aff6eaa76b2b2a7b9eaae09cc"
+    },
+    ".claude/skills/frontend-engineering/references/react.md": {
+      "owner": "claude",
+      "hash": "5a4c623d5a163b6b155b5fd508ef575b9c02e9f9c6ab94b11dedb9d008f61a51"
+    },
+    ".claude/skills/frontend-engineering/references/state-management.md": {
+      "owner": "claude",
+      "hash": "350920bb8b85fdfa5a9fe0f940c0c7c41ba786f176895ac2ed16123099bdff22"
+    },
+    ".claude/skills/frontend-engineering/references/ui-ux.md": {
+      "owner": "claude",
+      "hash": "10ace1a6b6532ee88c8a76ed178d2838a7e6b4f1985d35a1e351a90ae99c37b4"
+    },
+    ".claude/skills/git-version-control/SKILL.md": {
+      "owner": "claude",
+      "hash": "ea8a0f3e303cdb3172a0fa04b70a38831e81fabbca7a87818c0a37bfe5258de5"
+    },
+    ".claude/skills/git-version-control/references/branching.md": {
+      "owner": "claude",
+      "hash": "f6569272e0015a2ac430b473d08ae04bef5475a1b7cc71f8a60c4cb1ab02a94a"
+    },
+    ".claude/skills/git-version-control/references/conventional-commits.md": {
+      "owner": "claude",
+      "hash": "e57fce39a418b9fba8c4db36a3e3bc747a4a0f0e1e5198d8b7fafcdf8af9d468"
+    },
+    ".claude/skills/git-version-control/references/github-cli.md": {
+      "owner": "claude",
+      "hash": "eeb5d46d1cadf19ffc01b3abdbda7ed30ba5b87d8f6765e291c70b01c6e33d44"
+    },
+    ".claude/skills/git-version-control/references/merge-rebase.md": {
+      "owner": "claude",
+      "hash": "0037eb295f87fb21604ddfb84320db0b1ab061e7f8ce9c7720b2965a87390121"
+    },
+    ".claude/skills/git-version-control/references/pull-requests.md": {
+      "owner": "claude",
+      "hash": "d34bdfc9d609b33078e9ad15bf1c599a737f87d44c9c786c651c4e17b251948f"
+    },
+    ".claude/skills/languages-clean-code/SKILL.md": {
+      "owner": "claude",
+      "hash": "372698536ce7a732800272070e7ad4749695d5006291aad42fe146f1987c5d9e"
+    },
+    ".claude/skills/languages-clean-code/references/cpp.md": {
+      "owner": "claude",
+      "hash": "9315c14c6a6c401a0913a2eaa0af3cc5efbc63af7ca6eeb63896d33bc628c030"
+    },
+    ".claude/skills/languages-clean-code/references/dependency-management.md": {
+      "owner": "claude",
+      "hash": "6760e6982c368fc961f5a90b17af71fedbdc6ca03f459e43a8d2c50b4ff939d1"
+    },
+    ".claude/skills/languages-clean-code/references/java.md": {
+      "owner": "claude",
+      "hash": "074f42c32d77e79005dae6b232592388d21a025601319b517bd8b376538f8f2d"
+    },
+    ".claude/skills/languages-clean-code/references/javascript.md": {
+      "owner": "claude",
+      "hash": "c2877686caaf3a5b587948f249a39fe008bc3814db8757231393c94f813502d7"
+    },
+    ".claude/skills/languages-clean-code/references/python.md": {
+      "owner": "claude",
+      "hash": "af6c94915a7a353e72985e5d3afee3e740e1d9674ecea7b9519bc5a194c11dfa"
+    },
+    ".claude/skills/languages-clean-code/references/refactoring.md": {
+      "owner": "claude",
+      "hash": "174343e248fd37fefbabad7cd355cb7e7e52ef1433ab30d8110d1fdbb91e96e2"
+    },
+    ".claude/skills/languages-clean-code/references/solid.md": {
+      "owner": "claude",
+      "hash": "76ab1b3f67c4d300cdcc394ebfc404b349049b240597521f8598ada0e2b89fb3"
+    },
+    ".claude/skills/languages-clean-code/references/typescript.md": {
+      "owner": "claude",
+      "hash": "80a71d415dea473591a5d12047cd03a33e9b14268b946adc622933af756b49dc"
+    },
+    ".claude/skills/product-technical-planning/SKILL.md": {
+      "owner": "claude",
+      "hash": "28eef571e11807931c95659cdb1377da81adb035228c7b29972e99795d21b661"
+    },
+    ".claude/skills/product-technical-planning/references/estimation.md": {
+      "owner": "claude",
+      "hash": "0a466bf3d2dfc43ffeaeeebc3dda882d4fedeb7ffda156f96702a40a06f2e298"
+    },
+    ".claude/skills/product-technical-planning/references/prd.md": {
+      "owner": "claude",
+      "hash": "7663e18e2c790e33dfec867e1e30334060c2ad38842337744aad39985768747d"
+    },
+    ".claude/skills/product-technical-planning/references/task-breakdown.md": {
+      "owner": "claude",
+      "hash": "c82be1690086ab6ddd1c982c5990fd8c3948d967a3cf7702f0a362696cd525bc"
+    },
+    ".claude/skills/product-technical-planning/references/user-stories.md": {
+      "owner": "claude",
+      "hash": "ecf4f053d621c1c7ba80c4f7ba5db7f26c47b46f5454f0468298fea0441019e2"
+    },
+    ".claude/skills/project-memory/SKILL.md": {
+      "owner": "claude",
+      "hash": "80b725664e310d829c3dce4e51cafec9beb885689a2a27961ce2fa0add843d86"
+    },
+    ".claude/skills/project-memory/references/memory-management.md": {
+      "owner": "claude",
+      "hash": "ffb7944b5cea09189c94a01687f428066f78c84f95c38a752b1ceab6078f842a"
+    },
+    ".claude/skills/project-memory/references/task-tracking.md": {
+      "owner": "claude",
+      "hash": "97d070848ac01f6b5afd303621cb2e7c1da7d15f35bea2ead20525079e67bb3f"
+    },
+    ".claude/skills/requirements-engineering/SKILL.md": {
+      "owner": "claude",
+      "hash": "567431933dc5fade53f49cc8adb5017e191eee3eeaba458517fb6956ff23c642"
+    },
+    ".claude/skills/requirements-engineering/references/acceptance-criteria.md": {
+      "owner": "claude",
+      "hash": "6c9dc9fa2338972f1faaef9823498b0367a3bdebad132ca6ffbfbe775d9e5ddc"
+    },
+    ".claude/skills/requirements-engineering/references/functional-nonfunctional-requirements.md": {
+      "owner": "claude",
+      "hash": "c80d579639d5dc76bfa45908556295d512b49fcf41bd0ad15297436c2af2178a"
+    },
+    ".claude/skills/requirements-engineering/references/requirement-elicitation.md": {
+      "owner": "claude",
+      "hash": "b97c2ecb314605e1b1204ec2493aee2046fe745643a953a8754a6b9227d66896"
+    },
+    ".claude/skills/sdlc-workflows/SKILL.md": {
+      "owner": "claude",
+      "hash": "8317c8eb299bd4bca74b4907b98915f8ee8d010c91aeb52a2dc735c949d42052"
+    },
+    ".claude/skills/sdlc-workflows/references/bug-fixing.md": {
+      "owner": "claude",
+      "hash": "cf6d41302c63664d5d4882e8856ce9438578333ed7518f42934f979ba0fd7702"
+    },
+    ".claude/skills/sdlc-workflows/references/codebase-refactoring.md": {
+      "owner": "claude",
+      "hash": "60d2f08274059cac6ddcd593fd6281313386b3756d441d29eddcef07f8edd502"
+    },
+    ".claude/skills/sdlc-workflows/references/feature-development.md": {
+      "owner": "claude",
+      "hash": "d9e8ac4601de455e1fc29574e22a6408c932b1a2f3e2813232d3ca3f5cf3f52c"
+    },
+    ".claude/skills/sdlc-workflows/references/project-onboarding.md": {
+      "owner": "claude",
+      "hash": "1d1f79e65c7691d02d1638ddfa0ca26773d8d325dc06283e7002964bc6880deb"
+    },
+    ".claude/skills/security-engineering/SKILL.md": {
+      "owner": "claude",
+      "hash": "b6efcd8b00cf2123e3c822580bdac8ef8a297d50bb6459c5e25725596b33b1b8"
+    },
+    ".claude/skills/security-engineering/references/api-security.md": {
+      "owner": "claude",
+      "hash": "848ce7da67de5306856ed1a3c5bf2b03c51009c772f73827f9ac44963806a085"
+    },
+    ".claude/skills/security-engineering/references/application-security.md": {
+      "owner": "claude",
+      "hash": "0047cce2cec7f8fe0e63b44e9ffb472265ced79cdf60856dba78f8e616a2c570"
+    },
+    ".claude/skills/security-engineering/references/audit-reporting.md": {
+      "owner": "claude",
+      "hash": "9a507d0d40459595f3c748295d812a40779abb4703986baba0a4616e84776778"
+    },
+    ".claude/skills/security-engineering/references/authentication-security.md": {
+      "owner": "claude",
+      "hash": "c95cac25251701454d6ce16cd720c58f52311cbcabe90f1d57c6ba952c759f16"
+    },
+    ".claude/skills/security-engineering/references/authorization-security.md": {
+      "owner": "claude",
+      "hash": "c9eb407b161e1a85dff20fc61c1078b2465e82bc3d30e368c5b1f9c37a5a061c"
+    },
+    ".claude/skills/security-engineering/references/data-protection.md": {
+      "owner": "claude",
+      "hash": "6fea31a07521674914a2fe1a036ca886fc01ed1d15d3b82b0ff5ddede164549c"
+    },
+    ".claude/skills/security-engineering/references/dependency-security.md": {
+      "owner": "claude",
+      "hash": "e09837106864515539522e766c6a427d0bb06a83fbe01a7f9eec10970ce223a3"
+    },
+    ".claude/skills/security-engineering/references/infrastructure-security.md": {
+      "owner": "claude",
+      "hash": "bffadf6e6470d64fc9a8f15dc104356ab69251495ca08bc05e5b83cb43b2097d"
+    },
+    ".claude/skills/security-engineering/references/owasp-top-10.md": {
+      "owner": "claude",
+      "hash": "c4d78e56a4c0fe48609deb4c409a459fce1d44519ddf6595b8c89c8702e2e0f9"
+    },
+    ".claude/skills/security-engineering/references/secrets-management.md": {
+      "owner": "claude",
+      "hash": "a4950ef4a49307afcef3784a8e7d168e8c4da5bddf9f78f8dbf2e236f948893e"
+    },
+    ".claude/skills/security-engineering/references/threat-modelling.md": {
+      "owner": "claude",
+      "hash": "2e75878c2a2ba1f7dc6a3ba7c2c6ad7916b94e750cd97f0ed74965a142f39864"
+    },
+    ".claude/skills/system-architecture/SKILL.md": {
+      "owner": "claude",
+      "hash": "bbcb4ad9cb28e9bb5ad7f08476808fa9b60b82356a676d2027889a88a8cf691a"
+    },
+    ".claude/skills/system-architecture/references/adr.md": {
+      "owner": "claude",
+      "hash": "0385787cbd9cf211c407c53b9f557b577a7ba780611fe9ec907876446d3b8fc7"
+    },
+    ".claude/skills/system-architecture/references/architecture-patterns.md": {
+      "owner": "claude",
+      "hash": "609e1b9078c8b4e3913dea1824e2bb529258bd50cf0064d19f6e9a29bca5b88f"
+    },
+    ".claude/skills/system-architecture/references/design-patterns.md": {
+      "owner": "claude",
+      "hash": "49491bc2e38b2fe60a042782640f25dd7c27f79bae735855d235a4571dfd41c0"
+    },
+    ".claude/skills/system-architecture/references/scalability.md": {
+      "owner": "claude",
+      "hash": "d2a2ee2aa1b2942bb4c22d8d2c5cae5abc3bc53ab622e9a9e26c935b0a673af3"
+    },
+    ".claude/skills/system-architecture/references/system-design.md": {
+      "owner": "claude",
+      "hash": "5cba43347700fa4453f80f560243530355a54ab53165de7f664bdaca3551f4f3"
+    },
+    ".claude/skills/technical-documentation/SKILL.md": {
+      "owner": "claude",
+      "hash": "07be1a47c1401f97e55e06e919dca9a2c403a040282eb648f9e1b856eccb924b"
+    },
+    ".claude/skills/technical-documentation/references/api-documentation.md": {
+      "owner": "claude",
+      "hash": "6104cd580b4abd636082ad8becc70c52c50829f3a041c110815e9b5d50851e04"
+    },
+    ".claude/skills/technical-documentation/references/architecture-documentation.md": {
+      "owner": "claude",
+      "hash": "17cc429fff4d10884d913543653fea23004123fef4cd4faaf97dd39aa3ae8d51"
+    },
+    ".claude/skills/technical-documentation/references/changelog.md": {
+      "owner": "claude",
+      "hash": "7ffbdd2a3fd15498a6b3aa34422c6893c51f5427fbb0616865999c1db90f69c3"
+    },
+    ".claude/skills/technical-documentation/references/docs-sync.md": {
+      "owner": "claude",
+      "hash": "7d59d68eb2663a192a596a8468e127ae3ddd46f5b4130cb3cb293b772d6c90d0"
+    },
+    ".claude/skills/technical-documentation/references/readme.md": {
+      "owner": "claude",
+      "hash": "298cf0d7cf27737b7de67b43d2e867d619870349c09537c8d309d57a6443a4e0"
+    },
+    ".claude/skills/technical-research/SKILL.md": {
+      "owner": "claude",
+      "hash": "447a03f7b38645003f9db8bca103721624ce3faa01e79322d9fbf3fa8f049257"
+    },
+    ".claude/skills/technical-research/references/context7.md": {
+      "owner": "claude",
+      "hash": "ca826e4c8d723171a3990287597583c9e9d401faefd3a77d1250272727c133e9"
+    },
+    ".claude/skills/technical-research/references/documentation-research.md": {
+      "owner": "claude",
+      "hash": "f0f4c77e5cd6a81f0590b48abd7071ee90884d77478fe3e0af77749cb367f1e9"
+    },
+    ".claude/skills/technical-research/references/feasibility-analysis.md": {
+      "owner": "claude",
+      "hash": "1fea8c101f3e66c06db5ede5e00c754b3bcff63c45a3f76d09066ea248af7dde"
+    },
+    ".claude/skills/technical-research/references/gh-grep.md": {
+      "owner": "claude",
+      "hash": "a4d5a7608d4f224b24fcfc535d4713b3ebebd47a3c56bf65c90a06a227a18913"
+    },
+    ".claude/skills/technical-research/references/source-evaluation.md": {
+      "owner": "claude",
+      "hash": "3a5253952df1e1063cbf42247e931634eae5065c23a2f2175750d4e99411ccda"
+    },
+    ".claude/skills/technical-research/references/technology-evaluation.md": {
+      "owner": "claude",
+      "hash": "57bd75783038d5bf7f314d582f6f8458e5a1395516428e36f9995499eaaa12f1"
+    },
+    ".claude/skills/test-driven-development/SKILL.md": {
+      "owner": "claude",
+      "hash": "dba9961672a3f9fc9ae4b47c86419410d46837162fb0b45a510487047fec3039"
+    },
+    ".claude/skills/test-driven-development/references/mocking-fixtures.md": {
+      "owner": "claude",
+      "hash": "038c82d1b29153bfac9a984c671b7577627cba51271c6504d9b957c6b5245c5f"
+    },
+    ".claude/skills/test-driven-development/references/red-green-refactor.md": {
+      "owner": "claude",
+      "hash": "50e4f9e31366ecaf6cd56cea56d73a61d1ca9af9f4b96330d0e43f8e6d8583e5"
+    },
+    ".claude/skills/test-driven-development/references/tdd-workflow.md": {
+      "owner": "claude",
+      "hash": "dfd240e3f237ad8cd16c6ef6b23609f51469c5c241092735396e382c1b2d3291"
+    },
+    ".claude/skills/test-driven-development/references/test-design.md": {
+      "owner": "claude",
+      "hash": "51bbc46f8683e64b98cbf50162b790324a5f57d9ec06e0e7bb24abe61101446a"
+    },
+    ".claude/skills/testing-strategy/SKILL.md": {
+      "owner": "claude",
+      "hash": "e616ab15abac89f9e675603b7b9c988ef62a0ea7c91c81aad9374901515b56be"
+    },
+    ".claude/skills/testing-strategy/references/e2e-testing.md": {
+      "owner": "claude",
+      "hash": "e54802d21c7ccd76ffe3177a69270cd1198eacb757f4d2a4e58ce90fe7de2756"
+    },
+    ".claude/skills/testing-strategy/references/integration-testing.md": {
+      "owner": "claude",
+      "hash": "4fe73dd3c8447ffffb0186e33b44f5868cb9fac311a5c1501b891e6499fc453c"
+    },
+    ".claude/skills/testing-strategy/references/playwright.md": {
+      "owner": "claude",
+      "hash": "5e1948bc58b33c35663ebeb49b9325daba60cf8bd79c46f98ce9ecc5d01b3550"
+    },
+    ".claude/skills/testing-strategy/references/regression-testing.md": {
+      "owner": "claude",
+      "hash": "227d52256aecbddce7ff795678dff35f3874484b9ef2f6813a709970dc5df5df"
+    },
+    ".claude/skills/testing-strategy/references/test-coverage.md": {
+      "owner": "claude",
+      "hash": "dcd7aed3a930faeda20e5fefda8e5f6564ef6013de86fa8da3773d7ed77637d4"
+    },
+    ".claude/skills/testing-strategy/references/test-pyramid.md": {
+      "owner": "claude",
+      "hash": "133b9038288cd05ba49a2f8f3ba8c694e439d9bdbbcdbf45cd6b24b5cae7a9a0"
+    },
+    ".claude/skills/testing-strategy/references/unit-testing.md": {
+      "owner": "claude",
+      "hash": "fbce47985ef27c138ebbd217b666a2497bcd04a9acef8332d69c7a1c2fa0006b"
+    },
+    ".opencode/agents/architect.md": {
+      "owner": "opencode",
+      "hash": "3d842e85bc18a87dd2ba732d72506b4862e1105f608d6ea20dfdbb7bf54af9c1"
+    },
+    ".opencode/agents/debugger.md": {
+      "owner": "opencode",
+      "hash": "446e990ea7ff58e742e103e8a87a841a567b72cba86f4b71e8a6a50004ccab9b"
+    },
+    ".opencode/agents/implementer.md": {
+      "owner": "opencode",
+      "hash": "db7adf050e576f8541a6e6c98490217d072c24e68f43714a5d3d75e8e1fa5a61"
+    },
+    ".opencode/agents/orchestrator.md": {
+      "owner": "opencode",
+      "hash": "b33a2d995fe359e40aac9d60213428a0af42ee36dbcfff52edb6c18cbc86b943"
+    },
+    ".opencode/agents/reviewer.md": {
+      "owner": "opencode",
+      "hash": "86df56e6f08c615d8b3d3700aedc69075a8923c9f10b9c25bebf0659cc944efe"
+    },
+    ".opencode/agents/security-auditor.md": {
+      "owner": "opencode",
+      "hash": "1786f80d47e2e37796d0b82819ecd4f1494ab4ad638410162ef25bd2be227567"
+    },
+    ".opencode/agents/tester.md": {
+      "owner": "opencode",
+      "hash": "c80e530fcdb6a76e7f140bcd21898cfbeb879212ae7c3b892bc50ab5ee438835"
+    }
+  }
+}
