@@ -20,6 +20,11 @@ class Config:
     # ── Flask Core ──────────────────────────────────────────────────────
     SECRET_KEY = os.environ.get("APP_SECRET_KEY")
 
+    # ── Session Security ────────────────────────────────────────────────
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_SECURE = True  # Always True; dev bypass via FLASK_DEBUG=1 env var
+
     # ── Database (SQLAlchemy) ───────────────────────────────────────────
     # Transaction-mode pooler (port 6543) - used for normal app queries.
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
@@ -30,8 +35,9 @@ class Config:
     DIRECT_URL = os.environ.get("DIRECT_URL")
 
     # ── Razorpay ─────────────────────────────────────────────────────────
-    RAZORPAY_KEY_ID     = os.environ.get("RAZORPAY_KEY_ID")
-    RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET")
+    RAZORPAY_KEY_ID         = os.environ.get("RAZORPAY_KEY_ID")
+    RAZORPAY_KEY_SECRET     = os.environ.get("RAZORPAY_KEY_SECRET")
+    RAZORPAY_WEBHOOK_SECRET = os.environ.get("RAZORPAY_WEBHOOK_SECRET")
 
     # ── SMTP (Flask-Mail) ────────────────────────────────────────────────
     SMTP_EMAIL         = os.environ.get("SMTP_EMAIL")

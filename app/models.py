@@ -145,7 +145,8 @@ class Order(db.Model):
     delivery_slot   = db.Column(db.String(128), nullable=False)   # Morning/Afternoon/Evening
     delivery_boy_id = db.Column(db.String(20),  db.ForeignKey("delivery_boys.boy_id"), nullable=True)
     status          = db.Column(db.String(128), nullable=False, default="Order Placed")
-    timestamp       = db.Column(db.DateTime,    nullable=False, default=datetime.utcnow)
+    timestamp             = db.Column(db.DateTime,   nullable=False, default=datetime.utcnow)
+    razorpay_payment_id   = db.Column(db.String(128), nullable=True, unique=True)
 
     __table_args__ = (
         db.Index("ix_orders_user_id", "user_id"),

@@ -52,7 +52,7 @@ class RequestFormatter(logging.Formatter):
 
 def setup_logging(app, name="freshpicks"):
     """Configure structured logging for the application."""
-    is_debug = app.config.get("FLASK_DEBUG", False)
+    is_debug = os.environ.get("FLASK_DEBUG", "false").lower() in ("true", "1")
     log_format = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
     datefmt = "%Y-%m-%d %H:%M:%S"
 

@@ -3,17 +3,24 @@ test_routes.py - Tests for HTTP routes and endpoints.
 """
 
 
+import re
+
+
 class TestHealthEndpoint:
     def test_health_returns_200(self, client):
         resp = client.get("/health")
         assert resp.status_code == 200
         data = resp.get_json()
-        assert data["status"] == "healthy"
+        assert data["status"] == "ok"
 
-    def test_health_contains_version(self, client):
+    def test_health_has_valid_timestamp(self, client):
         resp = client.get("/health")
         data = resp.get_json()
-        assert "version" in data
+        assert "timestamp" in data
+        ts = data["timestamp"]
+        assert isinstance(ts, str) and len(ts) > 0
+        # Validate ISO 8601 format (e.g. 2026-01-15T12:00:00Z)
+        assert re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", ts)
 
 
 class TestProductRoutes:

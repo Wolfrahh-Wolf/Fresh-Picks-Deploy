@@ -4,10 +4,10 @@ Core rules for every agent working in this repository. Agent definitions add rol
 
 ## Project
 
-- Name: <project name>
-- Purpose: <one sentence>
-- Stack: <languages, frameworks, database, hosting>
-- Commands: install `<cmd>` | dev `<cmd>` | test `<cmd>` | lint `<cmd>` | build `<cmd>`
+- Name: Fresh Picks
+- Purpose: Full-stack grocery e-commerce web application with customer and admin portals for ordering fresh produce online.
+- Stack: Python 3.x, Flask (application factory), SQLAlchemy ORM, PostgreSQL (Supabase via Alembic), Bootstrap 5, Razorpay (payments), SendGrid/SMTP (email), FPDF2 (receipts), Redis (cache), Gunicorn, Render (PaaS hosting)
+- Commands: install `pip install -r requirements.txt` | dev `python app.py` | test `python test_api.py` (or `python test_db.py` / `python test_mail.py`) | lint N/A (no linter configured) | build `pip install -r requirements.txt`
 
 If any value above is still a placeholder, onboard the repository first (`sdlc-workflows` skill, project onboarding) and fill it in with the user's approval.
 

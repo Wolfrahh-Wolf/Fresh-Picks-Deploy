@@ -370,7 +370,7 @@
     },
     ".agents/skills/sdlc-workflows/references/project-onboarding.md": {
       "owner": "shared",
-      "hash": "1d1f79e65c7691d02d1638ddfa0ca26773d8d325dc06283e7002964bc6880deb"
+      "hash": "14b6865dca16cb134ea6c20d8683d5c69d28863d2231098e0b7b64b18981fddd"
     },
     ".agents/skills/security-engineering/SKILL.md": {
       "owner": "shared",
@@ -918,7 +918,7 @@
     },
     ".claude/skills/sdlc-workflows/references/project-onboarding.md": {
       "owner": "claude",
-      "hash": "1d1f79e65c7691d02d1638ddfa0ca26773d8d325dc06283e7002964bc6880deb"
+      "hash": "14b6865dca16cb134ea6c20d8683d5c69d28863d2231098e0b7b64b18981fddd"
     },
     ".claude/skills/security-engineering/SKILL.md": {
       "owner": "claude",
@@ -1110,7 +1110,7 @@
     },
     ".opencode/agents/orchestrator.md": {
       "owner": "opencode",
-      "hash": "b33a2d995fe359e40aac9d60213428a0af42ee36dbcfff52edb6c18cbc86b943"
+      "hash": "714447a2c494fc383134e7b583decd9d2d42d0938f9cc0ce9a3b6b7e9e1ee1de"
     },
     ".opencode/agents/reviewer.md": {
       "owner": "opencode",

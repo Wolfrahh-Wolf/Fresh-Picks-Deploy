@@ -27,7 +27,9 @@ if config.config_file_name is not None:
 env_name = os.getenv("ALEMBIC_ENV", "development")
 app_config = config_by_name.get(env_name, config_by_name["development"])
 database_uri = app_config.SQLALCHEMY_DATABASE_URI or "sqlite:///freshpicks.db"
-config.set_main_option("sqlalchemy.url", str(database_uri))
+# Escape % for configparser interpolation
+escaped_uri = str(database_uri).replace("%", "%%")
+config.set_main_option("sqlalchemy.url", escaped_uri)
 
 # Import the Flask app's db instance for metadata
 target_metadata = db.metadata

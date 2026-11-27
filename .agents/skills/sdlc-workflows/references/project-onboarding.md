@@ -108,10 +108,11 @@ When commands fail, capture the exact error. A failing baseline is information, 
 
 The Project block has four lines: name, purpose, stack and commands. Fill each only from the ledger.
 
-1. Draft the exact replacement text and show the user a before and after.
+1. Draft **only** the 4-line replacement block (never the full file) and show the user a before and after.
 2. Mark anything inferred, and leave the purpose as a question for the user if the repository does not state it. The purpose is a statement of intent, so it is the user's to give.
-3. After approval, the implementer edits only those placeholder lines, under the recorded approval, and nothing else in the file. `AGENTS.md` changes only with the user's approval.
-4. Commands use the format already in the file, one command per label.
+3. **Do not attempt to edit `AGENTS.md` as orchestrator.** `AGENTS.md` is a configuration file owned by `implementer` under user approval. Once the user approves the 4-line block, delegate to `implementer` (passing the approved 4 lines once in the task file or brief—never duplicating the full file) to replace only those placeholder lines and nothing else.
+4. Verify on disk (read/grep) that no `<placeholder>` remains in `AGENTS.md` before closing the task.
+5. Commands use the format already in the file, one command per label.
 
 Before and after:
 

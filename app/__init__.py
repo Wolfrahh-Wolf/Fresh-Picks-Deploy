@@ -27,6 +27,10 @@ def create_app(config_class=None):
     else:
         app.config.from_object(Config)
 
+    # Development bypass: allow SESSION_COOKIE_SECURE=False when explicitly in dev mode
+    if os.environ.get("FLASK_DEBUG") in ("1", "true"):
+        app.config["SESSION_COOKIE_SECURE"] = False
+
     # Initialize extensions
     db.init_app(app)
     mail.init_app(app)
@@ -65,6 +69,10 @@ def create_app(config_class=None):
     # Register blueprints/routes
     from . import main_routes
     app.register_blueprint(main_routes.bp)
+
+    # Razorpay webhook handler (must be after app creation for secret)
+    from .webhook_routes import init_webhook as init_webhook_bp
+    init_webhook_bp(app)
 
     # ── Favicon Routes ────────────────────────────────────────────────
     @app.route("/favicon.ico")

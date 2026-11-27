@@ -9,7 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import heapq
 import tempfile
 import base64
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from queue import SimpleQueue
 from flask import (
     Blueprint,
@@ -394,12 +394,20 @@ def _enrich_order(order):
     return data
 
 
+def _has_pending_checkout(user_id):
+    """Check if the user has a pending Razorpay order in session."""
+    cached_pending = session.get("pending_rzp_order")
+    if cached_pending and user_id == session.get("user_id"):
+        return True
+    return False
+
+
 # ═════════════════════════════════════════════════════════════
 # HEALTH CHECK
 # ═════════════════════════════════════════════════════════════
 @bp.route("/health")
 def health_check():
-    return jsonify({"status": "healthy", "version": "1.0.0"})
+    return jsonify({"status": "ok", "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")})
 
 
 # ═════════════════════════════════════════════════════════════
@@ -911,6 +919,9 @@ def api_add_to_cart():
     if "user_id" not in session:
         return jsonify({"status": "ERROR", "message": "Not logged in"})
 
+    if _has_pending_checkout(session["user_id"]):
+        return jsonify({"status": "ERROR", "message": "Cart locked: checkout in progress"}), 409
+
     data   = request.get_json() or {}
     veg_id = data.get("veg_id", "").strip()
     qty_g  = int(data.get("qty_g", 0))
@@ -956,6 +967,9 @@ def api_update_cart_qty(item_id):
     if "user_id" not in session:
         return jsonify({"status": "ERROR", "message": "Not logged in"})
 
+    if _has_pending_checkout(session["user_id"]):
+        return jsonify({"status": "ERROR", "message": "Cart locked: checkout in progress"}), 409
+
     data  = request.get_json() or {}
     qty_g = int(data.get("qty_g", 0))
 
@@ -979,6 +993,9 @@ def api_update_cart_qty(item_id):
 def api_remove_item(item_id):
     if "user_id" not in session:
         return jsonify({"status": "ERROR", "message": "Not logged in"})
+
+    if _has_pending_checkout(session["user_id"]):
+        return jsonify({"status": "ERROR", "message": "Cart locked: checkout in progress"}), 409
 
     cart_item = db.session.query(CartItem).filter_by(
         user_id=session["user_id"], item_id=item_id
@@ -1021,6 +1038,8 @@ def _apply_freebies(user_id, cart_total):
 # ═════════════════════════════════════════════════════════════
 # API ROUTES - CHECKOUT / RAZORPAY
 # ═════════════════════════════════════════════════════════════
+# CSRF exempted: Razorpay JS SDK handles payment submission directly and cannot include CSRF tokens.
+# Mitigated by: cryptographic signature verification on the verify endpoint.
 @bp.route("/api/checkout/razorpay-order", methods=["POST"])
 @csrf.exempt
 def api_create_razorpay_order():
@@ -1052,10 +1071,13 @@ def api_create_razorpay_order():
             }
         })
     except Exception as e:
-        return jsonify({"status": "ERROR", "message": f"Razorpay order creation failed: {str(e)}"})
+        logger.exception("Razorpay order creation failed")
+        return jsonify({"status": "ERROR", "message": "Razorpay order creation failed. Please try again later."})
 
-    session["pending_slot"]      = slot
-    session["pending_rzp_order"] = rzp_order["id"]
+    session["pending_slot"]        = slot
+    session["pending_rzp_order"]   = rzp_order["id"]
+    session["pending_rzp_time"]    = datetime.now(timezone.utc).timestamp()
+    session["pending_rzp_amount"]  = amount_paise
 
     return jsonify({
         "status":            "SUCCESS",
@@ -1079,6 +1101,8 @@ def _assign_delivery_boy():
     return chosen
 
 
+# CSRF exempted: Razorpay JS SDK handles payment submission directly and cannot include CSRF tokens.
+# Mitigated by: cryptographic signature verification on the verify endpoint.
 @bp.route("/api/checkout/verify", methods=["POST"])
 @csrf.exempt
 def api_verify_and_checkout():
@@ -1093,8 +1117,20 @@ def api_verify_and_checkout():
     if not rzp_order_id or not rzp_payment_id or not rzp_signature:
         return jsonify({"status": "ERROR", "message": "Incomplete payment response"})
 
-    if rzp_order_id != session.get("pending_rzp_order"):
-        return jsonify({"status": "ERROR", "message": "Order ID mismatch - possible replay attempt"})
+    # ── TTL check: reject expired checkout sessions ────────────────────
+    pending_time = session.get("pending_rzp_time")
+    if pending_time is None or (datetime.now(timezone.utc).timestamp() - pending_time) > 15 * 60:
+        session.pop("pending_slot",      None)
+        session.pop("pending_rzp_order", None)
+        session.pop("pending_rzp_time",  None)
+        return jsonify({"status": "ERROR", "message": "Checkout session expired. Please start over."}), 400
+
+    # ── Timing-safe order ID comparison ─────────────────────────────────
+    if not secrets.compare_digest(rzp_order_id, session.get("pending_rzp_order", "")):
+        session.pop("pending_slot",      None)
+        session.pop("pending_rzp_order", None)
+        session.pop("pending_rzp_time",  None)
+        return jsonify({"status": "ERROR", "message": "Order ID mismatch - possible replay attempt"}), 400
 
     try:
         rzp_client.client.utility.verify_payment_signature({
@@ -1104,6 +1140,40 @@ def api_verify_and_checkout():
         })
     except Exception:
         return jsonify({"status": "ERROR", "message": "Payment verification failed - invalid signature"})
+
+    # ── Idempotency guard: reject duplicate payment_id ──────────────────
+    existing = db.session.query(Order).filter_by(razorpay_payment_id=rzp_payment_id).first()
+    if existing:
+        boy = db.session.get(DeliveryBoy, existing.delivery_boy_id) if existing.delivery_boy_id else None
+        items_summary = [
+            {"item_id": it.item_id, "name": it.name, "qty_g": it.qty_g,
+             "price_at_order": float(it.price_at_order), "is_free": it.is_free}
+            for it in existing.items
+        ]
+        return jsonify({
+            "status":    "SUCCESS",
+            "order_id":  existing.order_id,
+            "total":     existing.total_amount,
+            "slot":      existing.delivery_slot,
+            "boy_name":  boy.name if boy else "Unknown",
+            "boy_phone": boy.phone if boy else "N/A",
+            "items":     items_summary
+        })
+
+    # ── Cross-check Razorpay order amount against expected amount ───────
+    expected_amount = session.get("pending_rzp_amount")
+    if expected_amount is not None:
+        try:
+            rzp_actual_order = rzp_client.client.order.fetch(rzp_order_id)
+            rzp_amount = int(rzp_actual_order["amount"])
+            if abs(rzp_amount - expected_amount) > 1:
+                session.pop("pending_slot",        None)
+                session.pop("pending_rzp_order",   None)
+                session.pop("pending_rzp_time",    None)
+                session.pop("pending_rzp_amount",  None)
+                return jsonify({"status": "ERROR", "message": "Payment amount mismatch. Please contact support."}), 400
+        except Exception as e:
+            logger.warning("Amount cross-check skipped (Razorpay API error): %s", e)
 
     slot = session.get("pending_slot", "")
     if slot not in {"Morning", "Afternoon", "Evening"}:
@@ -1140,7 +1210,8 @@ def api_verify_and_checkout():
         delivery_slot=slot,
         delivery_boy_id=boy.boy_id if boy else None,
         status="Order Placed",
-        timestamp=datetime.utcnow()
+        timestamp=datetime.utcnow(),
+        razorpay_payment_id=rzp_payment_id
     )
     db.session.add(new_order)
 
@@ -1206,6 +1277,7 @@ def api_verify_and_checkout():
 
     session.pop("pending_slot",      None)
     session.pop("pending_rzp_order", None)
+    session.pop("pending_rzp_time",  None)
 
     items_summary = [
         {
